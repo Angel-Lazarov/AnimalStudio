@@ -1,66 +1,84 @@
 using AnimalStudio.Data;
-using AnimalStudio.Web.Infrastructure.Extensions;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace AnimalStudio.Web
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+	public class Program
+	{
+		public static void Main(string[] args)
+		{
+			var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            //var connectionString = builder.Configuration.GetConnectionString("WorkConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            var connectionString = builder.Configuration.GetConnectionString("HomeConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+			// Add services to the container.
+			//var connectionString = builder.Configuration.GetConnectionString("WorkConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+			var connectionString = builder.Configuration.GetConnectionString("HomeConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+			builder.Services.AddDbContext<ApplicationDbContext>(options =>
+				options.UseSqlServer(connectionString));
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
-            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddApplicationIdentity(builder.Configuration);
-            //builder.Services.AddDefaultIdentity<IdentityUser>(options =>
-            //    {
-            //        options.SignIn.RequireConfirmedAccount = false;
-            //        options.Password.RequireLowercase = false;
-            //        options.Password.RequireDigit = false;
-            //        options.Password.RequireUppercase = false;
-            //        options.Password.RequireLowercase = false;
-            //        options.Password.RequireNonAlphanumeric = false;
-            //    })
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
-            builder.Services.AddControllersWithViews();
+			builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            var app = builder.Build();
+			builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+				{
+					ConfigureIdentity(builder, options);
+				})
+				.AddEntityFrameworkStores<ApplicationDbContext>();
+			builder.Services.AddControllersWithViews();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseMigrationsEndPoint();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+			var app = builder.Build();
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+			// Configure the HTTP request pipeline.
+			if (app.Environment.IsDevelopment())
+			{
+				app.UseMigrationsEndPoint();
+			}
+			else
+			{
+				app.UseExceptionHandler("/Home/Error");
+				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+				app.UseHsts();
+			}
 
-            app.UseRouting();
+			app.UseHttpsRedirection();
+			app.UseStaticFiles();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+			app.UseRouting();
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
-            app.MapRazorPages();
+			app.UseAuthentication();
+			app.UseAuthorization();
 
-            app.Run();
-        }
-    }
+			app.MapControllerRoute(
+				name: "default",
+				pattern: "{controller=Home}/{action=Index}/{id?}");
+			app.MapRazorPages();
+
+			app.Run();
+		}
+
+		private static void ConfigureIdentity(WebApplicationBuilder builder, IdentityOptions options)
+		{
+			//SignIn Settings
+			options.SignIn.RequireConfirmedAccount = builder.Configuration.GetValue<bool>("Identity:SignIn:RequireConfirmedAccount");
+			options.SignIn.RequireConfirmedPhoneNumber = builder.Configuration.GetValue<bool>("Identity:SignIn:RequireConfirmedPhoneNumber");
+			options.SignIn.RequireConfirmedEmail = builder.Configuration.GetValue<bool>("Identity:SignIn:RequireConfirmedEmail");
+
+			//Password Settings
+			options.Password.RequiredLength = builder.Configuration.GetValue<int>("Identity:Password:RequiredLength");
+			options.Password.RequireDigit = builder.Configuration.GetValue<bool>("Identity:Password:RequireDigit");
+			options.Password.RequireLowercase = builder.Configuration.GetValue<bool>("Identity:Password:RequireLowercase");
+			options.Password.RequireUppercase = builder.Configuration.GetValue<bool>("Identity:Password:RequireUppercase");
+			options.Password.RequireNonAlphanumeric = builder.Configuration.GetValue<bool>("Identity:Password:RequireNonAlphanumeric");
+			options.Password.RequiredUniqueChars = builder.Configuration.GetValue<int>("Identity:Password:RequiredUniqueChars");
+
+			//Lockout Settings
+			options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+			options.Lockout.MaxFailedAccessAttempts = builder.Configuration.GetValue<int>("Identity:Lockout:MaxFailedAccessAttempts");
+			options.Lockout.AllowedForNewUsers = builder.Configuration.GetValue<bool>("Identity:Lockout:AllowedForNewUsers");
+
+			//User Settings
+			options.User.RequireUniqueEmail = builder.Configuration.GetValue<bool>("Identity:User:RequireUniqueEmail");
+		}
+
+	}
 }
