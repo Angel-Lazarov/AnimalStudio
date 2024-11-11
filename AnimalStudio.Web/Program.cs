@@ -1,4 +1,6 @@
 using AnimalStudio.Data;
+using AnimalStudio.Services;
+using AnimalStudio.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,9 +15,8 @@ namespace AnimalStudio.Web
 			// Add services to the container.
 			//var connectionString = builder.Configuration.GetConnectionString("WorkConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 			var connectionString = builder.Configuration.GetConnectionString("HomeConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-			builder.Services.AddDbContext<ApplicationDbContext>(options =>
-				options.UseSqlServer(connectionString));
 
+			builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
 			builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -24,7 +25,12 @@ namespace AnimalStudio.Web
 					ConfigureIdentity(builder, options);
 				})
 				.AddEntityFrameworkStores<ApplicationDbContext>();
+
 			builder.Services.AddControllersWithViews();
+
+			builder.Services.AddScoped<IWorkerDataService, WorkerDataService>();
+			builder.Services.AddScoped<IProcedureDataService, ProcedureDataService>();
+
 
 			var app = builder.Build();
 

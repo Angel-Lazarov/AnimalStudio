@@ -18,11 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AnimalStudio.Data\AnimalStudio.Data.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Procedure\" />
+    <ProjectReference Include="..\AnimalStudio.Common\AnimalStudio.Common.csproj" />
+    <ProjectReference Include="..\AnimalStudio.Services\AnimalStudio.Services.csproj" />
+    <ProjectReference Include="..\AnimalStudio.Web.ViewModels\AnimalStudio.Web.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

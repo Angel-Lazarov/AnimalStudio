@@ -1,0 +1,45 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model AnimalStudio.Web.ViewModels.ProcedureViewModel
+
+@{
+	ViewData["Title"] = "Add New Procedure";
+}
+<h2>@ViewData["Title"]</h2>
+
+
+<form asp-action="AddProcedure" method="post">
+	<div class="form-group">
+		<label asp-for="Name">Name</label>
+		<input asp-for="Name" class="form-control"/>
+		<span asp-validation-for="Name"></span>
+
+		<label asp-for="Price">Price</label>
+		<input asp-for="Price" class="form-control"/>
+		<span asp-validation-for="Price"></span>
+
+		<label asp-for="WorkerId">WorkerId</label>
+		<input asp-for="WorkerId" class="form-control" />
+		<span asp-validation-for="WorkerId"></span>
+
+	</div>
+
+	<button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+
+<label for="cars">Choose a car:</label>
+
+<select id="cars">
+	<option value="volvo">Volvo</option>
+	<option value="saab">Saab</option>
+	<option value="vw">VW</option>
+	<option value="audi" selected>Audi</option>
+</select>
+
+
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

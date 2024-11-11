@@ -15,28 +15,66 @@
     <link rel="stylesheet" href="~/AnimalStudio.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AnimalStudio.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
-            </div>
-        </nav>
-    </header>
+	<header>
+		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+			<div class="container-fluid">
+				<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AnimalSpa.Web</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+						aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+					<ul class="navbar-nav flex-grow-1">
+
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+						</li>
+
+
+
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Worker Menu</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" asp-controller="Worker" asp-action="AddWorker">Add Worker</a></li>
+								<li><a class="dropdown-item" asp-controller="Worker" asp-action="WorkersList">Workers List</a></li>
+								<li><div class="dropdown-divider"></div></li>
+								<li><a class="dropdown-item" asp-controller="Worker" asp-action="RemoveWorker">Remove Worker</a></li>
+							</ul>
+						</li>
+
+
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Procedure Menu</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" asp-controller="Procedure" asp-action="AddProcedure">Add Procedure</a></li>
+								<li><a class="dropdown-item" asp-controller="Procedure" asp-action="ProcedureList">Procedure List</a></li>
+								<li><div class="dropdown-divider"></div></li>
+								<li><a class="dropdown-item" asp-controller="Procedure" asp-action="DeleteProcedure">Delete Procedure</a></li>
+
+
+
+							</ul>
+						</li>
+
+
+
+
+
+
+						@* 						<li class="nav-item">
+						<a class="nav-link text-dark" asp-area="" asp-controller="Procedure" asp-action="Index">Procedures</a>
+						</li>
+						*@
+					</ul>
+					<partial name="_LoginPartial" />
+				</div>
+			</div>
+		</nav>
+	</header>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

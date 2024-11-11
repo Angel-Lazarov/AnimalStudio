@@ -1,0 +1,55 @@
+﻿@using AnimalStudio.Web.ViewModels
+@model List<AnimalStudio.Web.ViewModels.ProcedureViewModel>
+
+@{
+	ViewData["Title"] = "Procedures List!";
+}
+<h1>@ViewData["Title"]</h1>
+
+
+<div class="row">
+
+	@foreach (var procedure in Model)
+	{
+		<div class="card" style="width: 10rem; margin: 2rem">
+			<div class="card-body">
+				<h5 class="card-title">@procedure.Name</h5>
+				<p class="card-text">@procedure.Price EUR</p>
+				<a href="DeleteProcedure" class="btn btn-primary">Delete Procedure</a>
+			</div>
+		</div>
+	}
+</div>
+
+<table>
+
+	<tr>
+		<th class="text-center">Id</th>
+		<th class="text-center">Name</th>
+		<th class=" text-center">Price</th>
+		<th>WorkerId</th>
+	</tr>
+
+	@foreach (ProcedureViewModel procedureView in Model)
+	{
+		<tr>
+			<td>@procedureView.Id</td>
+			<td>@procedureView.Name</td>
+			<td>@procedureView.Price</td>
+			<td class="text-center">@procedureView.WorkerId</td>
+			<td><a href="AddProcedure" class="btn btn-primary">Add</a></td>
+
+		</tr>
+
+	}
+</table>
+
+
+
+
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}
