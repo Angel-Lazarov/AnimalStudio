@@ -4,10 +4,10 @@ namespace AnimalStudio.Services.Interfaces
 {
 	public interface IProcedureDataService
 	{
-		List<ProcedureViewModel> GetAllProcedures();
+		Task<IEnumerable<ProcedureViewModel>> GetAllProceduresAsync();
 
-		Task<bool> Procedure_Add(ProcedureViewModel model);
+		Task Procedure_Add(ProcedureViewModel model);
 
-		Task<bool> Procedure_Delete(string modelName);
+		Task Procedure_Delete(int id);
 	}
 }

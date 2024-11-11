@@ -5,7 +5,6 @@ using AnimalStudio.Services;
 using AnimalStudio.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol.Core.Types;
 
 namespace AnimalStudio.Web
 {
@@ -16,8 +15,8 @@ namespace AnimalStudio.Web
 			var builder = WebApplication.CreateBuilder(args);
 
 			// Add services to the container.
-			var connectionString = builder.Configuration.GetConnectionString("WorkConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-			//var connectionString = builder.Configuration.GetConnectionString("HomeConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+			//var connectionString = builder.Configuration.GetConnectionString("WorkConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+			var connectionString = builder.Configuration.GetConnectionString("HomeConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 			builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
@@ -31,15 +30,17 @@ namespace AnimalStudio.Web
 
 			builder.Services.AddControllersWithViews();
 
-			builder.Services.AddScoped<IWorkerDataService, WorkerDataService>();
-			builder.Services.AddScoped<IProcedureDataService, ProcedureDataService>();
 
 			// Register Generic Repository
 			builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 			// Register specific repositories
-			builder.Services.AddScoped<IWorkerRepository, WorkerRepository>();
+			//builder.Services.AddScoped<IWorkerRepository, WorkerRepository>();
 			builder.Services.AddScoped<IProcedureRepository, ProcedureRepository>();
+
+			builder.Services.AddScoped<IWorkerDataService, WorkerDataService>();
+			builder.Services.AddScoped<IProcedureDataService, ProcedureDataService>();
+
 
 			var app = builder.Build();
 

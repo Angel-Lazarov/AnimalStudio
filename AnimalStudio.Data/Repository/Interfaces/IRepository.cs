@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AnimalStudio.Data.Repository.Interfaces
+﻿namespace AnimalStudio.Data.Repository.Interfaces
 {
 	public interface IRepository<T> where T : class
 	{
 		//Get All elements of type T
 		Task<IEnumerable<T>> GetAllAsync();
+
+		IQueryable<T> GetAllAttached();
 
 		//Get an entity of type T by its ID
 		Task<T> GetByIdAsync(int id);

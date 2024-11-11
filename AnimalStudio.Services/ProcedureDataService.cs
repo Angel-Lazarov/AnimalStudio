@@ -1,32 +1,38 @@
 ﻿using AnimalStudio.Data;
 using AnimalStudio.Data.Models;
+using AnimalStudio.Data.Repository.Interfaces;
 using AnimalStudio.Services.Interfaces;
 using AnimalStudio.Web.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace AnimalStudio.Services
 {
 	public class ProcedureDataService : IProcedureDataService
 	{
 		private readonly ApplicationDbContext dbContext;
-		public ProcedureDataService(ApplicationDbContext dbContext)
+		private readonly IProcedureRepository procedureRepository;
+		public ProcedureDataService(ApplicationDbContext dbContext, IProcedureRepository procedureRepository)
 		{
 			this.dbContext = dbContext;
+			this.procedureRepository = procedureRepository;
 		}
 
-		public List<ProcedureViewModel> GetAllProcedures()
+		public async Task<IEnumerable<ProcedureViewModel>> GetAllProceduresAsync()
 		{
+			IEnumerable<ProcedureViewModel> procedures =
+			 await procedureRepository.GetAllAttached().Select(p => new ProcedureViewModel()
+			 {
+				 Id = p.Id,
+				 Name = p.Name,
+				 Price = p.Price,
+				 WorkerId = p.WorkerId
+			 })
+				.ToListAsync();
 
-			return dbContext.Procedures.Select(p => new ProcedureViewModel()
-			{
-				Id = p.Id,
-				Name = p.Name,
-				Price = p.Price,
-				WorkerId = p.WorkerId
-			})
-				.ToList();
+			return procedures;
 		}
 
-		public async Task<bool> Procedure_Add(ProcedureViewModel model)
+		public async Task Procedure_Add(ProcedureViewModel model)
 		{
 			Procedure procedure = new Procedure()
 			{
@@ -36,33 +42,12 @@ namespace AnimalStudio.Services
 				WorkerId = model.WorkerId
 			};
 
-			if (procedure == null)
-			{
-				return false;
-			}
-
-			await dbContext.Procedures.AddAsync(procedure);
-			await dbContext.SaveChangesAsync();
-			return true;
-
+			await procedureRepository.AddAsync(procedure);
 		}
 
-		public async Task<bool> Procedure_Delete(string modelName)
+		public async Task Procedure_Delete(int id)
 		{
-			if (modelName == null)
-			{
-				return false;
-			}
-
-			Procedure procedure = dbContext.Procedures.FirstOrDefault(p => p.Name == modelName);
-			if (procedure == null)
-			{
-				return false;
-			}
-
-			dbContext.Procedures.Remove(procedure);
-			await dbContext.SaveChangesAsync();
-			return true;
+			await procedureRepository.DeleteAsync(id);
 		}
 	}
 }
