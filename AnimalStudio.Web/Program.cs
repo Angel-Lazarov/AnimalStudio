@@ -1,8 +1,11 @@
 using AnimalStudio.Data;
+using AnimalStudio.Data.Repository;
+using AnimalStudio.Data.Repository.Interfaces;
 using AnimalStudio.Services;
 using AnimalStudio.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 
 namespace AnimalStudio.Web
 {
@@ -31,6 +34,12 @@ namespace AnimalStudio.Web
 			builder.Services.AddScoped<IWorkerDataService, WorkerDataService>();
 			builder.Services.AddScoped<IProcedureDataService, ProcedureDataService>();
 
+			// Register Generic Repository
+			builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+			// Register specific repositories
+			builder.Services.AddScoped<IWorkerRepository, WorkerRepository>();
+			builder.Services.AddScoped<IProcedureRepository, ProcedureRepository>();
 
 			var app = builder.Build();
 
