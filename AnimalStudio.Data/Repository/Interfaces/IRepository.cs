@@ -1,22 +1,17 @@
 ﻿namespace AnimalStudio.Data.Repository.Interfaces
 {
-	public interface IRepository<T> where T : class
+	public interface IRepository<TType, TId>
 	{
-		//Get All elements of type T
-		Task<IEnumerable<T>> GetAllAsync();
+		Task<TType> GetByIdAsync(TId id);
 
-		IQueryable<T> GetAllAttached();
+		Task AddAsync(TType entity);
 
-		//Get an entity of type T by its ID
-		Task<T> GetByIdAsync(int id);
+		Task<bool> DeleteAsync(TId id);
 
-		//Add a new entity of type T
-		Task AddAsync(T entity);
+		Task<bool> UpdateAsync(TType entity);
 
-		//Update an existing entity of type T
-		Task UpdateAsync(T entity);
+		Task<IEnumerable<TType>> GetAllAsync();
 
-		//Delete an entity of type T by its ID
-		Task DeleteAsync(int id);
+		IQueryable<TType> GetAllAttached();
 	}
 }
