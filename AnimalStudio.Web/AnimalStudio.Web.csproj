@@ -19,7 +19,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AnimalStudio.Common\AnimalStudio.Common.csproj" />
-    <ProjectReference Include="..\AnimalStudio.Services\AnimalStudio.Services.csproj" />
+    <ProjectReference Include="..\AnimalStudio.Services.Data\AnimalStudio.Services.Data.csproj" />
+    <ProjectReference Include="..\AnimalStudio.Web.Infrastructure\AnimalStudio.Web.Infrastructure.csproj" />
     <ProjectReference Include="..\AnimalStudio.Web.ViewModels\AnimalStudio.Web.ViewModels.csproj" />
   </ItemGroup>
 

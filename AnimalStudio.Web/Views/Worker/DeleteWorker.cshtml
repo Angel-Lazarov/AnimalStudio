@@ -11,14 +11,14 @@
 
 </div>
 
-<form asp-action="RemoveWorker" method="post">
+<form asp-action="DeleteWorker" method="post">
 	<div class="form-group">
-		<label asp-for="Name">Name</label>
-		<input asp-for="Name" class="form-control" />
-		<span asp-validation-for="Name"></span>
+		<label asp-for="Id">Id</label>
+		<input asp-for="Id" class="form-control" />
+		<span asp-validation-for="Id"></span>
 	</div>
 
-	<button type="submit" class="btn btn-primary">Remove</button>
+	<button type="submit" class="btn btn-primary">Delete</button>
 </form>
 
 @section Scripts {

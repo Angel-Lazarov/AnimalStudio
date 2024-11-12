@@ -1,4 +1,4 @@
-﻿using AnimalStudio.Services.Interfaces;
+﻿using AnimalStudio.Services.Data.Interfaces;
 using AnimalStudio.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,15 +6,17 @@ namespace AnimalStudio.Web.Controllers
 {
 	public class WorkerController : Controller
 	{
-		private readonly IWorkerDataService workerDataService;
+		private readonly IWorkerService workerService;
 
-		public WorkerController(IWorkerDataService workerDataService)
+		public WorkerController(IWorkerService workerService)
 		{
-			this.workerDataService = workerDataService;
+			this.workerService = workerService;
 		}
-		public IActionResult WorkersList()
+
+		public async Task<IActionResult> WorkersList()
 		{
-			List<WorkerViewModel> workersList = workerDataService.Workers_All();
+			IEnumerable<WorkerViewModel> workersList = await workerService.GetAllWorkersAsync();
+
 			return View(workersList);
 		}
 
@@ -33,31 +35,23 @@ namespace AnimalStudio.Web.Controllers
 				return View(model);
 			}
 
-			bool addSuccess = await workerDataService.Worker_Add(model);
+			await workerService.Worker_Add(model);
 
 			return RedirectToAction("WorkersList");
 		}
 
-
 		[HttpGet]
-		public IActionResult RemoveWorker()
+		public IActionResult DeleteWorker()
 		{
 			return View();
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> RemoveWorker(WorkerViewModel model)
+		public async Task<IActionResult> DeleteWorker(int id)
 		{
-			if (!ModelState.IsValid)
-			{
-				return View(model);
-			}
-
-			bool removeSuccess = await workerDataService.Worker_Remove(model);
+			await workerService.Worker_Delete(id);
 
 			return RedirectToAction("WorkersList");
 		}
-
-
 	}
 }

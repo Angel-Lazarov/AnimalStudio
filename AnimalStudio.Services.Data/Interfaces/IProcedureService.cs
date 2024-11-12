@@ -1,8 +1,8 @@
 ﻿using AnimalStudio.Web.ViewModels;
 
-namespace AnimalStudio.Services.Interfaces
+namespace AnimalStudio.Services.Data.Interfaces
 {
-	public interface IProcedureDataService
+	public interface IProcedureService
 	{
 		Task<IEnumerable<ProcedureViewModel>> GetAllProceduresAsync();
 

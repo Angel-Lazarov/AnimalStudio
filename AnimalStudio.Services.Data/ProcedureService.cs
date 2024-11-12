@@ -1,32 +1,30 @@
-﻿using AnimalStudio.Data;
-using AnimalStudio.Data.Models;
+﻿using AnimalStudio.Data.Models;
 using AnimalStudio.Data.Repository.Interfaces;
-using AnimalStudio.Services.Interfaces;
+using AnimalStudio.Services.Data.Interfaces;
 using AnimalStudio.Web.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
-namespace AnimalStudio.Services
+namespace AnimalStudio.Services.Data
 {
-	public class ProcedureDataService : IProcedureDataService
+	public class ProcedureService : IProcedureService
 	{
-		private readonly ApplicationDbContext dbContext;
-		private readonly IProcedureRepository procedureRepository;
-		public ProcedureDataService(ApplicationDbContext dbContext, IProcedureRepository procedureRepository)
+		private readonly IRepository<Procedure, int> procedureRepository;
+		public ProcedureService(IRepository<Procedure, int> procedureRepository)
 		{
-			this.dbContext = dbContext;
 			this.procedureRepository = procedureRepository;
 		}
 
 		public async Task<IEnumerable<ProcedureViewModel>> GetAllProceduresAsync()
 		{
-			IEnumerable<ProcedureViewModel> procedures =
-			 await procedureRepository.GetAllAttached().Select(p => new ProcedureViewModel()
-			 {
-				 Id = p.Id,
-				 Name = p.Name,
-				 Price = p.Price,
-				 WorkerId = p.WorkerId
-			 })
+			IEnumerable<ProcedureViewModel> procedures = await procedureRepository
+				.GetAllAttached()
+				.Select(p => new ProcedureViewModel()
+				{
+					Id = p.Id,
+					Name = p.Name,
+					Price = p.Price,
+					WorkerId = p.WorkerId
+				})
 				.ToListAsync();
 
 			return procedures;
@@ -50,4 +48,5 @@ namespace AnimalStudio.Services
 			await procedureRepository.DeleteAsync(id);
 		}
 	}
+
 }
