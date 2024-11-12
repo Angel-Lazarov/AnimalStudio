@@ -1,9 +1,8 @@
 using AnimalStudio.Data;
 using AnimalStudio.Data.Models;
-using AnimalStudio.Data.Repository;
-using AnimalStudio.Data.Repository.Interfaces;
-using AnimalStudio.Services;
-using AnimalStudio.Services.Interfaces;
+using AnimalStudio.Services.Data;
+using AnimalStudio.Services.Data.Interfaces;
+using AnimalStudio.Web.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,8 +15,8 @@ namespace AnimalStudio.Web
 			var builder = WebApplication.CreateBuilder(args);
 
 			// Add services to the container.
-			var connectionString = builder.Configuration.GetConnectionString("WorkConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-			//var connectionString = builder.Configuration.GetConnectionString("HomeConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+			//var connectionString = builder.Configuration.GetConnectionString("WorkConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+			var connectionString = builder.Configuration.GetConnectionString("HomeConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 			builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
@@ -32,16 +31,11 @@ namespace AnimalStudio.Web
 			builder.Services.AddControllersWithViews();
 
 
-			// Register Generic Repository
-			builder.Services.AddScoped<IRepository<Procedure, int>, BaseRepository<Procedure, int>>();
-			builder.Services.AddScoped<IRepository<Worker, int>, BaseRepository<Worker, int>>();
+			builder.Services.RegisterRepositories(typeof(Procedure).Assembly);
 
-			// Register specific repositories
-			//builder.Services.AddScoped<IWorkerRepository, WorkerRepository>();
-			//builder.Services.AddScoped<IProcedureRepository, ProcedureRepository>();
 
-			builder.Services.AddScoped<IWorkerDataService, WorkerDataService>();
-			builder.Services.AddScoped<IProcedureDataService, ProcedureDataService>();
+			builder.Services.AddScoped<IWorkerService, WorkerService>();
+			builder.Services.AddScoped<IProcedureService, ProcedureService>();
 
 
 			var app = builder.Build();

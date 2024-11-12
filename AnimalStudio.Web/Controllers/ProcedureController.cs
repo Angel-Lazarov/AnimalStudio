@@ -1,4 +1,4 @@
-﻿using AnimalStudio.Services.Interfaces;
+﻿using AnimalStudio.Services.Data.Interfaces;
 using AnimalStudio.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,17 +7,17 @@ namespace AnimalStudio.Web.Controllers
 {
 	public class ProcedureController : Controller
 	{
-		private readonly IProcedureDataService procedureDataService;
+		private readonly IProcedureService procedureService;
 
-		public ProcedureController(IProcedureDataService procedureDataService)
+		public ProcedureController(IProcedureService procedureService)
 		{
-			this.procedureDataService = procedureDataService;
+			this.procedureService = procedureService;
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> ProcedureList()
 		{
-			IEnumerable<ProcedureViewModel> procedures = await procedureDataService.GetAllProceduresAsync();
+			IEnumerable<ProcedureViewModel> procedures = await procedureService.GetAllProceduresAsync();
 
 			return View(procedures);
 		}
@@ -36,7 +36,8 @@ namespace AnimalStudio.Web.Controllers
 				return View(model);
 			}
 
-			await procedureDataService.Procedure_Add(model);
+			await procedureService.Procedure_Add(model);
+
 			return RedirectToAction("ProcedureList");
 		}
 
@@ -50,10 +51,8 @@ namespace AnimalStudio.Web.Controllers
 		[HttpPost]
 		public async Task<IActionResult> DeleteProcedureAsync(int id)
 		{
-			await procedureDataService.Procedure_Delete(id);
-			return View();
+			await procedureService.Procedure_Delete(id);
+			return RedirectToAction(nameof(ProcedureList));
 		}
-
-
 	}
 }
