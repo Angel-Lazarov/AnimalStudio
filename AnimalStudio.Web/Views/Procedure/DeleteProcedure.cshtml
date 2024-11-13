@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model AnimalStudio.Web.ViewModels.Procedure.ProcedureIndexViewModel
+@model AnimalStudio.Web.ViewModels.Procedure.ProcedureDetailsViewModel
 
 @{
 	ViewData["Title"] = "Delete Procedure";
@@ -11,7 +11,7 @@
 	<div class="form-group">
 		<label asp-for="Id">Id</label>
 		<input asp-for="Id" class="form-control" />
-		<span asp-validation-for="Name"></span>
+		<span asp-validation-for="Id"></span>
 
 	</div>
 

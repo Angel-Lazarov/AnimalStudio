@@ -1,5 +1,4 @@
 ﻿using AnimalStudio.Services.Data.Interfaces;
-using AnimalStudio.Web.ViewModels;
 using AnimalStudio.Web.ViewModels.Procedure;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,9 +22,8 @@ namespace AnimalStudio.Web.Controllers
 			return View(model);
 		}
 
-
 		[HttpGet]
-		public async Task<IActionResult> ProcedureList()
+		public async Task<IActionResult> Index()
 		{
 			IEnumerable<ProcedureIndexViewModel> procedures = await procedureService.IndexGetAllProceduresAsync();
 
@@ -48,21 +46,22 @@ namespace AnimalStudio.Web.Controllers
 
 			await procedureService.AddProcedureAsync(model);
 
-			return RedirectToAction("ProcedureList");
+			return RedirectToAction(nameof(Index));
 		}
 
 		[HttpGet]
-		public IActionResult DeleteProcedure()
-
+		public IActionResult DeleteProcedure(int id)
 		{
+			var model = procedureService.GetProcedureDetailsByIdAsync(id);
+
 			return View();
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> DeleteProcedureAsync(int id)
+		public async Task<IActionResult> DeleteProcedure(ProcedureDetailsViewModel model)
 		{
-			await procedureService.ProcedureDelete(id);
-			return RedirectToAction(nameof(ProcedureList));
+			await procedureService.ProcedureDelete(model);
+			return RedirectToAction(nameof(Index));
 		}
 	}
 }

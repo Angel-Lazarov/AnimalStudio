@@ -1,17 +1,17 @@
-﻿using AnimalStudio.Web.ViewModels;
-using AnimalStudio.Web.ViewModels.Procedure;
+﻿using AnimalStudio.Web.ViewModels.Procedure;
 
 namespace AnimalStudio.Services.Data.Interfaces
 {
 	public interface IProcedureService
 	{
 		Task<IEnumerable<ProcedureIndexViewModel>> IndexGetAllProceduresAsync();
-				
+
 		Task AddProcedureAsync(AddProcedureFormModel model);
 
-		Task ProcedureDelete(int id);
+		Task ProcedureDeleteById(int id);
+		Task ProcedureDelete(ProcedureDetailsViewModel model);
 
 		Task<ProcedureDetailsViewModel> GetProcedureDetailsByIdAsync(int id);
 
-    }
+	}
 }
