@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AnimalStudio.Common\AnimalStudio.Common.csproj" />
+  </ItemGroup>
+
 </Project>

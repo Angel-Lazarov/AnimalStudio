@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model AnimalStudio.Web.ViewModels.ProcedureViewModel
+@model AnimalStudio.Web.ViewModels.Procedure.AddProcedureFormModel
 
 @{
 	ViewData["Title"] = "Add New Procedure";
@@ -12,6 +12,11 @@
 		<label asp-for="Name">Name</label>
 		<input asp-for="Name" class="form-control"/>
 		<span asp-validation-for="Name"></span>
+
+		<label asp-for="Description">Description</label>
+		<input asp-for="Description" class="form-control" />
+		<span asp-validation-for="Description"></span>
+
 
 		<label asp-for="Price">Price</label>
 		<input asp-for="Price" class="form-control"/>

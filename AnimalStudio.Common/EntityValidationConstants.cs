@@ -9,8 +9,11 @@
 
         public static class Procedure
         {
+            public const int ProcedureNameMinLength = 5;
             public const int ProcedureNameMaxLength = 50;
             public const string PriceColumnTypeName = "decimal(18,2)";
+            public const int ProcedureDescriptionMaxLength = 2500;
+            public const int ProcedureDescriptionMinLength = 10;
         }
 
         public static class AnimalType

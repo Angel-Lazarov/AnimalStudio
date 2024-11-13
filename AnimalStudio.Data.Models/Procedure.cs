@@ -6,7 +6,7 @@ using static AnimalStudio.Common.EntityValidationConstants.Procedure;
 namespace AnimalStudio.Data.Models
 {
 
-    [Comment("Animal procedure description.")]
+    [Comment("Procedure entity.")]
     public class Procedure
     {
         [Key]
@@ -17,6 +17,11 @@ namespace AnimalStudio.Data.Models
         [MaxLength(ProcedureNameMaxLength)]
         [Comment("Animal name")]
         public string Name { get; set; } = null!;
+
+        [Required]
+        [MaxLength(ProcedureDescriptionMaxLength)]
+		[Comment("Description of the procedure")]
+		public string Description { get; set; } = null!;
 
         [Required]
         [Column(TypeName = PriceColumnTypeName)]
