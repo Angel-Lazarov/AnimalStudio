@@ -1,5 +1,5 @@
 ﻿@using AnimalStudio.Web.ViewModels
-@model IEnumerable<AnimalStudio.Web.ViewModels.ProcedureViewModel>
+@model IEnumerable<AnimalStudio.Web.ViewModels.Procedure.ProcedureIndexViewModel>
 
 @{
 	ViewData["Title"] = "Procedures List!";
@@ -15,7 +15,8 @@
 			<div class="card-body">
 				<h5 class="card-title">@procedure.Name</h5>
 				<p class="card-text">@procedure.Price EUR</p>
-				<a href="DeleteProcedure" class="btn btn-primary">Delete Procedure</a>
+				<a href="ProcedureDetails" class="btn btn-primary">Details</a>
+				<a href="DeleteProcedure" class="btn btn-primary">Delete</a>
 			</div>
 		</div>
 	}
@@ -30,7 +31,7 @@
 		<th>WorkerId</th>
 	</tr>
 
-	@foreach (ProcedureViewModel procedureView in Model)
+	@foreach (var procedureView in Model)
 	{
 		<tr>
 			<td>@procedureView.Id</td>

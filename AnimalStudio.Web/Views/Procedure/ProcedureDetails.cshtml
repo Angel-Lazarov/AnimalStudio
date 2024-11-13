@@ -1,0 +1,20 @@
+﻿@using AnimalStudio.Web.ViewModels.Procedure
+@model ProcedureDetailsViewModel
+
+
+@{
+	ViewData["Title"] = "Procedures Details!";
+}
+<h1>@ViewData["Title"]</h1>
+
+
+<div class="card" style="width: 10rem; margin: 2rem">
+	<div class="card-body">
+		<h5 class="card-title">@Model.Name</h5>
+		<p class="card-text">@Model.Description EUR</p>
+		<p class="card-text">@Model.WorkerName EUR</p>
+		<p class="card-text">@Model.Price EUR</p>
+
+		<a href="DeleteProcedure" class="btn btn-primary">Delete Procedure</a>
+	</div>
+</div>
