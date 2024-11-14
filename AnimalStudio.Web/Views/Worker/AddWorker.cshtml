@@ -1,27 +1,35 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model AnimalStudio.Web.ViewModels.WorkerViewModel
+@using AnimalStudio.Web.ViewModels
+@model WorkerViewModel
 
 @{
 	ViewData["Title"] = "Add Worker";
 }
 
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
 
-
-<div class="text-center">
-	<h3>Добавяне на служителите</h3>
-	<p>@* ViewData["Title"] *@</p>
-
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form asp-action="AddWorker" method="post">
+            <div class="form-group">
+                <label asp-for="@Model.Name" class="form-label-add-edit">Worker Name</label>
+                <input asp-for="@Model.Name" class="form-control" aria-required="true" />
+                <span asp-validation-for="@Model.Name" class="text-danger"></span>
+            </div>
+            <hr />
+            <div class="mb-3">
+                <input class="btn btn-warning btn-dark-text mb-2 w-100 py-3 fw-bold rounded" type="submit" value="Save" />
+            </div>
+        </form>
+    </div>
 </div>
 
-<form asp-action="AddWorker" method="post">
-	<div class="form-group">
-		<label asp-for="Name">Name</label>
-		<input asp-for="Name" class="form-control" />
-		<span asp-validation-for="Name"></span>
-	</div>
-
-	<button type="submit" class="btn btn-primary">Add</button>
-</form>
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <a asp-controller="Worker" asp-action="Index" class="btn btn-warning btn-dark-text mb-2 w-100 py-3 fw-bold rounded">Back</a>
+    </div>
+</div>
 
 @section Scripts {
 	@{

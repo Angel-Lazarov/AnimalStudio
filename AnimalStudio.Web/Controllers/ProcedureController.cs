@@ -8,10 +8,12 @@ namespace AnimalStudio.Web.Controllers
 	public class ProcedureController : Controller
 	{
 		private readonly IProcedureService procedureService;
+		private readonly IWorkerService workerService;
 
-		public ProcedureController(IProcedureService procedureService)
+		public ProcedureController(IProcedureService procedureService, IWorkerService workerService)
 		{
 			this.procedureService = procedureService;
+			this.workerService = workerService;
 		}
 
 		[HttpGet]
@@ -31,9 +33,11 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult AddProcedure()
+		public async Task<IActionResult> AddProcedure()
 		{
-			return View();
+            AddProcedureFormModel model = new AddProcedureFormModel();
+			model.Workers = await workerService.GetAllWorkersAsync();
+            return View(model);
 		}
 
 		[HttpPost]
@@ -41,7 +45,8 @@ namespace AnimalStudio.Web.Controllers
 		{
 			if (!ModelState.IsValid)
 			{
-				return View(model);
+                model.Workers = await workerService.GetAllWorkersAsync();
+                return View(model);
 			}
 
 			await procedureService.AddProcedureAsync(model);
@@ -49,19 +54,21 @@ namespace AnimalStudio.Web.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpGet]
-		public IActionResult DeleteProcedure(int id)
-		{
-			var model = procedureService.GetProcedureDetailsByIdAsync(id);
-
-			return View();
-		}
-
 		[HttpPost]
-		public async Task<IActionResult> DeleteProcedure(ProcedureDetailsViewModel model)
+		public async Task<IActionResult> DeleteProcedure(int id)
 		{
-			await procedureService.ProcedureDelete(model);
-			return RedirectToAction(nameof(Index));
-		}
+			var model = await procedureService.GetProcedureDetailsByIdAsync(id);
+
+            await procedureService.ProcedureDelete(model);
+            return RedirectToAction(nameof(Index));
+
+        }
+
+  //      [HttpPost]
+		//public async Task<IActionResult> DeleteProcedure(ProcedureDetailsViewModel model)
+		//{
+		//	await procedureService.ProcedureDelete(model);
+		//	return RedirectToAction(nameof(Index));
+		//}
 	}
 }

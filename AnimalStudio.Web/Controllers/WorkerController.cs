@@ -13,7 +13,7 @@ namespace AnimalStudio.Web.Controllers
 			this.workerService = workerService;
 		}
 
-		public async Task<IActionResult> WorkersList()
+		public async Task<IActionResult> Index()
 		{
 			IEnumerable<WorkerViewModel> workersList = await workerService.GetAllWorkersAsync();
 
@@ -37,7 +37,7 @@ namespace AnimalStudio.Web.Controllers
 
 			await workerService.Worker_Add(model);
 
-			return RedirectToAction("WorkersList");
+			return RedirectToAction("Index");
 		}
 
 		[HttpGet]
@@ -51,7 +51,7 @@ namespace AnimalStudio.Web.Controllers
 		{
 			await workerService.Worker_Delete(id);
 
-			return RedirectToAction("WorkersList");
+			return RedirectToAction("Index");
 		}
 	}
 }
