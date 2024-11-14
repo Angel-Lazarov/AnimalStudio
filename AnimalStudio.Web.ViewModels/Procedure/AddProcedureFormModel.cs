@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
 using static AnimalStudio.Common.EntityValidationConstants.Procedure;
 
 namespace AnimalStudio.Web.ViewModels.Procedure
@@ -25,6 +24,6 @@ namespace AnimalStudio.Web.ViewModels.Procedure
 		[Required]
 		public int WorkerId { get; set; }
 
-        public IEnumerable<WorkerViewModel> Workers { get; set; } = new List<WorkerViewModel>();
-    }
+		public IEnumerable<WorkerViewModel> Workers { get; set; } = new List<WorkerViewModel>();
+	}
 }

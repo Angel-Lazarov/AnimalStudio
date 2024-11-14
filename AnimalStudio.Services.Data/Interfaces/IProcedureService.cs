@@ -2,16 +2,17 @@
 
 namespace AnimalStudio.Services.Data.Interfaces
 {
-	public interface IProcedureService
-	{
-		Task<IEnumerable<ProcedureIndexViewModel>> IndexGetAllProceduresAsync();
+    public interface IProcedureService
+    {
+        Task<IEnumerable<ProcedureIndexViewModel>> IndexGetAllProceduresAsync();
+        Task<ProcedureDetailsViewModel> GetProcedureDetailsByIdAsync(int id);
 
-		Task AddProcedureAsync(AddProcedureFormModel model);
+        Task AddProcedureAsync(AddProcedureFormModel model);
 
-		Task ProcedureDeleteById(int id);
-		Task ProcedureDelete(ProcedureDetailsViewModel model);
+        Task ProcedureDeleteAsync(ProcedureDetailsViewModel model);
 
-		Task<ProcedureDetailsViewModel> GetProcedureDetailsByIdAsync(int id);
+        Task<EditProcedureFormModel> GetEditedModel(int id);
 
-	}
+        Task EditProcedureAsync(EditProcedureFormModel model);
+    }
 }
