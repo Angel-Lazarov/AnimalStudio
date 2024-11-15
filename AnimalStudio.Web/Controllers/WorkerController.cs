@@ -1,57 +1,89 @@
 ﻿using AnimalStudio.Services.Data.Interfaces;
-using AnimalStudio.Web.ViewModels;
+using AnimalStudio.Web.ViewModels.Worker;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnimalStudio.Web.Controllers
 {
-	public class WorkerController : Controller
-	{
-		private readonly IWorkerService workerService;
+    public class WorkerController : Controller
+    {
+        private readonly IWorkerService workerService;
 
-		public WorkerController(IWorkerService workerService)
-		{
-			this.workerService = workerService;
-		}
-
-		public async Task<IActionResult> Index()
-		{
-			IEnumerable<WorkerViewModel> workersList = await workerService.GetAllWorkersAsync();
-
-			return View(workersList);
-		}
-
-		[HttpGet]
-		public IActionResult AddWorker()
-		{
-			return View();
-		}
+        public WorkerController(IWorkerService workerService)
+        {
+            this.workerService = workerService;
+        }
 
 
-		[HttpPost]
-		public async Task<IActionResult> AddWorker(WorkerViewModel model)
-		{
-			if (!ModelState.IsValid)
-			{
-				return View(model);
-			}
+        [HttpGet]
+        public async Task<IActionResult> WorkerDetails(int id)
+        {
+            WorkerViewModel model = await workerService.GetWorkerDetailsByIdAsync(id);
 
-			await workerService.Worker_Add(model);
+            return View(model);
+        }
 
-			return RedirectToAction("Index");
-		}
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            IEnumerable<WorkerViewModel> workersList = await workerService.IndexGetAllWorkersAsync();
 
-		[HttpGet]
-		public IActionResult DeleteWorker()
-		{
-			return View();
-		}
+            return View(workersList);
+        }
 
-		[HttpPost]
-		public async Task<IActionResult> DeleteWorker(int id)
-		{
-			await workerService.Worker_Delete(id);
+        [HttpGet]
+        public IActionResult AddWorker()
+        {
+            return View();
+        }
 
-			return RedirectToAction("Index");
-		}
-	}
+        [HttpPost]
+        public async Task<IActionResult> AddWorker(WorkerViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await workerService.AddWorkerAsync(model);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteWorker(int id)
+        {
+            WorkerViewModel model = await workerService.GetWorkerDetailsByIdAsync(id);
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteWorker(WorkerViewModel model)
+        {
+            await workerService.WorkerDeleteAsync(model);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditWorker(int id)
+        {
+            WorkerViewModel model = await workerService.GetEditedModel(id);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditWorker(WorkerViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await workerService.EditWorkerAsync(model);
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
 }

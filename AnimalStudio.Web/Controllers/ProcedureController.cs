@@ -36,7 +36,7 @@ namespace AnimalStudio.Web.Controllers
         public async Task<IActionResult> AddProcedure()
         {
             AddProcedureFormModel model = new AddProcedureFormModel();
-            model.Workers = await workerService.GetAllWorkersAsync();
+            model.Workers = await workerService.IndexGetAllWorkersAsync();
             return View(model);
         }
 
@@ -45,7 +45,7 @@ namespace AnimalStudio.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.Workers = await workerService.GetAllWorkersAsync();
+                model.Workers = await workerService.IndexGetAllWorkersAsync();
                 return View(model);
             }
 
@@ -79,11 +79,11 @@ namespace AnimalStudio.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditProcedure(int id, EditProcedureFormModel model)
+        public async Task<IActionResult> EditProcedure(EditProcedureFormModel model)
         {
             if (!ModelState.IsValid)
             {
-                model.Workers = await workerService.GetAllWorkersAsync();
+                model.Workers = await workerService.IndexGetAllWorkersAsync();
                 return View(model);
             }
 
@@ -91,6 +91,5 @@ namespace AnimalStudio.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

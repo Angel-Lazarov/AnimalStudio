@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AnimalStudio.Web.ViewModels.Worker;
 using static AnimalStudio.Common.EntityValidationConstants.Procedure;
 
 namespace AnimalStudio.Web.ViewModels.Procedure

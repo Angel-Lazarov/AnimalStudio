@@ -1,13 +1,21 @@
-﻿using AnimalStudio.Web.ViewModels;
+﻿using AnimalStudio.Web.ViewModels.Worker;
 
 namespace AnimalStudio.Services.Data.Interfaces
 {
-	public interface IWorkerService
+    public interface IWorkerService
 	{
-		Task<IEnumerable<WorkerViewModel>> GetAllWorkersAsync();
+		Task<IEnumerable<WorkerViewModel>> IndexGetAllWorkersAsync();
 
-		Task Worker_Add(WorkerViewModel model);
+		Task AddWorkerAsync(WorkerViewModel model);
 
-		Task Worker_Delete(int id);
-	}
+        Task<WorkerViewModel> GetWorkerDetailsByIdAsync(int id);
+
+  
+        Task WorkerDeleteAsync(WorkerViewModel model);
+
+        Task<WorkerViewModel> GetEditedModel(int id);
+
+        Task EditWorkerAsync(WorkerViewModel model);
+
+    }
 }

@@ -1,8 +1,8 @@
 ﻿using AnimalStudio.Data.Models;
 using AnimalStudio.Data.Repository.Interfaces;
 using AnimalStudio.Services.Data.Interfaces;
-using AnimalStudio.Web.ViewModels;
 using AnimalStudio.Web.ViewModels.Procedure;
+using AnimalStudio.Web.ViewModels.Worker;
 using Microsoft.EntityFrameworkCore;
 
 namespace AnimalStudio.Services.Data
@@ -17,6 +17,20 @@ namespace AnimalStudio.Services.Data
             this.workerRepository = workerRepository;
         }
 
+        public async Task<IEnumerable<ProcedureIndexViewModel>> IndexGetAllProceduresAsync()
+        {
+            IEnumerable<ProcedureIndexViewModel> procedures = await procedureRepository
+                 .GetAllAttached()
+                 .Select(p => new ProcedureIndexViewModel()
+                 {
+                     Id = p.Id,
+                     Name = p.Name,
+                     Price = p.Price
+                 })
+                 .ToListAsync();
+
+            return procedures;
+        }
 
         public async Task AddProcedureAsync(AddProcedureFormModel model)
         {
@@ -49,20 +63,6 @@ namespace AnimalStudio.Services.Data
             return details;
         }
 
-        public async Task<IEnumerable<ProcedureIndexViewModel>> IndexGetAllProceduresAsync()
-        {
-            IEnumerable<ProcedureIndexViewModel> procedures = await procedureRepository
-                 .GetAllAttached()
-                 .Select(p => new ProcedureIndexViewModel()
-                 {
-                     Id = p.Id,
-                     Name = p.Name,
-                     Price = p.Price
-                 })
-                 .ToListAsync();
-
-            return procedures;
-        }
 
         public async Task ProcedureDeleteAsync(ProcedureDetailsViewModel model)
         {
@@ -81,8 +81,7 @@ namespace AnimalStudio.Services.Data
                     Price = p.Price,
                     WorkerId = p.WorkerId
                 })
-                .FirstOrDefaultAsync()
-                ;
+                .FirstOrDefaultAsync();
 
             model.Workers = await workerRepository.GetAllAttached()
                 .Select(w => new WorkerViewModel()
@@ -97,7 +96,7 @@ namespace AnimalStudio.Services.Data
 
         public async Task EditProcedureAsync(EditProcedureFormModel model)
         {
-            Procedure targetModel = new Procedure()
+            Procedure procedure = new Procedure()
             {
                 Id = model.Id,
                 Name = model.Name,
@@ -105,7 +104,7 @@ namespace AnimalStudio.Services.Data
                 Description = model.Description,
                 WorkerId = model.WorkerId
             };
-            await procedureRepository.UpdateAsync(targetModel);
+            await procedureRepository.UpdateAsync(procedure);
         }
     }
 

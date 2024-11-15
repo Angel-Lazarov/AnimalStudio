@@ -1,4 +1,4 @@
-using AnimalStudio.Web.Models;
+using AnimalStudio.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
