@@ -1,7 +1,5 @@
-﻿using AnimalStudio.Services.Data;
-using AnimalStudio.Services.Data.Interfaces;
+﻿using AnimalStudio.Services.Data.Interfaces;
 using AnimalStudio.Web.ViewModels.AnimalType;
-using AnimalStudio.Web.ViewModels.Worker;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnimalStudio.Web.Controllers
@@ -20,7 +18,7 @@ namespace AnimalStudio.Web.Controllers
         {
             IEnumerable<AnimalTypeViewModel> animalTypesList = await animalTypeService.IndexGetAllAnimalTypesAsync();
 
-            return View();
+            return View(animalTypesList);
         }
 
         [HttpGet]
@@ -48,7 +46,7 @@ namespace AnimalStudio.Web.Controllers
 
             await animalTypeService.AddAnimalTypeAsync(model);
 
-            return View();
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]

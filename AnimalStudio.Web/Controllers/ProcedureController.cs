@@ -35,8 +35,10 @@ namespace AnimalStudio.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> AddProcedure()
         {
-            AddProcedureFormModel model = new AddProcedureFormModel();
-            model.Workers = await workerService.IndexGetAllWorkersAsync();
+            AddProcedureFormModel model = new AddProcedureFormModel
+            {
+                Workers = await workerService.IndexGetAllWorkersAsync()
+            };
             return View(model);
         }
 

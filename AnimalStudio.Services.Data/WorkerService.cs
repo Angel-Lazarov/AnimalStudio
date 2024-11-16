@@ -1,6 +1,7 @@
 ﻿using AnimalStudio.Data.Models;
 using AnimalStudio.Data.Repository.Interfaces;
 using AnimalStudio.Services.Data.Interfaces;
+using AnimalStudio.Web.ViewModels.Procedure;
 using AnimalStudio.Web.ViewModels.Worker;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,14 +42,32 @@ namespace AnimalStudio.Services.Data
             await workerRepository.AddAsync(worker);
         }
 
-        public async Task<WorkerViewModel> GetWorkerDetailsByIdAsync(int id)
+        public async Task<WorkerViewModel?> GetWorkerDetailsByIdAsync(int id)
         {
-            Worker worker = await workerRepository.GetByIdAsync(id);
-            WorkerViewModel workerViewModel = new WorkerViewModel()
+            Worker? worker = await workerRepository
+                .GetAllAttached()
+                .Include(w => w.Procedures)
+                .FirstOrDefaultAsync(w => w.Id == id);
+
+            WorkerViewModel? workerViewModel = null;
+            if (worker != null)
             {
-                Id = worker.Id,
-                Name = worker.Name
-            };
+                workerViewModel = new WorkerViewModel()
+                {
+                    Id = worker.Id,
+                    Name = worker.Name,
+                    Procedures = worker.Procedures.Select(p => new ProcedureDetailsViewModel
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Price = p.Price,
+                        Description = p.Description,
+                        WorkerName = p.Worker.Name
+                    })
+                    .ToList()
+
+                };
+            }
 
             return workerViewModel;
         }
@@ -69,8 +88,8 @@ namespace AnimalStudio.Services.Data
                     Name = s.Name
                 })
                 .FirstOrDefaultAsync();
-                
-            return model;
+
+            return model!;
         }
 
         public async Task EditWorkerAsync(WorkerViewModel model)
