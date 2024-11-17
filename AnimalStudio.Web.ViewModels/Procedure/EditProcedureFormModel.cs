@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using AnimalStudio.Web.ViewModels.Worker;
 using static AnimalStudio.Common.EntityValidationConstants.Procedure;
 
 namespace AnimalStudio.Web.ViewModels.Procedure
@@ -21,11 +20,5 @@ namespace AnimalStudio.Web.ViewModels.Procedure
         [Required]
         [Column(TypeName = PriceColumnTypeName)]
         public decimal Price { get; set; }
-
-        [Required]
-        public int WorkerId { get; set; }
-
-        public IEnumerable<WorkerViewModel> Workers { get; set; } = new List<WorkerViewModel>();
-
     }
 }

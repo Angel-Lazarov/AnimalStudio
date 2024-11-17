@@ -42,30 +42,30 @@ namespace AnimalStudio.Services.Data
             await workerRepository.AddAsync(worker);
         }
 
-        public async Task<WorkerViewModel?> GetWorkerDetailsByIdAsync(int id)
+        public async Task<WorkerDetailsViewModel?> GetWorkerDetailsByIdAsync(int id)
         {
             Worker? worker = await workerRepository
                 .GetAllAttached()
-                .Include(w => w.Procedures)
+                .Include(w => w.WorkersProcedures)
+                .ThenInclude(wp => wp.Procedure)
                 .FirstOrDefaultAsync(w => w.Id == id);
 
-            WorkerViewModel? workerViewModel = null;
+            WorkerDetailsViewModel? workerViewModel = null;
             if (worker != null)
             {
-                workerViewModel = new WorkerViewModel()
+                workerViewModel = new WorkerDetailsViewModel()
                 {
                     Id = worker.Id,
                     Name = worker.Name,
-                    Procedures = worker.Procedures.Select(p => new ProcedureDetailsViewModel
-                    {
-                        Id = p.Id,
-                        Name = p.Name,
-                        Price = p.Price,
-                        Description = p.Description,
-                        WorkerName = p.Worker.Name
-                    })
+                    Procedures = worker.WorkersProcedures
+                        .Where(wp => wp.IsDeleted == false)
+                        .Select(wp => new ProcedureDetailsViewModel
+                        {
+                            Id = wp.Procedure.Id,
+                            Name = wp.Procedure.Name,
+                            Price = wp.Procedure.Price,
+                        })
                     .ToList()
-
                 };
             }
 

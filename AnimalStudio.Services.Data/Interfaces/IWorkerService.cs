@@ -2,20 +2,20 @@
 
 namespace AnimalStudio.Services.Data.Interfaces
 {
-    public interface IWorkerService
-    {
-        Task<IEnumerable<WorkerViewModel>> IndexGetAllWorkersAsync();
+	public interface IWorkerService
+	{
+		Task<IEnumerable<WorkerViewModel>> IndexGetAllWorkersAsync();
 
-        Task AddWorkerAsync(WorkerViewModel model);
+		Task AddWorkerAsync(WorkerViewModel model);
 
-        Task<WorkerViewModel?> GetWorkerDetailsByIdAsync(int id);
+		Task<WorkerDetailsViewModel?> GetWorkerDetailsByIdAsync(int id);
 
 
-        Task WorkerDeleteAsync(WorkerViewModel model);
+		Task WorkerDeleteAsync(WorkerViewModel model);
 
-        Task<WorkerViewModel> GetEditedModel(int id);
+		Task<WorkerViewModel> GetEditedModel(int id);
 
-        Task EditWorkerAsync(WorkerViewModel model);
+		Task EditWorkerAsync(WorkerViewModel model);
 
-    }
+	}
 }

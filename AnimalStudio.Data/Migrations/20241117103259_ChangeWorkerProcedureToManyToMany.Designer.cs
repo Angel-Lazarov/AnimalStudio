@@ -4,6 +4,7 @@ using AnimalStudio.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AnimalStudio.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241117103259_ChangeWorkerProcedureToManyToMany")]
+    partial class ChangeWorkerProcedureToManyToMany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -291,38 +294,6 @@ namespace AnimalStudio.Data.Migrations
                     b.HasIndex("ProcedureId");
 
                     b.ToTable("WorkersProcedures");
-
-                    b.HasData(
-                        new
-                        {
-                            WorkerId = 1,
-                            ProcedureId = 1,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            WorkerId = 1,
-                            ProcedureId = 3,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            WorkerId = 2,
-                            ProcedureId = 4,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            WorkerId = 3,
-                            ProcedureId = 2,
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            WorkerId = 4,
-                            ProcedureId = 2,
-                            IsDeleted = false
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

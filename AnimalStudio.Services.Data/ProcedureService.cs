@@ -11,10 +11,13 @@ namespace AnimalStudio.Services.Data
     {
         private readonly IRepository<Procedure, int> procedureRepository;
         private readonly IRepository<Worker, int> workerRepository;
-        public ProcedureService(IRepository<Procedure, int> procedureRepository, IRepository<Worker, int> workerRepository)
+        private readonly IRepository<WorkerProcedure, object> workerProcedureRepository;
+
+        public ProcedureService(IRepository<Procedure, int> procedureRepository, IRepository<Worker, int> workerRepository, IRepository<WorkerProcedure, object> workerProcedureRepository)
         {
             this.procedureRepository = procedureRepository;
             this.workerRepository = workerRepository;
+            this.workerProcedureRepository = workerProcedureRepository;
         }
 
         public async Task<IEnumerable<ProcedureIndexViewModel>> IndexGetAllProceduresAsync()
@@ -40,7 +43,6 @@ namespace AnimalStudio.Services.Data
                 Name = model.Name,
                 Price = model.Price,
                 Description = model.Description,
-                WorkerId = model.WorkerId
             };
 
             await procedureRepository.AddAsync(procedure);
@@ -48,16 +50,26 @@ namespace AnimalStudio.Services.Data
 
         public async Task<ProcedureDetailsViewModel> GetProcedureDetailsByIdAsync(int id)
         {
-            Procedure procedure = await procedureRepository.GetByIdAsync(id);
-            Worker worker = await workerRepository.GetByIdAsync(procedure.WorkerId);
+            Procedure procedure = await procedureRepository.GetAllAttached()
+                .Where(p => p.Id == id)
+                .Include(p => p.WorkersProcedures)
+                .FirstAsync();
 
             ProcedureDetailsViewModel details = new ProcedureDetailsViewModel()
             {
                 Id = procedure.Id,
                 Name = procedure.Name,
                 Price = procedure.Price,
-                WorkerName = worker.Name,
-                Description = procedure.Description
+                Description = procedure.Description,
+                Workers = workerProcedureRepository
+                    .GetAllAttached()
+                    .Where(wp => wp.ProcedureId == id && wp.IsDeleted == false)
+                    .Select(wp => new WorkerViewModel()
+                    {
+                        Id = wp.WorkerId,
+                        Name = wp.Worker.Name
+                    })
+                    .ToList()
             };
 
             return details;
@@ -78,18 +90,9 @@ namespace AnimalStudio.Services.Data
                     Id = p.Id,
                     Description = p.Description,
                     Name = p.Name,
-                    Price = p.Price,
-                    WorkerId = p.WorkerId
+                    Price = p.Price
                 })
                 .FirstOrDefaultAsync();
-
-            model.Workers = await workerRepository.GetAllAttached()
-                .Select(w => new WorkerViewModel()
-                {
-                    Id = w.Id,
-                    Name = w.Name
-                })
-                .ToListAsync();
 
             return model;
         }
@@ -102,10 +105,88 @@ namespace AnimalStudio.Services.Data
                 Name = model.Name,
                 Price = model.Price,
                 Description = model.Description,
-                WorkerId = model.WorkerId
             };
             await procedureRepository.UpdateAsync(procedure);
         }
-    }
 
+        public async Task<AssignProcedureToWorkerInputModel?> GetAssignProcedureToWorkerInputModelByIdAsync(int id)
+        {
+            Procedure? procedure = await procedureRepository.GetByIdAsync(id);
+
+            AssignProcedureToWorkerInputModel? viewModel = null;
+
+            if (procedure != null)
+            {
+                viewModel = new AssignProcedureToWorkerInputModel()
+                {
+                    Id = id,
+                    Name = procedure.Name,
+                    Workers = await workerRepository.GetAllAttached()
+                        .Include(w => w.WorkersProcedures)
+                        .ThenInclude(wp => wp.Procedure)
+                        .Select(w => new WorkerCheckBoxInputModel()
+                        {
+                            Id = w.Id,
+                            Name = w.Name,
+                            IsSelected = w.WorkersProcedures
+                                .Any(wp => wp.ProcedureId == id && wp.IsDeleted == false)
+                        })
+                        .ToListAsync()
+                };
+
+            }
+            return viewModel;
+        }
+
+        public async Task<bool> AssignProcedureToWorkersAsync(int id, AssignProcedureToWorkerInputModel model)
+        {
+            Procedure? procedure = await procedureRepository.GetByIdAsync(id);
+            if (procedure == null)
+            {
+                return false;
+            }
+
+            ICollection<WorkerProcedure> entitiesToAdd = new List<WorkerProcedure>();
+
+            foreach (WorkerCheckBoxInputModel workerInputModel in model.Workers)
+            {
+                Worker? worker = await workerRepository.GetByIdAsync(workerInputModel.Id);
+
+                if (worker == null)
+                {
+                    return false;
+                }
+
+                WorkerProcedure? workerProcedure = await workerProcedureRepository
+                    .FirstOrDefaultAsync(wp => wp.WorkerId == workerInputModel.Id &&
+                                               wp.ProcedureId == id);
+                if (workerInputModel.IsSelected)
+                {
+                    if (workerProcedure == null)
+                    {
+                        entitiesToAdd.Add(new WorkerProcedure()
+                        {
+                            Worker = worker,
+                            Procedure = procedure
+                        });
+                    }
+                    else
+                    {
+                        workerProcedure.IsDeleted = false;
+                    }
+                }
+                else
+                {
+                    if (workerProcedure != null)
+                    {
+                        workerProcedure.IsDeleted = true;
+                    }
+                }
+            }
+
+            await workerProcedureRepository.AddRangeAsync(entitiesToAdd.ToArray());
+
+            return true;
+        }
+    }
 }

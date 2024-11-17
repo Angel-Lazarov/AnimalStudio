@@ -1,10 +1,9 @@
-﻿using AnimalStudio.Web.ViewModels.Procedure;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using static AnimalStudio.Common.EntityValidationConstants.Worker;
 
 namespace AnimalStudio.Web.ViewModels.Worker
 {
-	public class WorkerDetailsViewModel
+	public class WorkerCheckBoxInputModel
 	{
 		[Required]
 		public int Id { get; set; }
@@ -14,6 +13,6 @@ namespace AnimalStudio.Web.ViewModels.Worker
 		[MaxLength(WorkerNameMaxLength)]
 		public string Name { get; set; } = null!;
 
-		public ICollection<ProcedureDetailsViewModel> Procedures { get; set; } = new List<ProcedureDetailsViewModel>();
+		public bool IsSelected { get; set; }
 	}
 }

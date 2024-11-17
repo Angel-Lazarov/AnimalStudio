@@ -19,7 +19,7 @@ namespace AnimalStudio.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ProcedureDetails(int id)
         {
-            var model = await procedureService.GetProcedureDetailsByIdAsync(id);
+            ProcedureDetailsViewModel model = await procedureService.GetProcedureDetailsByIdAsync(id);
 
             return View(model);
         }
@@ -33,13 +33,9 @@ namespace AnimalStudio.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddProcedure()
+        public IActionResult AddProcedure()
         {
-            AddProcedureFormModel model = new AddProcedureFormModel
-            {
-                Workers = await workerService.IndexGetAllWorkersAsync()
-            };
-            return View(model);
+            return View();
         }
 
         [HttpPost]
@@ -47,7 +43,6 @@ namespace AnimalStudio.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.Workers = await workerService.IndexGetAllWorkersAsync();
                 return View(model);
             }
 
@@ -85,13 +80,44 @@ namespace AnimalStudio.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.Workers = await workerService.IndexGetAllWorkersAsync();
                 return View(model);
             }
 
             await procedureService.EditProcedureAsync(model);
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AssignToWorker(int id)
+        {
+            AssignProcedureToWorkerInputModel? viewModel = await procedureService
+                .GetAssignProcedureToWorkerInputModelByIdAsync(id);
+
+            if (viewModel == null)
+            {
+                return this.RedirectToAction(nameof(Index));
+            }
+
+            return this.View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignToWorker(AssignProcedureToWorkerInputModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
+            bool result = await procedureService.AssignProcedureToWorkersAsync(model.Id, model);
+
+            if (result == false)
+            {
+                return this.RedirectToAction(nameof(Index));
+            }
+
+            return this.RedirectToAction(nameof(Index), "Worker");
         }
     }
 }

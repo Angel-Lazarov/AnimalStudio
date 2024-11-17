@@ -30,13 +30,6 @@
                 <span asp-validation-for="@Model.Price" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label asp-for="@Model.WorkerId" class="form-label-add-edit">Select Worker</label>
-                <select asp-for="@Model.WorkerId" class="form-control" aria-required="true" asp-items="@(new SelectList(Model.Workers, "Id", "Name"))">
-                    <option value="">Select Worker...</option>
-                </select>
-                <span asp-validation-for="@Model.WorkerId" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
                 <input class="btn btn-warning btn-dark-text mb-2 w-100 py-3 fw-bold rounded" type="submit" value="Save" />
             </div>
         </form>

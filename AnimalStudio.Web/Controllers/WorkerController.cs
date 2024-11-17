@@ -17,7 +17,7 @@ namespace AnimalStudio.Web.Controllers
 		[HttpGet]
 		public async Task<IActionResult> WorkerDetails(int id)
 		{
-			WorkerViewModel? model = await workerService.GetWorkerDetailsByIdAsync(id);
+			WorkerDetailsViewModel? model = await workerService.GetWorkerDetailsByIdAsync(id);
 
 			if (model == null)
 			{
@@ -57,7 +57,7 @@ namespace AnimalStudio.Web.Controllers
 		[HttpPost]
 		public async Task<IActionResult> DeleteWorker(int id)
 		{
-			WorkerViewModel? model = await workerService.GetWorkerDetailsByIdAsync(id);
+			WorkerDetailsViewModel? model = await workerService.GetWorkerDetailsByIdAsync(id);
 
 
 			return View(model);

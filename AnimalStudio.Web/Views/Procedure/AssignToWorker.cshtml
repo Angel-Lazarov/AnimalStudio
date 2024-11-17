@@ -1,0 +1,33 @@
+﻿@using AnimalStudio.Web.ViewModels.Procedure;
+@model AssignProcedureToWorkerInputModel
+
+@{
+	ViewData["Title"] = "Assign procedure to worker";
+}
+
+<h2>Assign @Model.Name to worker</h2>
+
+<form asp-action="AssignToWorker" method="post">
+	<input type="hidden" asp-for="Id" />
+	<input type="hidden" asp-for="Name" />
+
+	<h3>Select Workers:</h3>
+
+	<div class="form-group">
+		@for (var i = 0; i < Model.Workers.Count; i++)
+		{
+			<div class="form-check">
+
+				<input type="hidden" asp-for="@Model.Workers[i].Id" />
+				<input type="hidden" asp-for="@Model.Workers[i].Name" />
+				<input type="checkbox" asp-for="@Model.Workers[i].IsSelected" class="form-check-input" />
+				<label class="form-check-label">@Model.Workers[i].Name</label>
+			</div>
+		}
+	</div>
+
+	<button type="submit" class="btn btn-primary">Confirm</button>
+</form>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">Back</a>
+

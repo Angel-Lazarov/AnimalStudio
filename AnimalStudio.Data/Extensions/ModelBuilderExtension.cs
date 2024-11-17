@@ -3,18 +3,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AnimalStudio.Data.Extensions
 {
-    public static class ModelBuilderExtension
-    {
-        public static void MappingEntity(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfiguration(new AnimalProcedureConfiguration());
-        }
+	public static class ModelBuilderExtension
+	{
+		public static void MappingEntity(this ModelBuilder modelBuilder)
+		{
+			modelBuilder.ApplyConfiguration(new AnimalProcedureConfiguration());
+			modelBuilder.ApplyConfiguration(new WorkerProcedureConfiguration());
+		}
 
-        public static void Seed(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfiguration(new AnimalTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new ProcedureConfiguration());
-            modelBuilder.ApplyConfiguration(new WorkerConfiguration());
-        }
-    }
+		public static void Seed(this ModelBuilder modelBuilder)
+		{
+			modelBuilder.ApplyConfiguration(new AnimalTypeConfiguration());
+			modelBuilder.ApplyConfiguration(new ProcedureConfiguration());
+			modelBuilder.ApplyConfiguration(new WorkerConfiguration());
+		}
+	}
 }

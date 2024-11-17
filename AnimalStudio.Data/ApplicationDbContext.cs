@@ -17,14 +17,11 @@ namespace AnimalStudio.Data
 		}
 
 		public virtual DbSet<Animal> Animals { get; set; } = null!;
-
-		public virtual DbSet<AnimalProcedure> AnimalProcedures { get; set; } = null!;
-
+		public virtual DbSet<AnimalProcedure> AnimalsProcedures { get; set; } = null!;
 		public virtual DbSet<AnimalType> AnimalTypes { get; set; } = null!;
-
 		public virtual DbSet<Procedure> Procedures { get; set; } = null!;
-
 		public virtual DbSet<Worker> Workers { get; set; } = null!;
+		public virtual DbSet<WorkerProcedure> WorkersProcedures { get; set; } = null!;
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{

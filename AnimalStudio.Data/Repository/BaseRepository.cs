@@ -1,5 +1,6 @@
 ﻿using AnimalStudio.Data.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace AnimalStudio.Data.Repository
 {
@@ -36,13 +37,19 @@ namespace AnimalStudio.Data.Repository
 			await context.SaveChangesAsync();
 		}
 
+		public async Task AddRangeAsync(TType[] items)
+		{
+			await this.dbSet.AddRangeAsync(items);
+			await this.context.SaveChangesAsync();
+		}
+
 		public async Task<bool> DeleteAsync(TId id)
 		{
 			var entity = await GetByIdAsync(id);
 
-			if (entity == null) 
-			{ 
-				return false; 
+			if (entity == null)
+			{
+				return false;
 			}
 
 			dbSet.Remove(entity);
@@ -68,6 +75,22 @@ namespace AnimalStudio.Data.Repository
 			{
 				return false;
 			}
+		}
+
+		public TType FirstOrDefault(Func<TType, bool> predicate)
+		{
+			TType entity = dbSet
+				.FirstOrDefault(predicate);
+
+			return entity;
+		}
+
+		public async Task<TType> FirstOrDefaultAsync(Expression<Func<TType, bool>> predicate)
+		{
+			TType entity = await dbSet
+				.FirstOrDefaultAsync(predicate);
+
+			return entity;
 		}
 
 	}
