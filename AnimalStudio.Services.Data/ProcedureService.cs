@@ -48,31 +48,35 @@ namespace AnimalStudio.Services.Data
             await procedureRepository.AddAsync(procedure);
         }
 
-        public async Task<ProcedureDetailsViewModel> GetProcedureDetailsByIdAsync(int id)
+        public async Task<ProcedureDetailsViewModel?> GetProcedureDetailsByIdAsync(int id)
         {
-            Procedure procedure = await procedureRepository.GetAllAttached()
-                .Where(p => p.Id == id)
+            Procedure? procedure = await procedureRepository
+                .GetAllAttached()
                 .Include(p => p.WorkersProcedures)
-                .FirstAsync();
+                .FirstOrDefaultAsync(p => p.Id == id);
 
-            ProcedureDetailsViewModel details = new ProcedureDetailsViewModel()
+            ProcedureDetailsViewModel? procedureViewModel = null;
+
+            if (procedure != null)
             {
-                Id = procedure.Id,
-                Name = procedure.Name,
-                Price = procedure.Price,
-                Description = procedure.Description,
-                Workers = workerProcedureRepository
-                    .GetAllAttached()
-                    .Where(wp => wp.ProcedureId == id && wp.IsDeleted == false)
-                    .Select(wp => new WorkerViewModel()
-                    {
-                        Id = wp.WorkerId,
-                        Name = wp.Worker.Name
-                    })
-                    .ToList()
-            };
-
-            return details;
+                procedureViewModel = new ProcedureDetailsViewModel()
+                {
+                    Id = procedure.Id,
+                    Name = procedure.Name,
+                    Price = procedure.Price,
+                    Description = procedure.Description,
+                    Workers = workerProcedureRepository
+                        .GetAllAttached()
+                        .Where(wp => wp.ProcedureId == id && wp.IsDeleted == false)
+                        .Select(wp => new WorkerViewModel()
+                        {
+                            Id = wp.WorkerId,
+                            Name = wp.Worker.Name
+                        })
+                        .ToList()
+                };
+            }
+            return procedureViewModel;
         }
 
 
@@ -81,9 +85,10 @@ namespace AnimalStudio.Services.Data
             await procedureRepository.DeleteAsync(model.Id);
         }
 
-        public async Task<EditProcedureFormModel> GetEditedModel(int id)
+        public async Task<EditProcedureFormModel?> GetEditedModel(int id)
         {
-            EditProcedureFormModel? model = await procedureRepository.GetAllAttached()
+            EditProcedureFormModel? model = await procedureRepository
+                .GetAllAttached()
                 .Where(p => p.Id == id)
                 .Select(p => new EditProcedureFormModel()
                 {
@@ -106,6 +111,7 @@ namespace AnimalStudio.Services.Data
                 Price = model.Price,
                 Description = model.Description,
             };
+
             await procedureRepository.UpdateAsync(procedure);
         }
 

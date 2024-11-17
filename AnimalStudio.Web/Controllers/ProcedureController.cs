@@ -19,7 +19,12 @@ namespace AnimalStudio.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ProcedureDetails(int id)
         {
-            ProcedureDetailsViewModel model = await procedureService.GetProcedureDetailsByIdAsync(id);
+            ProcedureDetailsViewModel? model = await procedureService.GetProcedureDetailsByIdAsync(id);
+
+            if (model == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
 
             return View(model);
         }
@@ -54,23 +59,32 @@ namespace AnimalStudio.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteProcedure(int id)
         {
-            ProcedureDetailsViewModel model = await procedureService.GetProcedureDetailsByIdAsync(id);
+            ProcedureDetailsViewModel? model = await procedureService.GetProcedureDetailsByIdAsync(id);
 
+            if (model == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
             return View(model);
-
         }
 
         [HttpGet]
         public async Task<IActionResult> DeleteProcedure(ProcedureDetailsViewModel model)
         {
             await procedureService.ProcedureDeleteAsync(model);
+
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> EditProcedure(int id)
         {
-            EditProcedureFormModel model = await procedureService.GetEditedModel(id);
+            EditProcedureFormModel? model = await procedureService.GetEditedModel(id);
+
+            if (model == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
 
             return View(model);
         }

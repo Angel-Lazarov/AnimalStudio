@@ -51,6 +51,7 @@ namespace AnimalStudio.Services.Data
                 .FirstOrDefaultAsync(w => w.Id == id);
 
             WorkerDetailsViewModel? workerViewModel = null;
+
             if (worker != null)
             {
                 workerViewModel = new WorkerDetailsViewModel()
@@ -77,7 +78,7 @@ namespace AnimalStudio.Services.Data
             await workerRepository.DeleteAsync(model.Id);
         }
 
-        public async Task<WorkerViewModel> GetEditedModel(int id)
+        public async Task<WorkerViewModel?> GetEditedModel(int id)
         {
             WorkerViewModel? model = await workerRepository
                 .GetAllAttached()
