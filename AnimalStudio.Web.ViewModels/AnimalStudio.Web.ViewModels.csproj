@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AnimalStudio.Common\AnimalStudio.Common.csproj" />
+    <ProjectReference Include="..\AnimalStudio.Data.Models\AnimalStudio.Data.Models.csproj" />
   </ItemGroup>
 
 </Project>

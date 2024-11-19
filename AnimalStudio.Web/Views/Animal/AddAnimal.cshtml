@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using AnimalStudio.Web.ViewModels.Animal
+@model AddAnimalFormModel
+
+@{
+    ViewData["Title"] = "Add Animal";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 20px;">
+    <h2>@ViewData["Title"]</h2>
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form asp-action="Add" method="post" enctype="multipart/form-data">
+            <div class="col-sm-6 mb-2">
+                <label asp-for="@Model.Name" class="form-label-add-edit">Animal Name</label>
+                <input asp-for="@Model.Name" class="form-control" aria-required="true" placeholder="Enter animal name" />
+                <span asp-validation-for="@Model.Name" class="text-danger"></span>
+            </div>
+
+            <div class="col-sm-6 mb-2">
+                <label asp-for="@Model.Age" class="form-label-add-edit">Animal Age</label>
+                <input asp-for="@Model.Age" class="form-control" aria-required="false" placeholder="Enter animal age (optional)" />
+                <span asp-validation-for="@Model.Age" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6 mb-2">
+                    <label asp-for="@Model.AnimalTypeId" class="form-label-add-edit">Select AnimalType</label>
+                    <select asp-for="@Model.AnimalTypeId" class="form-control" aria-required="true" asp-items="@(new SelectList(Model.AnimalTypes, "Id", "AnimalTypeInfo"))">
+                        <option value="">Select AnimalType...</option>
+                    </select>
+                    <span asp-validation-for="@Model.AnimalTypeId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <input class="btn btn-warning btn-dark-text w-100 py-2 fw-bold rounded" type="submit" value="Save" />
+            </div>
+        </form>
+    </div>
+</div>

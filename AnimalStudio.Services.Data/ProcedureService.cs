@@ -39,7 +39,6 @@ namespace AnimalStudio.Services.Data
         {
             Procedure procedure = new Procedure()
             {
-                Id = model.Id,
                 Name = model.Name,
                 Price = model.Price,
                 Description = model.Description,

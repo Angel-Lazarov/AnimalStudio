@@ -14,5 +14,7 @@ namespace AnimalStudio.Data.Models
         [MaxLength(AnimalTypeInfoMaxLength)]
         [Comment("Type of the animal")]
         public string AnimalTypeInfo { get; set; } = null!;
+
+        public ICollection<Animal> Animals { get; set; } = new List<Animal>();
     }
 }
