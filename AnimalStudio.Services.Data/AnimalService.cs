@@ -3,12 +3,6 @@ using AnimalStudio.Data.Repository.Interfaces;
 using AnimalStudio.Services.Data.Interfaces;
 using AnimalStudio.Web.ViewModels.Animal;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AnimalStudio.Services.Data
 {
@@ -21,7 +15,7 @@ namespace AnimalStudio.Services.Data
 			this.animalRepository = animalRepository;
 		}
 
-		public async Task<IEnumerable<AnimalIndexViewModel>> IndexGetAllAnimalAsync()
+		public async Task<IEnumerable<AnimalIndexViewModel>> IndexGetAllAnimalsAsync()
 		{
 			IEnumerable<AnimalIndexViewModel> index = await animalRepository.GetAllAttached()
 				.Select(animal => new AnimalIndexViewModel()
@@ -32,17 +26,17 @@ namespace AnimalStudio.Services.Data
 					Owner = animal.Owner.UserName
 				})
 				.ToArrayAsync();
-				
+
 			return index;
 		}
 
 
 		public async Task AddAnimalAsync(string userId, AddAnimalFormModel model)
 		{
-			Animal animal = new Animal() 
+			Animal animal = new Animal()
 			{
 				Name = model.Name,
-				Age=model.Age,
+				Age = model.Age,
 				AnimalTypeId = model.AnimalTypeId,
 				OwnerId = userId
 			};
@@ -69,5 +63,7 @@ namespace AnimalStudio.Services.Data
 		{
 			throw new NotImplementedException();
 		}
+
+
 	}
 }

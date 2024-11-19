@@ -1,22 +1,20 @@
 ﻿using AnimalStudio.Web.ViewModels.Animal;
-using AnimalStudio.Web.ViewModels.AnimalType;
 
 namespace AnimalStudio.Services.Data.Interfaces
 {
-    public interface IAnimalService
-    {
-        Task<IEnumerable<AnimalIndexViewModel>> IndexGetAllAnimalAsync();
+	public interface IAnimalService
+	{
+		Task<IEnumerable<AnimalIndexViewModel>> IndexGetAllAnimalsAsync();
 
-        Task AddAnimalAsync(string userId, AddAnimalFormModel model);
+		Task AddAnimalAsync(string userId, AddAnimalFormModel model);
 
-        Task<AnimalIndexViewModel> GetAnimalDetailsByIdAsync(int id);
+		Task<AnimalIndexViewModel> GetAnimalDetailsByIdAsync(int id);
 
+		Task AnimalDeleteAsync(AnimalIndexViewModel model);
 
-        Task AnimalDeleteAsync(AnimalIndexViewModel model);
+		Task<AnimalIndexViewModel> GetEditedModel(int id);
 
-        Task<AnimalIndexViewModel> GetEditedModel(int id);
+		Task EditAnimalAsync(AnimalIndexViewModel model);
 
-        Task EditAnimalAsync(AnimalIndexViewModel model);
-
-    }
+	}
 }
