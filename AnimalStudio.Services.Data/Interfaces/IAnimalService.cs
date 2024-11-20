@@ -12,9 +12,9 @@ namespace AnimalStudio.Services.Data.Interfaces
 
 		Task AnimalDeleteAsync(AnimalIndexViewModel model);
 
-		Task<AnimalIndexViewModel> GetEditedModel(int id);
+		Task<EditAnimalFormModel?> GetEditedModel(int id);
 
-		Task EditAnimalAsync(AnimalIndexViewModel model);
+		Task EditAnimalAsync(string userId, EditAnimalFormModel model);
 
 	}
 }

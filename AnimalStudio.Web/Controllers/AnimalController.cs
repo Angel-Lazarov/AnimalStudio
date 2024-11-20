@@ -29,7 +29,7 @@ namespace AnimalStudio.Web.Controllers
 		{
 			AddAnimalFormModel model = new AddAnimalFormModel()
 			{
-				AnimalTypes = await animalTypeService.IndexGetAllAnimalTypesAsync(),
+				AnimalTypes = await animalTypeService.IndexGetAllAnimalTypesAsync()
 			};
 
 			return View(model);
@@ -70,6 +70,42 @@ namespace AnimalStudio.Web.Controllers
 			return View(details);
 		}
 
+		[HttpGet]
+		public async Task<IActionResult> EditAnimal(int id) 
+		{
+			EditAnimalFormModel? model = await animalService.GetEditedModel(id);
+
+            if (model == null)
+            {
+				return RedirectToAction(nameof(Index));
+            }
+
+			model.AnimalTypes = await animalTypeService.IndexGetAllAnimalTypesAsync();
+
+			return View(model);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> EditAnimal(EditAnimalFormModel model) 
+		{
+			if (!ModelState.IsValid)
+			{
+				model.AnimalTypes = await animalTypeService.IndexGetAllAnimalTypesAsync();
+
+				return View(model);
+			}
+
+			string currentUserId = GetCurrentUserId()!;
+
+			if (currentUserId == null)
+			{
+				throw new InvalidOperationException("You are not logged in");
+			}
+
+			await animalService.EditAnimalAsync(currentUserId, model);
+
+			return RedirectToAction(nameof(Index));
+		}
 
 
 		private string? GetCurrentUserId()

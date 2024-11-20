@@ -49,11 +49,6 @@ namespace AnimalStudio.Services.Data
 			throw new NotImplementedException();
 		}
 
-		public Task EditAnimalAsync(AnimalIndexViewModel model)
-		{
-			throw new NotImplementedException();
-		}
-
 		public async Task<AnimalDetailsViewModel?> GetAnimalDetailsByIdAsync(int id)
 		{
 			AnimalDetailsViewModel? model = await animalRepository
@@ -72,10 +67,37 @@ namespace AnimalStudio.Services.Data
 			return model;
 		}
 
-		public Task<AnimalIndexViewModel> GetEditedModel(int id)
+		public async Task<EditAnimalFormModel?> GetEditedModel(int id)
 		{
-			throw new NotImplementedException();
+			EditAnimalFormModel? model = await animalRepository
+				.GetAllAttached()
+				.Where(a => a.Id == id)
+				.Select( a => new EditAnimalFormModel() 
+				{
+					Name = a.Name,
+					Age = a.Age,
+					AnimalTypeId = a.AnimalTypeId
+				})
+				.FirstOrDefaultAsync();
+
+			 return model;
 		}
+
+		public async Task EditAnimalAsync(string userId, EditAnimalFormModel model)
+		{
+			Animal animal = new Animal() 
+			{
+				Id = model.Id,
+				Name= model.Name,
+				Age = model.Age,
+				AnimalTypeId = model.AnimalTypeId,
+				OwnerId = userId
+			};
+
+			await animalRepository.UpdateAsync(animal);
+		}
+
+
 
 
 	}
