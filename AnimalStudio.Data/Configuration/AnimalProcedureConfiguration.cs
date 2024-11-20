@@ -13,13 +13,13 @@ namespace AnimalStudio.Data.Configuration
 
 			builder
 				.HasOne(ap => ap.Procedure)
-				.WithMany(p => p.AnimalProcedure)
+				.WithMany(p => p.AnimalsProcedures)
 				.HasForeignKey(ap => ap.ProcedureId)
 				.OnDelete(DeleteBehavior.Restrict);
 
 			builder
 				.HasOne(ap => ap.Animal)
-				.WithMany(a => a.AnimalProcedure)
+				.WithMany(a => a.AnimalsProcedures)
 				.HasForeignKey(ap => ap.AnimalId)
 				.OnDelete(DeleteBehavior.Restrict);
 		}
