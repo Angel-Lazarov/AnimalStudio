@@ -57,6 +57,20 @@ namespace AnimalStudio.Web.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
+		[HttpGet]
+		public async Task<IActionResult> AnimalDetails(int id) 
+		{
+			AnimalDetailsViewModel? details = await animalService.GetAnimalDetailsByIdAsync(id);
+
+			if (details == null)
+			{ 
+				return RedirectToAction(nameof(Index)); 
+			}
+
+			return View(details);
+		}
+
+
 
 		private string? GetCurrentUserId()
 		{

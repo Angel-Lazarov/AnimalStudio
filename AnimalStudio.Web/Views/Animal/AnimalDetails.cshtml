@@ -1,0 +1,35 @@
+﻿@using AnimalStudio.Web.ViewModels.Animal
+@model AnimalDetailsViewModel
+
+@{
+	ViewData["Title"] = "Animal Details!";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 20px;">
+	<h2>@ViewData["Title"]</h2>
+</div>
+<hr />
+
+<div class="row justify-content-center" style="margin: 0 auto; max-width: 800px;">
+	<div class="col-md-8">
+		<div class="card-body">
+			<h5 class="card-title">Name: @Model.Name</h5>
+			<hr />
+			<h6 class="card-subtitle mb-2 text-muted">Animal Type: @Model.AnimalType</h6>
+			<hr />
+			<p class="card-text">Age: @Model.Age</p>
+			<hr />
+			<p class="card-text">Owner: @Model.Owner</p>
+		</div>
+
+		<div class="card-footer text-center">
+			<div class="d-flex justify-content-between align-items-center">
+				<a asp-controller="Animal" asp-action="Index" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Back</a>
+				@if (User?.Identity?.Name == Model.Owner )
+				{
+					<a asp-controller="Animal" asp-action="DeleteAnimal" asp-route-id="@Model.Id" class="btn btn-danger d-flex justify-content-center align-items-center flex-fill mx-1" onclick="return confirm('Are you sure you want to delete this animal?');">Delete</a>
+				}
+			</div>
+		</div>
+	</div>
+</div>
