@@ -58,27 +58,27 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> AnimalDetails(int id) 
+		public async Task<IActionResult> AnimalDetails(int id)
 		{
 			AnimalDetailsViewModel? details = await animalService.GetAnimalDetailsByIdAsync(id);
 
 			if (details == null)
-			{ 
-				return RedirectToAction(nameof(Index)); 
+			{
+				return RedirectToAction(nameof(Index));
 			}
 
 			return View(details);
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> EditAnimal(int id) 
+		public async Task<IActionResult> EditAnimal(int id)
 		{
 			EditAnimalFormModel? model = await animalService.GetEditedModel(id);
 
-            if (model == null)
-            {
+			if (model == null)
+			{
 				return RedirectToAction(nameof(Index));
-            }
+			}
 
 			model.AnimalTypes = await animalTypeService.IndexGetAllAnimalTypesAsync();
 
@@ -86,7 +86,7 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> EditAnimal(EditAnimalFormModel model) 
+		public async Task<IActionResult> EditAnimal(EditAnimalFormModel model)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -107,6 +107,26 @@ namespace AnimalStudio.Web.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
+		[HttpPost]
+		public async Task<IActionResult> DeleteAnimal(int id)
+		{
+			AnimalDetailsViewModel? model = await animalService.GetAnimalDetailsByIdAsync(id);
+
+			if (model == null)
+			{
+				return RedirectToAction(nameof(Index));
+			}
+
+			return View(model);
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> DeleteAnimal(AnimalDetailsViewModel model)
+		{
+			await animalService.AnimalDeleteAsync(model);
+
+			return RedirectToAction(nameof(Index));
+		}
 
 		private string? GetCurrentUserId()
 		{

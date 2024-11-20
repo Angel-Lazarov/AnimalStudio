@@ -30,7 +30,6 @@ namespace AnimalStudio.Services.Data
 			return index;
 		}
 
-
 		public async Task AddAnimalAsync(string userId, AddAnimalFormModel model)
 		{
 			Animal animal = new Animal()
@@ -44,10 +43,6 @@ namespace AnimalStudio.Services.Data
 			await animalRepository.AddAsync(animal);
 		}
 
-		public Task AnimalDeleteAsync(AnimalIndexViewModel model)
-		{
-			throw new NotImplementedException();
-		}
 
 		public async Task<AnimalDetailsViewModel?> GetAnimalDetailsByIdAsync(int id)
 		{
@@ -72,7 +67,7 @@ namespace AnimalStudio.Services.Data
 			EditAnimalFormModel? model = await animalRepository
 				.GetAllAttached()
 				.Where(a => a.Id == id)
-				.Select( a => new EditAnimalFormModel() 
+				.Select(a => new EditAnimalFormModel()
 				{
 					Name = a.Name,
 					Age = a.Age,
@@ -80,15 +75,15 @@ namespace AnimalStudio.Services.Data
 				})
 				.FirstOrDefaultAsync();
 
-			 return model;
+			return model;
 		}
 
 		public async Task EditAnimalAsync(string userId, EditAnimalFormModel model)
 		{
-			Animal animal = new Animal() 
+			Animal animal = new Animal()
 			{
 				Id = model.Id,
-				Name= model.Name,
+				Name = model.Name,
 				Age = model.Age,
 				AnimalTypeId = model.AnimalTypeId,
 				OwnerId = userId
@@ -97,8 +92,9 @@ namespace AnimalStudio.Services.Data
 			await animalRepository.UpdateAsync(animal);
 		}
 
-
-
-
+		public async Task AnimalDeleteAsync(AnimalDetailsViewModel model)
+		{
+			await animalRepository.DeleteAsync(model.Id);
+		}
 	}
 }
