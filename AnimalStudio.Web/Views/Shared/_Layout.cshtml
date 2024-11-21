@@ -30,8 +30,13 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
 
-                        <li class="nav-item">
-	                        <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">MyOrders</a>
+                        <li class="nav-item dropdown">
+	                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">My Orders</a>
+	                        <ul class="dropdown-menu">
+		                        <li><a class="dropdown-item" asp-controller="Order" asp-action="AddOrder">Make order</a></li>
+		                        <li><div class="dropdown-divider"></div></li>
+		                        <li><a class="dropdown-item" asp-controller="Order" asp-action="Index">Orders list</a></li>
+	                        </ul>
                         </li>
 
                         

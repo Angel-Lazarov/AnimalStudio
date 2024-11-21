@@ -16,5 +16,7 @@ namespace AnimalStudio.Services.Data.Interfaces
 
 		Task EditAnimalAsync(string userId, EditAnimalFormModel model);
 
+		Task<IEnumerable<AnimalIndexViewModel>> GetAllAnimalsByUserId(string userId);
+
 	}
 }

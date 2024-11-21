@@ -92,6 +92,22 @@ namespace AnimalStudio.Services.Data
 			await animalRepository.UpdateAsync(animal);
 		}
 
+		public async Task<IEnumerable<AnimalIndexViewModel>> GetAllAnimalsByUserId(string userId)
+		{
+			IEnumerable<AnimalIndexViewModel> animals = await animalRepository.GetAllAttached()
+				.Where(a => a.OwnerId == userId)
+				.Select(animal => new AnimalIndexViewModel()
+				{
+					Id = animal.Id,
+					Name = animal.Name,
+					Age = animal.Age,
+					Owner = animal.Owner.UserName
+				})
+				.ToArrayAsync();
+
+			return animals;
+		}
+
 		public async Task AnimalDeleteAsync(AnimalDetailsViewModel model)
 		{
 			await animalRepository.DeleteAsync(model.Id);

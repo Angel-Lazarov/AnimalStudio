@@ -29,9 +29,20 @@ namespace AnimalStudio.Services.Data.Interfaces
 		}
 
 
-		public Task AddOrderAsync(string userId, OrderIndexViewModel model)
+		public async Task AddOrderAsync(string userId, AddOrderFormViewModel model)
 		{
-			throw new NotImplementedException();
+			AnimalProcedure order = new AnimalProcedure()
+			{
+				AnimalId = model.AnimalId,
+				ProcedureId = model.ProcedureId,
+				UserId = userId
+			};
+
+			if (!await animalProcedureRepository.GetAllAttached().AnyAsync(ap =>
+					ap.AnimalId == model.AnimalId && ap.ProcedureId == model.ProcedureId))
+			{
+				await animalProcedureRepository.AddAsync(order);
+			}
 		}
 	}
 }

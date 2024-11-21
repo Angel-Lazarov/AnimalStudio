@@ -31,6 +31,12 @@
 						{
 							<a asp-action="AssignToWorker" asp-route-id="@procedure.Id" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Assign To Worker</a>
 							<a asp-controller="Procedure" asp-action="EditProcedure" asp-route-id="@procedure.Id" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Edit</a>
+							
+							<form asp-controller="Order" asp-action="MakeOrder" method="get" class="d-flex justify-content-center align-items-center flex-fill mx-1">
+								<input type="hidden" name="procedureId" value="@procedure.Id" />
+								<button type="submit" class="btn btn-success w-100">Buy</button>
+							</form>
+
 						}
 					</div>
 				</div>
