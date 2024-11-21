@@ -7,7 +7,7 @@ namespace AnimalStudio.Web.ViewModels.Procedure
     public class AddProcedureFormModel
     {
         [Required]
-        [StringLength(ProcedureNameMaxLength, MinimumLength = ProcedureNameMinLength, ErrorMessage = "Procedure name mast be minimum 5 characters long")]
+        [StringLength(ProcedureNameMaxLength, MinimumLength = ProcedureNameMinLength, ErrorMessage = "ProcedureName name mast be minimum 5 characters long")]
         public string Name { get; set; } = null!;
 
         [Required]

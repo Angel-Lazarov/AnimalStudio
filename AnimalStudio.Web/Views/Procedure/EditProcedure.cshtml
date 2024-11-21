@@ -3,7 +3,7 @@
 @model EditProcedureFormModel
 
 @{
-    ViewData["Title"] = "Edit Procedure";
+    ViewData["Title"] = "Edit ProcedureName";
 }
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
@@ -12,7 +12,7 @@
     <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
         <form asp-action="EditProcedure" method="post">
             <div class="form-group">
-                <label asp-for="@Model.Name" class="form-label-add-edit">Procedure Name</label>
+                <label asp-for="@Model.Name" class="form-label-add-edit">ProcedureName Name</label>
                 <input asp-for="@Model.Name" class="form-control" aria-required="true" />
                 <span asp-validation-for="@Model.Name" class="text-danger"></span>
             </div>

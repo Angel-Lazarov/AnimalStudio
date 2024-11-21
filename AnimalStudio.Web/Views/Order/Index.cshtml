@@ -1,0 +1,29 @@
+﻿@using AnimalStudio.Web.ViewModels.Order
+@model IEnumerable<OrderIndexViewModel>
+@{
+	ViewData["Title"] = "My Orders";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 20px;">
+	<h2>@ViewData["Title"]</h2>
+</div>
+<hr />
+
+<div class="text-center"><strong>List of my orders</strong> </div>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Animal Name</th>
+			<th>Procedure Name</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var order in Model)
+		{
+			<tr>
+				<td>@order.AnimalName</td>
+				<td>@order.ProcedureName</td>
+			</tr>
+		}
+	</tbody>
+</table>

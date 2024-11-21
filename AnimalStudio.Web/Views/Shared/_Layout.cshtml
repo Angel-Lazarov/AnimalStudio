@@ -31,8 +31,9 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+	                        <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">MyOrders</a>
                         </li>
+
                         
                         <li class="nav-item dropdown">
 	                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Animal Menu</a>
@@ -54,11 +55,11 @@
                         </li>
 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Procedure Menu</a>
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">ProcedureName Menu</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="Procedure" asp-action="AddProcedure">Add Procedure</a></li>
+                                <li><a class="dropdown-item" asp-controller="Procedure" asp-action="AddProcedure">Add ProcedureName</a></li>
                                 <li><div class="dropdown-divider"></div></li>
-                                <li><a class="dropdown-item" asp-controller="Procedure" asp-action="Index">Procedure List</a></li>
+                                <li><a class="dropdown-item" asp-controller="Procedure" asp-action="Index">ProcedureName List</a></li>
                             </ul>
                         </li>
 
@@ -75,7 +76,7 @@
 
 
                         @* 						<li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Procedure" asp-action="Index">Procedures</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="ProcedureName" asp-action="Index">ProcedureNames</a>
                         </li>
                         *@
                     </ul>
