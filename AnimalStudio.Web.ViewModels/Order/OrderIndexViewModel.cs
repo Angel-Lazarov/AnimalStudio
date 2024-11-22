@@ -8,5 +8,7 @@
 
 		public string UserId { get; set; } = null!;
 
+		public decimal Price { get; set; }
+
 	}
 }

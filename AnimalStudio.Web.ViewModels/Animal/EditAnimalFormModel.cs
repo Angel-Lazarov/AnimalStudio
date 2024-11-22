@@ -7,9 +7,12 @@ namespace AnimalStudio.Web.ViewModels.Animal
 	public class EditAnimalFormModel
 	{
 		[Required]
-        public int Id { get; set; }
+        public int Id { get; set; }	
 
         [Required]
+        public string UserId { get; set; } = null!;
+
+		[Required]
 		[MaxLength(AnimalNameMaxLength)]
 		public string Name { get; set; } = null!;
 

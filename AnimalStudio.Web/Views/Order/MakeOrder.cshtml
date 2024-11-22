@@ -25,7 +25,9 @@
 					<span asp-validation-for="@Model.AnimalId" class="text-danger"></span>
 				</div>
 				
-				<input type="hidden" name="ProcedureId" value="6" />
+				<input type="hidden" name="id"/>
+				<input type="hidden" name="ProcedureId" value="@Model.ProcedureId"/>
+				<input type="hidden" name="UserId" value="@Model.UserId"/>
 
 			</div>
 			

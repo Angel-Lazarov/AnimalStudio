@@ -30,14 +30,30 @@ namespace AnimalStudio.Services.Data
 			return index;
 		}
 
-		public async Task AddAnimalAsync(string userId, AddAnimalFormModel model)
+		public async Task<IEnumerable<AnimalIndexViewModel>> IndexGetMyAnimalsAsync(string id)
+		{
+			IEnumerable<AnimalIndexViewModel> index = await animalRepository.GetAllAttached()
+				.Where(a=>a.OwnerId == id)
+				.Select(animal => new AnimalIndexViewModel()
+				{
+					Id = animal.Id,
+					Name = animal.Name,
+					Age = animal.Age,
+					Owner = animal.Owner.UserName
+				})
+				.ToArrayAsync();
+
+			return index;
+		}
+
+		public async Task AddAnimalAsync(AddAnimalFormModel model)
 		{
 			Animal animal = new Animal()
 			{
 				Name = model.Name,
 				Age = model.Age,
 				AnimalTypeId = model.AnimalTypeId,
-				OwnerId = userId
+				OwnerId = model.UserId
 			};
 
 			await animalRepository.AddAsync(animal);
@@ -71,14 +87,15 @@ namespace AnimalStudio.Services.Data
 				{
 					Name = a.Name,
 					Age = a.Age,
-					AnimalTypeId = a.AnimalTypeId
+					AnimalTypeId = a.AnimalTypeId,
+					UserId =a.OwnerId
 				})
 				.FirstOrDefaultAsync();
 
 			return model;
 		}
 
-		public async Task EditAnimalAsync(string userId, EditAnimalFormModel model)
+		public async Task EditAnimalAsync(EditAnimalFormModel model)
 		{
 			Animal animal = new Animal()
 			{
@@ -86,7 +103,7 @@ namespace AnimalStudio.Services.Data
 				Name = model.Name,
 				Age = model.Age,
 				AnimalTypeId = model.AnimalTypeId,
-				OwnerId = userId
+				OwnerId = model.UserId
 			};
 
 			await animalRepository.UpdateAsync(animal);

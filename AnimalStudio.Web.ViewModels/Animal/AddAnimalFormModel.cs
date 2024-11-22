@@ -7,6 +7,9 @@ namespace AnimalStudio.Web.ViewModels.Animal
 	public class AddAnimalFormModel
 	{
 		[Required]
+		public string UserId { get; set; } = null!;
+
+        [Required]
 		[MaxLength(AnimalNameMaxLength)]
 		public string Name { get; set; } = null!;
 

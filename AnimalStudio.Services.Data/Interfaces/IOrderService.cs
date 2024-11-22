@@ -6,7 +6,11 @@ namespace AnimalStudio.Services.Data.Interfaces
 	{
 		Task<IEnumerable<OrderIndexViewModel>> IndexGetMyOrdersAsync(string userId);
 
-		Task AddOrderAsync(string userId, AddOrderFormViewModel model);
+		Task<IEnumerable<OrderIndexViewModel>> IndexGetAllOrdersAsync();
+
+		Task AddOrderAsync(AddOrderFormViewModel model);
+
+		Task<bool> RemoveOrderAsync(object id);
 
 
 	}

@@ -33,9 +33,10 @@
                         <li class="nav-item dropdown">
 	                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">My Orders</a>
 	                        <ul class="dropdown-menu">
-		                        <li><a class="dropdown-item" asp-controller="Order" asp-action="AddOrder">Make order</a></li>
+		                        <li><a class="dropdown-item" asp-controller="Order" asp-action="AddOrder">Add order(admin)</a></li>
 		                        <li><div class="dropdown-divider"></div></li>
-		                        <li><a class="dropdown-item" asp-controller="Order" asp-action="Index">Orders list</a></li>
+		                        <li><a class="dropdown-item" asp-controller="Order" asp-action="Index">My Orders</a></li>
+		                        <li><a class="dropdown-item" asp-controller="Order" asp-action="IndexAll">All Orders</a></li>
 	                        </ul>
                         </li>
 
@@ -45,7 +46,8 @@
 	                        <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" asp-controller="Animal" asp-action="AddAnimal">Add Animal</a></li>
 		                        <li><div class="dropdown-divider"></div></li>
-                                <li><a class="dropdown-item" asp-controller="Animal" asp-action="Index">Animal List</a></li>
+                                <li><a class="dropdown-item" asp-controller="Animal" asp-action="MyIndex">My Animals</a></li>
+                                <li><a class="dropdown-item" asp-controller="Animal" asp-action="Index">All Animals</a></li>
 	                        </ul>
                         </li>
                         
@@ -60,11 +62,11 @@
                         </li>
 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">ProcedureName Menu</a>
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Procedure Menu</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="Procedure" asp-action="AddProcedure">Add ProcedureName</a></li>
+                                <li><a class="dropdown-item" asp-controller="Procedure" asp-action="AddProcedure">Add Procedure</a></li>
                                 <li><div class="dropdown-divider"></div></li>
-                                <li><a class="dropdown-item" asp-controller="Procedure" asp-action="Index">ProcedureName List</a></li>
+                                <li><a class="dropdown-item" asp-controller="Procedure" asp-action="Index">Procedure List</a></li>
                             </ul>
                         </li>
 

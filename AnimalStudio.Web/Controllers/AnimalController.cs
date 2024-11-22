@@ -25,11 +25,33 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpGet]
+		public async Task<IActionResult> MyIndex()
+		{
+			string currentUserId = GetCurrentUserId()!;
+
+			if (currentUserId == null)
+			{
+				throw new InvalidOperationException("You are not logged in");
+			}
+			IEnumerable<AnimalIndexViewModel> animals = await animalService.IndexGetMyAnimalsAsync(currentUserId);
+
+			return View(animals);
+		}
+
+		[HttpGet]
 		public async Task<IActionResult> AddAnimal()
 		{
+			string currentUserId = GetCurrentUserId()!;
+
+			if (currentUserId == null)
+			{
+				throw new InvalidOperationException("You are not logged in");
+			}
+
 			AddAnimalFormModel model = new AddAnimalFormModel()
 			{
-				AnimalTypes = await animalTypeService.IndexGetAllAnimalTypesAsync()
+				AnimalTypes = await animalTypeService.IndexGetAllAnimalTypesAsync(),
+				UserId = currentUserId
 			};
 
 			return View(model);
@@ -45,14 +67,7 @@ namespace AnimalStudio.Web.Controllers
 				return View(model);
 			}
 
-			string currentUserId = GetCurrentUserId()!;
-
-			if (currentUserId == null)
-			{
-				throw new InvalidOperationException("You are not logged in");
-			}
-
-			await animalService.AddAnimalAsync(currentUserId, model);
+			await animalService.AddAnimalAsync(model);
 
 			return RedirectToAction(nameof(Index));
 		}
@@ -102,7 +117,7 @@ namespace AnimalStudio.Web.Controllers
 				throw new InvalidOperationException("You are not logged in");
 			}
 
-			await animalService.EditAnimalAsync(currentUserId, model);
+			await animalService.EditAnimalAsync(model);
 
 			return RedirectToAction(nameof(Index));
 		}

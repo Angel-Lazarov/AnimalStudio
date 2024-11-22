@@ -10,12 +10,10 @@ namespace AnimalStudio.Services.Data.Interfaces
 
         Task<WorkerDetailsViewModel?> GetWorkerDetailsByIdAsync(int id);
 
-
         Task WorkerDeleteAsync(WorkerViewModel model);
 
         Task<WorkerViewModel?> GetEditedModel(int id);
 
         Task EditWorkerAsync(WorkerViewModel model);
-
     }
 }

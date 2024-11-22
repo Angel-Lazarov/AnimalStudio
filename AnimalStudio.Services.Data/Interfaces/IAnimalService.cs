@@ -4,9 +4,11 @@ namespace AnimalStudio.Services.Data.Interfaces
 {
 	public interface IAnimalService
 	{
-		Task<IEnumerable<AnimalIndexViewModel>> IndexGetAllAnimalsAsync();
+		Task<IEnumerable<AnimalIndexViewModel>> IndexGetAllAnimalsAsync();	
+		
+		Task<IEnumerable<AnimalIndexViewModel>> IndexGetMyAnimalsAsync(string id);
 
-		Task AddAnimalAsync(string userId, AddAnimalFormModel model);
+		Task AddAnimalAsync(AddAnimalFormModel model);
 
 		Task<AnimalDetailsViewModel?> GetAnimalDetailsByIdAsync(int id);
 
@@ -14,7 +16,7 @@ namespace AnimalStudio.Services.Data.Interfaces
 
 		Task<EditAnimalFormModel?> GetEditedModel(int id);
 
-		Task EditAnimalAsync(string userId, EditAnimalFormModel model);
+		Task EditAnimalAsync(EditAnimalFormModel model);
 
 		Task<IEnumerable<AnimalIndexViewModel>> GetAllAnimalsByUserId(string userId);
 

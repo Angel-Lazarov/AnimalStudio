@@ -1,9 +1,10 @@
 ﻿using AnimalStudio.Data.Models;
 using AnimalStudio.Data.Repository.Interfaces;
+using AnimalStudio.Services.Data.Interfaces;
 using AnimalStudio.Web.ViewModels.Order;
 using Microsoft.EntityFrameworkCore;
 
-namespace AnimalStudio.Services.Data.Interfaces
+namespace AnimalStudio.Services.Data
 {
 	public class OrderService : IOrderService
 	{
@@ -21,7 +22,22 @@ namespace AnimalStudio.Services.Data.Interfaces
 				.Select(ap => new OrderIndexViewModel()
 				{
 					AnimalName = ap.Animal.Name,
-					ProcedureName = ap.Procedure.Name
+					ProcedureName = ap.Procedure.Name,
+					Price = ap.Procedure.Price
+				})
+				.ToListAsync();
+
+			return orders;
+		}
+
+		public async Task<IEnumerable<OrderIndexViewModel>> IndexGetAllOrdersAsync()
+		{
+			var orders = await animalProcedureRepository.GetAllAttached()
+				.Select(ap => new OrderIndexViewModel()
+				{
+					AnimalName = ap.Animal.Name,
+					ProcedureName = ap.Procedure.Name,
+					Price = ap.Procedure.Price
 				})
 				.ToListAsync();
 
@@ -29,13 +45,15 @@ namespace AnimalStudio.Services.Data.Interfaces
 		}
 
 
-		public async Task AddOrderAsync(string userId, AddOrderFormViewModel model)
+
+
+		public async Task AddOrderAsync(AddOrderFormViewModel model)
 		{
 			AnimalProcedure order = new AnimalProcedure()
 			{
 				AnimalId = model.AnimalId,
 				ProcedureId = model.ProcedureId,
-				UserId = userId
+				UserId = model.UserId
 			};
 
 			if (!await animalProcedureRepository.GetAllAttached().AnyAsync(ap =>
@@ -43,6 +61,11 @@ namespace AnimalStudio.Services.Data.Interfaces
 			{
 				await animalProcedureRepository.AddAsync(order);
 			}
+		}
+
+		public async Task<bool> RemoveOrderAsync(object id)
+		{
+			return await animalProcedureRepository.DeleteAsync(id);
 		}
 	}
 }

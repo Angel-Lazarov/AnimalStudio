@@ -15,5 +15,8 @@ namespace AnimalStudio.Web.ViewModels.Order
 		public int ProcedureId { get; set; }
 
 		public IEnumerable<ProcedureIndexViewModel> Procedures { get; set; } = new List<ProcedureIndexViewModel>();
-	}
+
+		[Required]
+		public string UserId { get; set; } = null!;
+    }
 }

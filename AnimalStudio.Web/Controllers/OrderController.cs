@@ -27,6 +27,15 @@ namespace AnimalStudio.Web.Controllers
 			return View(orders);
 		}
 
+		public async Task<IActionResult> IndexAll()
+		{
+			IEnumerable<OrderIndexViewModel> orders = await orderService.IndexGetAllOrdersAsync();
+
+			return View(orders);
+		}
+
+
+
 		[HttpGet]
 		public async Task<IActionResult> AddOrder()
 		{
@@ -37,7 +46,8 @@ namespace AnimalStudio.Web.Controllers
 			AddOrderFormViewModel model = new AddOrderFormViewModel()
 			{
 				Procedures = procedures,
-				Animals = animals
+				Animals = animals,
+				UserId = userId
 			};
 
 			return View(model);
@@ -46,26 +56,23 @@ namespace AnimalStudio.Web.Controllers
 		[HttpPost]
 		public async Task<IActionResult> AddOrder(AddOrderFormViewModel model)
 		{
-			string userId = GetCurrentUserId()!;
+
 
 			if (!ModelState.IsValid)
 			{
-				model.Animals = await animalService.GetAllAnimalsByUserId(userId);
+				model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
 				model.Procedures = await procedureService.IndexGetAllProceduresAsync();
 
 				return View(model);
 			}
 
-			await orderService.AddOrderAsync(userId, model);
+			await orderService.AddOrderAsync(model);
 
 			return RedirectToAction(nameof(Index));
 		}
 
-
-
-
 		[HttpGet]
-		public async Task<IActionResult> MakeOrder(int procedureId)
+		public async Task<IActionResult> MakeOrder(int id)
 		{
 			string userId = GetCurrentUserId()!;
 
@@ -73,8 +80,10 @@ namespace AnimalStudio.Web.Controllers
 
 			AddOrderFormViewModel order = new AddOrderFormViewModel()
 			{
-				ProcedureId = procedureId,
-				Animals = animals
+				ProcedureId = id,
+				Animals = animals,
+				UserId = userId
+
 			};
 
 			return View(order);
@@ -83,13 +92,23 @@ namespace AnimalStudio.Web.Controllers
 		[HttpPost]
 		public async Task<IActionResult> MakeOrder(AddOrderFormViewModel order)
 		{
-			string userId = GetCurrentUserId()!;
-
-			await orderService.AddOrderAsync(userId, order);
+			await orderService.AddOrderAsync(order);
 
 			return RedirectToAction(nameof(Index));
 		}
 
+		[HttpGet]
+		public async Task<IActionResult> RemoveOrder(object id)
+		{
+			bool result = await orderService.RemoveOrderAsync(id);
+
+			if (result == false)
+			{
+				return BadRequest();
+			}
+
+			return RedirectToAction(nameof(Index));
+		}
 
 
 

@@ -16,6 +16,5 @@ namespace AnimalStudio.Services.Data.Interfaces
         Task<AnimalTypeViewModel> GetEditedModel(int id);
 
         Task EditAnimalTypeAsync(AnimalTypeViewModel model);
-
     }
 }

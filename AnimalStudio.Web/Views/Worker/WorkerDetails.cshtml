@@ -24,7 +24,7 @@
 	<hr />
 }
 
-<div class="text-center"><strong>ProcedureNames by the worker</strong> </div>
+<div class="text-center"><strong>Procedures by @Model.Name</strong> </div>
 <table class="table table-striped">
 	<thead>
 		<tr>
@@ -37,7 +37,7 @@
 		{
 			<tr>
 				<td>@procedure.Name</td>
-				<td>@procedure.Price</td>
+				<td>@procedure.Price.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("bg-BG"))</td>
 			</tr>
 		}
 	</tbody>

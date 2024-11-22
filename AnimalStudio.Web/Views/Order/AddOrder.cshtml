@@ -15,7 +15,7 @@
 	<div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
 		<form asp-action="AddOrder" method="post" enctype="multipart/form-data">
 		
-
+			<input type="hidden" name="UserId" value="@Model.UserId" />
 
 			<div class="row">
 				<div class="col-sm-6 mb-2">
