@@ -25,20 +25,17 @@
 				<td>@order.AnimalName</td>
 				<td>@order.ProcedureName</td>
 				<td>@order.Price.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("bg-BG"))</td>
-				<td><a asp-controller="Order" asp-action="RemoveOrder" asp-route-id="@order.AnimalName, @order.ProcedureName}" class="btn btn-danger d-flex justify-content-center align-items-center flex-fill mx-1" onclick="return confirm('Are you sure?');">Delete</a></td>
+				<td>
+					<form method="post" enctype="multipart/form-data">
+
+						<input type="hidden" name="AnimalName" value="@order.AnimalName" />
+						<input type="hidden" name="ProcedureName" value="@order.ProcedureName" />
+
+						<button asp-action="RemoveMyOrder" asp-route-AnimalName="@order.AnimalName" asp-route-ProcedureName="@order.ProcedureName" class=" btn btn-info ">Cancel</button>
+					</form>
+				</td>
 			</tr>
 		}
 	</tbody>
 </table>
-
-@* <div class="card-footer text-center">
-	<div class="d-flex justify-content-between align-items-center">
-		<a asp-controller="Order" asp-action="Index" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Back</a>
-		@if (User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.Owner)
-		{
-			<a asp-controller="Animal" asp-action="DeleteAnimal" asp-route-id="@Model.Id" class="btn btn-danger d-flex justify-content-center align-items-center flex-fill mx-1" onclick="return confirm('Are you sure you want to delete this animal?');">Delete</a>
-		}
-	</div>
-</div>
- *@
 

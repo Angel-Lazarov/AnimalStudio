@@ -8,6 +8,8 @@
 
 		public string UserId { get; set; } = null!;
 
+		public string Owner { get; set; } = null!;
+
 		public decimal Price { get; set; }
 
 	}

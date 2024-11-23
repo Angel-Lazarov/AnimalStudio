@@ -18,6 +18,7 @@ namespace AnimalStudio.Web.Controllers
 			this.animalService = animalService;
 		}
 
+		[HttpGet]
 		public async Task<IActionResult> Index()
 		{
 			string userId = GetCurrentUserId()!;
@@ -27,14 +28,13 @@ namespace AnimalStudio.Web.Controllers
 			return View(orders);
 		}
 
+		[HttpGet]
 		public async Task<IActionResult> IndexAll()
 		{
 			IEnumerable<OrderIndexViewModel> orders = await orderService.IndexGetAllOrdersAsync();
 
 			return View(orders);
 		}
-
-
 
 		[HttpGet]
 		public async Task<IActionResult> AddOrder()
@@ -47,7 +47,7 @@ namespace AnimalStudio.Web.Controllers
 			{
 				Procedures = procedures,
 				Animals = animals,
-				UserId = userId
+				UserId = userId,
 			};
 
 			return View(model);
@@ -56,8 +56,6 @@ namespace AnimalStudio.Web.Controllers
 		[HttpPost]
 		public async Task<IActionResult> AddOrder(AddOrderFormViewModel model)
 		{
-
-
 			if (!ModelState.IsValid)
 			{
 				model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
@@ -83,7 +81,6 @@ namespace AnimalStudio.Web.Controllers
 				ProcedureId = id,
 				Animals = animals,
 				UserId = userId
-
 			};
 
 			return View(order);
@@ -97,10 +94,10 @@ namespace AnimalStudio.Web.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpGet]
-		public async Task<IActionResult> RemoveOrder(object id)
+		[HttpPost]
+		public async Task<IActionResult> RemoveMyOrder(string animalName, string procedureName)
 		{
-			bool result = await orderService.RemoveOrderAsync(id);
+			bool result = await orderService.RemoveOrderAsync(animalName, procedureName);
 
 			if (result == false)
 			{
@@ -108,6 +105,19 @@ namespace AnimalStudio.Web.Controllers
 			}
 
 			return RedirectToAction(nameof(Index));
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> RemoveOrder(string animalName, string procedureName)
+		{
+			bool result = await orderService.RemoveOrderAsync(animalName, procedureName);
+
+			if (result == false)
+			{
+				return BadRequest();
+			}
+
+			return RedirectToAction(nameof(IndexAll));
 		}
 
 

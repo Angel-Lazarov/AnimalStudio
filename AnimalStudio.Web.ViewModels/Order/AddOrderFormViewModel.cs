@@ -18,5 +18,9 @@ namespace AnimalStudio.Web.ViewModels.Order
 
 		[Required]
 		public string UserId { get; set; } = null!;
-    }
+
+		[Required]
+		public string Owner { get; set; } = null!;
+
+	}
 }

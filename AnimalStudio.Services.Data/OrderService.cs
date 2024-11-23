@@ -37,15 +37,13 @@ namespace AnimalStudio.Services.Data
 				{
 					AnimalName = ap.Animal.Name,
 					ProcedureName = ap.Procedure.Name,
-					Price = ap.Procedure.Price
+					Price = ap.Procedure.Price,
+					Owner = ap.Animal.Owner.UserName!
 				})
 				.ToListAsync();
 
 			return orders;
 		}
-
-
-
 
 		public async Task AddOrderAsync(AddOrderFormViewModel model)
 		{
@@ -63,9 +61,12 @@ namespace AnimalStudio.Services.Data
 			}
 		}
 
-		public async Task<bool> RemoveOrderAsync(object id)
+		public async Task<bool> RemoveOrderAsync(string animalName, string procedureName)
 		{
-			return await animalProcedureRepository.DeleteAsync(id);
+			AnimalProcedure order = await animalProcedureRepository.FirstOrDefaultAsync(ap =>
+				ap.Animal.Name == animalName && ap.Procedure.Name == procedureName);
+
+			return await animalProcedureRepository.DeleteAsync(order);
 		}
 	}
 }

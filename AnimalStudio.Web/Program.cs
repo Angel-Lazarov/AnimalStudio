@@ -14,10 +14,10 @@ namespace AnimalStudio.Web
 			var builder = WebApplication.CreateBuilder(args);
 
 			// Add services to the container.
-			var connectionstring = builder.Configuration.GetConnectionString("workconnection") ?? throw new InvalidOperationException("connection string 'defaultconnection' not found.");
-			//var connectionString = builder.Configuration.GetConnectionString("HomeConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+			//var connectionString = builder.Configuration.GetConnectionString("workConnection") ?? throw new InvalidOperationException("connection string 'defaultconnection' not found.");
+			var connectionString = builder.Configuration.GetConnectionString("HomeConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-			builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionstring));
+			builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
 			builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

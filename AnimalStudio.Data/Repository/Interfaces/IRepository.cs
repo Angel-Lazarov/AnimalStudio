@@ -21,5 +21,8 @@ namespace AnimalStudio.Data.Repository.Interfaces
 		TType FirstOrDefault(Func<TType, bool> predicate);
 
 		Task<TType> FirstOrDefaultAsync(Expression<Func<TType, bool>> predicate);
+
+		Task<bool> DeleteAsync(TType entity);
+
 	}
 }

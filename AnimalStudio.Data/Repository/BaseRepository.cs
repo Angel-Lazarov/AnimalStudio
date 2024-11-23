@@ -4,92 +4,105 @@ using System.Linq.Expressions;
 
 namespace AnimalStudio.Data.Repository
 {
-    public class BaseRepository<TType, TId> : IRepository<TType, TId>
-        where TType : class
-    {
-        private readonly ApplicationDbContext context;
-        private readonly DbSet<TType> dbSet;
+	public class BaseRepository<TType, TId> : IRepository<TType, TId>
+		where TType : class
+	{
+		private readonly ApplicationDbContext context;
+		private readonly DbSet<TType> dbSet;
 
-        public BaseRepository(ApplicationDbContext context)
-        {
-            this.context = context;
-            dbSet = context.Set<TType>();
-        }
+		public BaseRepository(ApplicationDbContext context)
+		{
+			this.context = context;
+			dbSet = context.Set<TType>();
+		}
 
-        public async Task<TType> GetByIdAsync(TId id)
-        {
-            return await dbSet.FindAsync(id);
-        }
+		public async Task<TType> GetByIdAsync(TId id)
+		{
+			return await dbSet.FindAsync(id);
+		}
 
-        public async Task<IEnumerable<TType>> GetAllAsync()
-        {
-            return await dbSet.ToListAsync();
-        }
+		public async Task<IEnumerable<TType>> GetAllAsync()
+		{
+			return await dbSet.ToListAsync();
+		}
 
-        public IQueryable<TType> GetAllAttached()
-        {
-            return dbSet.AsQueryable();
-        }
+		public IQueryable<TType> GetAllAttached()
+		{
+			return dbSet.AsQueryable();
+		}
 
-        public async Task AddAsync(TType entity)
-        {
-            await dbSet.AddAsync(entity);
-            await context.SaveChangesAsync();
-        }
+		public async Task AddAsync(TType entity)
+		{
+			await dbSet.AddAsync(entity);
+			await context.SaveChangesAsync();
+		}
 
-        public async Task AddRangeAsync(TType[] items)
-        {
-            await this.dbSet.AddRangeAsync(items);
-            await this.context.SaveChangesAsync();
-        }
+		public async Task AddRangeAsync(TType[] items)
+		{
+			await this.dbSet.AddRangeAsync(items);
+			await this.context.SaveChangesAsync();
+		}
 
-        public async Task<bool> DeleteAsync(TId id)
-        {
-            var entity = await GetByIdAsync(id);
+		public async Task<bool> DeleteAsync(TId id)
+		{
+			var entity = await GetByIdAsync(id);
 
-            if (entity == null)
-            {
-                return false;
-            }
+			if (entity == null)
+			{
+				return false;
+			}
 
-            dbSet.Remove(entity);
-            await context.SaveChangesAsync();
+			dbSet.Remove(entity);
+			await context.SaveChangesAsync();
 
-            return true;
-        }
+			return true;
+		}
 
-        public async Task<bool> UpdateAsync(TType entity)
-        {
-            try
-            {
-                dbSet.Attach(entity);
-                context.Entry(entity).State = EntityState.Modified;
-                await context.SaveChangesAsync();
+		public async Task<bool> DeleteAsync(TType entity)
+		{
+			if (entity == null)
+			{
+				return false;
+			}
 
-                return true;
+			dbSet.Remove(entity);
+			await context.SaveChangesAsync();
 
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
+			return true;
+		}
 
-        public TType FirstOrDefault(Func<TType, bool> predicate)
-        {
-            TType entity = dbSet
-                .FirstOrDefault(predicate);
+		public async Task<bool> UpdateAsync(TType entity)
+		{
+			try
+			{
+				dbSet.Attach(entity);
+				context.Entry(entity).State = EntityState.Modified;
+				await context.SaveChangesAsync();
 
-            return entity;
-        }
+				return true;
 
-        public async Task<TType> FirstOrDefaultAsync(Expression<Func<TType, bool>> predicate)
-        {
-            TType entity = await dbSet
-                .FirstOrDefaultAsync(predicate);
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+		}
 
-            return entity;
-        }
+		public TType FirstOrDefault(Func<TType, bool> predicate)
+		{
+			TType entity = dbSet
+				.FirstOrDefault(predicate);
 
-    }
+			return entity;
+		}
+
+		public async Task<TType> FirstOrDefaultAsync(Expression<Func<TType, bool>> predicate)
+		{
+			TType entity = await dbSet
+				.FirstOrDefaultAsync(predicate);
+
+			return entity;
+		}
+
+	}
 }
