@@ -2,16 +2,18 @@
 
 namespace AnimalStudio.Services.Data.Interfaces
 {
-	public interface IOrderService
-	{
-		Task<IEnumerable<OrderIndexViewModel>> IndexGetMyOrdersAsync(string userId);
+    public interface IOrderService
+    {
+        Task<IEnumerable<OrderIndexViewModel>> IndexGetMyOrdersAsync(string userId);
 
-		Task<IEnumerable<OrderIndexViewModel>> IndexGetAllOrdersAsync();
+        Task<IEnumerable<OrderIndexViewModel>> IndexGetAllOrdersAsync();
 
-		Task AddOrderAsync(AddOrderFormViewModel model);
+        Task AddOrderAsync(AddOrderFormViewModel model);
 
-		Task<bool> RemoveOrderAsync(string animalName, string procedureName);
+        Task AddMyOrderAsync(MakeOrderViewModel model);
+
+        Task<bool> RemoveOrderAsync(string animalName, string procedureName);
 
 
-	}
+    }
 }

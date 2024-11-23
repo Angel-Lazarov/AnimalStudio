@@ -16,6 +16,7 @@
 		<form asp-action="AddOrder" method="post" enctype="multipart/form-data">
 		
 			<input type="hidden" name="UserId" value="@Model.UserId" />
+			<input type="hidden" name="Owner" value="@Model.Owner" />
 
 			<div class="row">
 				<div class="col-sm-6 mb-2">
