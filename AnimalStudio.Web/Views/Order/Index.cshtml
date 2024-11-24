@@ -1,4 +1,5 @@
 ﻿@using AnimalStudio.Web.ViewModels.Order
+@using Microsoft.CodeAnalysis.CSharp.Syntax
 @model IEnumerable<OrderIndexViewModel>
 @{
 	ViewData["Title"] = "My Orders";
@@ -17,8 +18,10 @@
 			<th>Price</th>
 			<th>Action</th>
 		</tr>
+
 	</thead>
 	<tbody>
+
 		@foreach (var order in Model)
 		{
 			<tr>
@@ -31,11 +34,16 @@
 						<input type="hidden" name="AnimalName" value="@order.AnimalName" />
 						<input type="hidden" name="ProcedureName" value="@order.ProcedureName" />
 
-						<button asp-action="RemoveMyOrder" asp-route-AnimalName="@order.AnimalName" asp-route-ProcedureName="@order.ProcedureName" class=" btn btn-info ">Cancel</button>
+						<button asp-action="RemoveMyOrder" asp-route-AnimalName="@order.AnimalName" asp-route-ProcedureName="@order.ProcedureName" class=" btn btn-info ">Remove</button>
 					</form>
 				</td>
 			</tr>
 		}
 	</tbody>
 </table>
+@if (!Model.Any())
+{
+	<p class="text-center text-muted">No procedures ordered!</p>
+}
+
 

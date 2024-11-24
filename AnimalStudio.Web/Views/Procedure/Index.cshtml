@@ -1,16 +1,24 @@
 ﻿@using AnimalStudio.Web.ViewModels.Procedure
+@using static AnimalStudio.Common.ErrorMessages.Order
 @model IEnumerable<ProcedureIndexViewModel>
 
 @{
-    ViewData["Title"] = "Procedures List!";
+	ViewData["Title"] = "Procedures List!";
+}
+
+@if (TempData[nameof(DuplicatedOrder)] != null)
+{
+	<div class="alert alert-danger" role="alert">
+		@TempData[nameof(DuplicatedOrder)]
+	</div>
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 20px;">
-    <h2>@ViewData["Title"]</h2>
-   @*  @if (User?.Identity?.IsAuthenticated == true)
-    {
-        <a asp-controller="Procedure" asp-action="AddProcedure" class="btn btn-primary"><i class="fas fa-plus"></i>Add ProcedureName</a>
-    } *@
+	<h2>@ViewData["Title"]</h2>
+	@*  @if (User?.Identity?.IsAuthenticated == true)
+	{
+	<a asp-controller="Procedure" asp-action="AddProcedure" class="btn btn-primary"><i class="fas fa-plus"></i>Add ProcedureName</a>
+	} *@
 </div>
 <hr />
 
@@ -47,35 +55,35 @@
 
 
 <div class="row text-center">
-    @foreach (var procedure in Model)
-    {
-        <div class="col-md-3 mb-4">
-            <div class="card h-100" style="width: 100%;">
+	@foreach (var procedure in Model)
+	{
+		<div class="col-md-3 mb-4">
+			<div class="card h-100" style="width: 100%;">
 
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">@procedure.Name</h5>
-                    <p class="card-text">Price: @procedure.Price.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("bg-BG"))</p>
-                    <div class="d-flex justify-content-between mt-auto">
+				<div class="card-body d-flex flex-column">
+					<h5 class="card-title">@procedure.Name</h5>
+					<p class="card-text">Price: @procedure.Price.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("bg-BG"))</p>
+					<div class="d-flex justify-content-between mt-auto">
 
-                        <a asp-controller="Procedure" asp-action="ProcedureDetails" asp-route-id="@procedure.Id" class="btn btn-info d-flex justify-content-center align-items-center flex-fill mx-1">Details</a>
+						<a asp-controller="Procedure" asp-action="ProcedureDetails" asp-route-id="@procedure.Id" class="btn btn-info d-flex justify-content-center align-items-center flex-fill mx-1">Details</a>
 
-                        @if (User?.Identity?.IsAuthenticated == true)
-                        {
-                            <a asp-action="AssignToWorker" asp-route-id="@procedure.Id" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Assign To Worker</a>
-                            <a asp-controller="Procedure" asp-action="EditProcedure" asp-route-id="@procedure.Id" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Edit</a>
-                            <a asp-controller="Order" asp-action="MakeOrder" asp-route-id="@procedure.Id" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Buy</a>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
+						@if (User?.Identity?.IsAuthenticated == true)
+						{
+							<a asp-action="AssignToWorker" asp-route-id="@procedure.Id" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Assign To Worker</a>
+							<a asp-controller="Procedure" asp-action="EditProcedure" asp-route-id="@procedure.Id" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Edit</a>
+							<a asp-controller="Order" asp-action="MakeOrder" asp-route-id="@procedure.Id" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Buy</a>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	}
 </div>
 
 
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
 }

@@ -3,6 +3,7 @@ using AnimalStudio.Web.ViewModels.Order;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using static AnimalStudio.Common.ErrorMessages.Order;
 
 namespace AnimalStudio.Web.Controllers
 {
@@ -92,7 +93,13 @@ namespace AnimalStudio.Web.Controllers
 		[HttpPost]
 		public async Task<IActionResult> MakeOrder(MakeOrderViewModel order)
 		{
-			await orderService.AddMyOrderAsync(order);
+			bool result = await orderService.AddMyOrderAsync(order);
+
+			if (result == false)
+			{
+				TempData[nameof(DuplicatedOrder)] = DuplicatedOrder;
+				return RedirectToAction("Index", "Procedure");
+			}
 
 			return RedirectToAction(nameof(Index));
 		}
