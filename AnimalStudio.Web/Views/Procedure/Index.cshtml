@@ -1,5 +1,4 @@
-﻿@using AnimalStudio.Web.ViewModels
-@using AnimalStudio.Web.ViewModels.Procedure
+﻿@using AnimalStudio.Web.ViewModels.Procedure
 @model IEnumerable<ProcedureIndexViewModel>
 
 @{
@@ -14,6 +13,38 @@
     } *@
 </div>
 <hr />
+
+
+@* <table class="table table-striped">
+	<thead>
+	<tr>
+		<th>Procedure Name</th>
+		<th>Price</th>
+		<th>Action</th>
+	</tr>
+	</thead>
+	<tbody>
+        @foreach (var procedure in Model)
+	{
+		<tr>
+                <td>@procedure.Name</td>
+                <td>@procedure.Price.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("bg-BG"))</td>
+			<td>
+				<a asp-controller="Procedure" asp-action="ProcedureDetails" asp-route-id="@procedure.Id" class="btn btn-info justify-content-center align-items-center flex-fill mx-1">Details</a>
+
+				@if (User?.Identity?.IsAuthenticated == true)
+				{
+					<a asp-action="AssignToWorker" asp-route-id="@procedure.Id" class="btn btn-warning">Assign To Worker</a>
+					<a asp-controller="Procedure" asp-action="EditProcedure" asp-route-id="@procedure.Id" class="btn btn-warning">Edit</a>
+					<a asp-controller="Order" asp-action="MakeOrder" asp-route-id="@procedure.Id" class="btn btn-warning">Buy</a>
+				}
+			</td>
+		</tr>
+	}
+	</tbody>
+</table>
+ *@
+
 
 <div class="row text-center">
     @foreach (var procedure in Model)

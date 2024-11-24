@@ -12,10 +12,22 @@
 <hr />
 
 <div class="row justify-content-center" style="margin: 0 auto; max-width: 800px;">
+	<div class="col-md-4 text-center">
+
+		@if (!string.IsNullOrEmpty(Model.ImageUrl))
+		{
+			<img src="@Model.ImageUrl" class="img-fluid" style="max-width: 100%; height: auto;" alt="@Model.AnimalTypeName" />
+		}
+		else
+		{
+			<img src="~/img/no_image_available.png" class="img-fluid" style="max-width: 100%; height: auto;" alt="No Image Available" />
+		}
+	</div>
+
 	<div class="col-md-8">
 		<div class="card-body">
-			<h5 class="card-title">@Model.AnimalTypeInfo</h5>
-			<hr />
+			<h5 class="card-title">@Model.AnimalTypeName</h5>
+			<hr/>
 		</div>
 		<div class="card-footer text-center">
 			<div class="d-flex justify-content-between align-items-center">

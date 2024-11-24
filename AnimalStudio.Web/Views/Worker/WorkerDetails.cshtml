@@ -10,9 +10,18 @@
 </div>
 <hr />
 
-<div>
-	<h5 class="text-center">Details for worker: @Model.Name</h5>
+<div class="text-center">
+	<h5 >Details for: @Model.Name</h5>
+	@if (!string.IsNullOrEmpty(Model.ImageUrl))
+	{
+		<img src="@Model.ImageUrl" class="img-fluid" style="max-height: 250px; object-fit: contain;" alt="@Model.Name" />
+	}
+	else
+	{
+		<img src="~/img/no_image_available.png" class="img-fluid" style="max-width: 100%; height: auto;" alt="No Image Available" />
+	}
 </div>
+
 <hr />
 
 @if (User?.Identity?.IsAuthenticated ?? false)

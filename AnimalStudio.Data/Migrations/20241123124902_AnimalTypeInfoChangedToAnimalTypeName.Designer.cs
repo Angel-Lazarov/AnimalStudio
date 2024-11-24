@@ -4,6 +4,7 @@ using AnimalStudio.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AnimalStudio.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241123124902_AnimalTypeInfoChangedToAnimalTypeName")]
+    partial class AnimalTypeInfoChangedToAnimalTypeName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,9 +100,6 @@ namespace AnimalStudio.Data.Migrations
                         .HasColumnType("nvarchar(30)")
                         .HasComment("Type of the animal");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.ToTable("AnimalTypes");
@@ -108,44 +108,37 @@ namespace AnimalStudio.Data.Migrations
                         new
                         {
                             Id = 1,
-                            AnimalTypeName = "Cat",
-                            ImageUrl = "/img/animal-types/cat.jpg"
+                            AnimalTypeName = "Cat"
                         },
                         new
                         {
                             Id = 2,
-                            AnimalTypeName = "Dog",
-                            ImageUrl = "/img/animal-types/dog.jpg"
+                            AnimalTypeName = "Dog"
                         },
                         new
                         {
                             Id = 3,
-                            AnimalTypeName = "Sheep",
-                            ImageUrl = "/img/animal-types/sheep.jpg"
+                            AnimalTypeName = "Sheep"
                         },
                         new
                         {
                             Id = 4,
-                            AnimalTypeName = "Duck",
-                            ImageUrl = "/img/animal-types/duck.jpg"
+                            AnimalTypeName = "Duck"
                         },
                         new
                         {
                             Id = 5,
-                            AnimalTypeName = "Parrot",
-                            ImageUrl = "/img/animal-types/parrot.jpg"
+                            AnimalTypeName = "Parrot"
                         },
                         new
                         {
                             Id = 6,
-                            AnimalTypeName = "Snake",
-                            ImageUrl = "/img/animal-types/snake.jpg"
+                            AnimalTypeName = "Snake"
                         },
                         new
                         {
                             Id = 7,
-                            AnimalTypeName = "Lizard",
-                            ImageUrl = "/img/animal-types/lizard.jpg"
+                            AnimalTypeName = "Lizard"
                         });
                 });
 
@@ -221,9 +214,6 @@ namespace AnimalStudio.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(40)
@@ -241,68 +231,52 @@ namespace AnimalStudio.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ImageUrl = "/img/workers/Donald-Trump.jpg",
-                            Name = "Donald Trump"
+                            Name = "John Doe"
                         },
                         new
                         {
                             Id = 2,
-                            ImageUrl = "/img/workers/Vladimir-Putin.jpg",
-                            Name = "Vladimir Putin"
+                            Name = "Jane Smith"
                         },
                         new
                         {
                             Id = 3,
-                            ImageUrl = "/img/workers/Xi_Jinping.jpg",
-                            Name = "Xi Jinping"
+                            Name = "Alex Johnson"
                         },
                         new
                         {
                             Id = 4,
-                            ImageUrl = "/img/workers/Narendra-Modi.jpg",
-                            Name = "Narendra Modi"
+                            Name = "Emily Davis"
                         },
                         new
                         {
                             Id = 5,
-                            ImageUrl = "/img/workers/Boiko-Borisov.jpg",
-                            Name = "Boiko Borisov"
+                            Name = "Michael Brown"
                         },
                         new
                         {
                             Id = 6,
-                            ImageUrl = "/img/workers/Boris-Johnson.jpg",
-                            Name = "Boris Johnson"
+                            Name = "Sarah Wilson"
                         },
                         new
                         {
                             Id = 7,
-                            ImageUrl = "/img/workers/Eva-Mendes.jpg",
-                            Name = "Eva Mendes"
+                            Name = "David Lee"
                         },
                         new
                         {
                             Id = 8,
-                            ImageUrl = "/img/workers/Josh-Holloway.jpg",
-                            Name = "Josh Holloway"
+                            Name = "Laura Garcia"
                         },
                         new
                         {
                             Id = 9,
-                            ImageUrl = "/img/workers/Natasha-Moneva.jpg",
-                            Name = "Natasha Moneva"
+                            Name = "Chris Martin"
                         },
                         new
                         {
                             Id = 10,
-                            ImageUrl = "/img/workers/Deborah-De-Luca.jpg",
-                            Name = "Deborah De Luca"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            ImageUrl = "",
-                            Name = "Jennifer Lopez"
+                            Name = "Anna Thompson"
                         });
                 });
 

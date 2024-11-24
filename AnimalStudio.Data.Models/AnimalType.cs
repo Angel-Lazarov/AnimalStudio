@@ -4,17 +4,19 @@ using static AnimalStudio.Common.EntityValidationConstants.AnimalType;
 
 namespace AnimalStudio.Data.Models
 {
-    public class AnimalType
-    {
-        [Key]
-        [Comment("AnimalType Identifier")]
-        public int Id { get; set; }
+	public class AnimalType
+	{
+		[Key]
+		[Comment("AnimalType Identifier")]
+		public int Id { get; set; }
 
-        [Required]
-        [MaxLength(AnimalTypeInfoMaxLength)]
-        [Comment("Type of the animal")]
-        public string AnimalTypeInfo { get; set; } = null!;
+		[Required]
+		[MaxLength(AnimalTypeInfoMaxLength)]
+		[Comment("Type of the animal")]
+		public string AnimalTypeName { get; set; } = null!;
 
-        public ICollection<Animal> Animals { get; set; } = new List<Animal>();
-    }
+		public string? ImageUrl { get; set; }
+
+		public ICollection<Animal> Animals { get; set; } = new List<Animal>();
+	}
 }

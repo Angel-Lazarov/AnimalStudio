@@ -14,6 +14,8 @@ namespace AnimalStudio.Web.ViewModels.Worker
 		[MaxLength(WorkerNameMaxLength)]
 		public string Name { get; set; } = null!;
 
+		public string? ImageUrl { get; set; }
+
 		public ICollection<ProcedureDetailsViewModel> Procedures { get; set; } = new List<ProcedureDetailsViewModel>();
 	}
 }

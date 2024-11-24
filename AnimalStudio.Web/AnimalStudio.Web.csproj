@@ -24,4 +24,8 @@
     <ProjectReference Include="..\AnimalStudio.Web.ViewModels\AnimalStudio.Web.ViewModels.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\img\workers\" />
+  </ItemGroup>
+
 </Project>

@@ -1,88 +1,91 @@
 ﻿using AnimalStudio.Services.Data.Interfaces;
 using AnimalStudio.Web.ViewModels.AnimalType;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnimalStudio.Web.Controllers
 {
-    public class AnimalTypeController : Controller
-    {
-        private readonly IAnimalTypeService animalTypeService;
+	[Authorize]
+	public class AnimalTypeController : Controller
+	{
+		private readonly IAnimalTypeService animalTypeService;
 
-        public AnimalTypeController(IAnimalTypeService animalTypeService)
-        {
-            this.animalTypeService = animalTypeService;
-        }
+		public AnimalTypeController(IAnimalTypeService animalTypeService)
+		{
+			this.animalTypeService = animalTypeService;
+		}
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            IEnumerable<AnimalTypeViewModel> animalTypesList = await animalTypeService.IndexGetAllAnimalTypesAsync();
+		[AllowAnonymous]
+		[HttpGet]
+		public async Task<IActionResult> Index()
+		{
+			IEnumerable<AnimalTypeViewModel> animalTypesList = await animalTypeService.IndexGetAllAnimalTypesAsync();
 
-            return View(animalTypesList);
-        }
+			return View(animalTypesList);
+		}
 
-        [HttpGet]
-        public async Task<IActionResult> AnimalTypeDetails(int id)
-        {
-            AnimalTypeViewModel model = await animalTypeService.GetAnimalTypeDetailsByIdAsync(id);
+		[AllowAnonymous]
+		[HttpGet]
+		public async Task<IActionResult> AnimalTypeDetails(int id)
+		{
+			AnimalTypeViewModel model = await animalTypeService.GetAnimalTypeDetailsByIdAsync(id);
 
-            return View(model);
-        }
+			return View(model);
+		}
 
+		[HttpGet]
+		public IActionResult AddAnimalType()
+		{
+			return View();
+		}
 
-        [HttpGet]
-        public IActionResult AddAnimalType()
-        {
-            return View();
-        }
+		[HttpPost]
+		public async Task<IActionResult> AddAnimalType(AnimalTypeViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
 
-        [HttpPost]
-        public async Task<IActionResult> AddAnimalType(AnimalTypeViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+			await animalTypeService.AddAnimalTypeAsync(model);
 
-            await animalTypeService.AddAnimalTypeAsync(model);
+			return RedirectToAction(nameof(Index));
+		}
 
-            return RedirectToAction(nameof(Index));
-        }
+		[HttpPost]
+		public async Task<IActionResult> DeleteAnimalType(int id)
+		{
+			await animalTypeService.GetAnimalTypeDetailsByIdAsync(id);
 
-        [HttpPost]
-        public async Task<IActionResult> DeleteAnimalType(int id)
-        {
-            await animalTypeService.GetAnimalTypeDetailsByIdAsync(id);
+			return View();
+		}
 
-            return View();
-        }
+		[HttpGet]
+		public async Task<IActionResult> DeleteAnimalType(AnimalTypeViewModel model)
+		{
+			await animalTypeService.AnimalTypeDeleteAsync(model);
+			return RedirectToAction(nameof(Index));
+		}
 
-        [HttpGet]
-        public async Task<IActionResult> DeleteAnimalType(AnimalTypeViewModel model)
-        {
-            await animalTypeService.AnimalTypeDeleteAsync(model);
-            return RedirectToAction(nameof(Index));
-        }
+		[HttpGet]
+		public async Task<IActionResult> EditAnimalType(int id)
+		{
+			AnimalTypeViewModel model = await animalTypeService.GetEditedModel(id);
 
-        [HttpGet]
-        public async Task<IActionResult> EditAnimalType(int id)
-        {
-            AnimalTypeViewModel model = await animalTypeService.GetEditedModel(id);
+			return View(model);
+		}
 
-            return View(model);
-        }
+		[HttpPost]
+		public async Task<IActionResult> EditAnimalType(AnimalTypeViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
 
-        [HttpPost]
-        public async Task<IActionResult> EditAnimalType(AnimalTypeViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+			await animalTypeService.EditAnimalTypeAsync(model);
 
-            await animalTypeService.EditAnimalTypeAsync(model);
-
-            return RedirectToAction(nameof(Index));
-        }
-    }
+			return RedirectToAction(nameof(Index));
+		}
+	}
 }

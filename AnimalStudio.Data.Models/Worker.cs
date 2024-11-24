@@ -16,6 +16,8 @@ namespace AnimalStudio.Data.Models
 		[Comment("Worker name")]
 		public string Name { get; set; } = null!;
 
+		public string? ImageUrl { get; set; }
+
 		public virtual ICollection<WorkerProcedure> WorkersProcedures { get; set; } = new HashSet<WorkerProcedure>();
 	}
 }

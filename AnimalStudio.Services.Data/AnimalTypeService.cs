@@ -21,7 +21,8 @@ namespace AnimalStudio.Services.Data
 				.Select(x => new AnimalTypeViewModel()
 				{
 					Id = x.Id,
-					AnimalTypeInfo = x.AnimalTypeInfo
+					AnimalTypeName = x.AnimalTypeName,
+					ImageUrl = x.ImageUrl
 				})
 				.ToListAsync();
 
@@ -33,7 +34,9 @@ namespace AnimalStudio.Services.Data
 			AnimalType animalType = new AnimalType()
 			{
 				Id = model.Id,
-				AnimalTypeInfo = model.AnimalTypeInfo
+				AnimalTypeName = model.AnimalTypeName,
+				ImageUrl = model.ImageUrl
+
 			};
 
 			await animalTypeRepository.AddAsync(animalType);
@@ -45,7 +48,8 @@ namespace AnimalStudio.Services.Data
 			AnimalTypeViewModel model = new AnimalTypeViewModel()
 			{
 				Id = animalType.Id,
-				AnimalTypeInfo = animalType.AnimalTypeInfo
+				AnimalTypeName = animalType.AnimalTypeName,
+				ImageUrl = animalType.ImageUrl
 			};
 
 			return model;
@@ -58,16 +62,18 @@ namespace AnimalStudio.Services.Data
 
 		public async Task<AnimalTypeViewModel> GetEditedModel(int id)
 		{
-			AnimalTypeViewModel? model = await animalTypeRepository.GetAllAttached()
-				 .Where(a => a.Id == id)
-				 .Select(a => new AnimalTypeViewModel()
+			AnimalTypeViewModel? model = await animalTypeRepository
+				.GetAllAttached()
+				 .Where(at => at.Id == id)
+				 .Select(at => new AnimalTypeViewModel()
 				 {
-					 Id = a.Id,
-					 AnimalTypeInfo = a.AnimalTypeInfo
+					 Id = at.Id,
+					 AnimalTypeName = at.AnimalTypeName,
+					 ImageUrl = at.ImageUrl
 				 })
 				 .FirstOrDefaultAsync();
 
-			return model;
+			return model!;
 		}
 
 		public async Task EditAnimalTypeAsync(AnimalTypeViewModel model)
@@ -75,7 +81,8 @@ namespace AnimalStudio.Services.Data
 			AnimalType target = new AnimalType()
 			{
 				Id = model.Id,
-				AnimalTypeInfo = model.AnimalTypeInfo
+				AnimalTypeName = model.AnimalTypeName,
+				ImageUrl = model.ImageUrl
 			};
 			await animalTypeRepository.UpdateAsync(target);
 		}
