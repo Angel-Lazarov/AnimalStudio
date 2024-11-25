@@ -1,8 +1,17 @@
 ﻿@using AnimalStudio.Web.ViewModels.Animal
 @model IEnumerable<AnimalIndexViewModel>
+@using static AnimalStudio.Common.ErrorMessages.Animal
 @{
 	ViewData["Title"] = "My animals";
 }
+
+@if (TempData[nameof(DuplicatedAnimal)] != null)
+{
+	<div class="alert alert-danger" role="alert">
+		@TempData[nameof(DuplicatedAnimal)]
+	</div>
+}
+
 
 <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 20px;">
 	<h2>@ViewData["Title"]</h2>
