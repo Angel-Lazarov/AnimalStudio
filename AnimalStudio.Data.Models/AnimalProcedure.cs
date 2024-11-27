@@ -18,6 +18,6 @@ namespace AnimalStudio.Data.Models
 		[MaxLength(OwnerIdMaxLength)]
 		public string UserId { get; set; } = null!;
 
-		public Order Order { get; set; } = null!;
+		//public Order Order { get; set; } = null!;
 	}
 }

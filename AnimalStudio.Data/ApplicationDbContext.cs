@@ -22,7 +22,7 @@ namespace AnimalStudio.Data
 		public virtual DbSet<Procedure> Procedures { get; set; } = null!;
 		public virtual DbSet<Worker> Workers { get; set; } = null!;
 		public virtual DbSet<WorkerProcedure> WorkersProcedures { get; set; } = null!;
-		public virtual DbSet<Order> Orders { get; set; } = null!;
+		//public virtual DbSet<Order> Orders { get; set; } = null!;
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
