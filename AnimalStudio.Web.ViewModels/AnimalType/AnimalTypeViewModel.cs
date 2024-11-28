@@ -11,6 +11,11 @@ namespace AnimalStudio.Web.ViewModels.AnimalType
 		[MaxLength(AnimalTypeInfoMaxLength)]
 		public string AnimalTypeName { get; set; } = null!;
 
+		[Required]
+		[MinLength(AnimalTypeDescriptionMinLength)]
+		[MaxLength(AnimalTypeDescriptionMaxLength)]
+		public string Description { get; set; } = null!;
+
 		public string? ImageUrl { get; set; }
 	}
 }

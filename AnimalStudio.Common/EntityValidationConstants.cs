@@ -6,6 +6,8 @@
 		{
 			public const int WorkerNameMinLength = 3;
 			public const int WorkerNameMaxLength = 40;
+			public const int WorkerDescriptionMaxLength = 2500;
+			public const int WorkerDescriptionMinLength = 10;
 		}
 
 		public static class Procedure
@@ -20,6 +22,9 @@
 		public static class AnimalType
 		{
 			public const int AnimalTypeInfoMaxLength = 30;
+			public const int AnimalTypeDescriptionMaxLength = 2500;
+			public const int AnimalTypeDescriptionMinLength = 10;
+
 		}
 		public static class Address
 		{

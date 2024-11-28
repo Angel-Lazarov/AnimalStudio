@@ -16,6 +16,11 @@ namespace AnimalStudio.Web.ViewModels.Worker
 
 		public string? ImageUrl { get; set; }
 
+		[Required]
+		[MaxLength(WorkerDescriptionMaxLength)]
+		[MinLength(WorkerDescriptionMinLength)]
+		public string Description { get; set; } = null!;
+
 		public ICollection<ProcedureDetailsViewModel> Procedures { get; set; } = new List<ProcedureDetailsViewModel>();
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static AnimalStudio.Common.EntityValidationConstants.Worker;
 
 namespace AnimalStudio.Web.ViewModels.Worker
 {
@@ -11,5 +12,10 @@ namespace AnimalStudio.Web.ViewModels.Worker
 		public string Name { get; set; } = null!;
 
 		public string? ImageUrl { get; set; }
+
+		[Required]
+		[MaxLength(WorkerDescriptionMaxLength)]
+		[MinLength(WorkerDescriptionMinLength)]
+		public string Description { get; set; } = null!;
 	}
 }

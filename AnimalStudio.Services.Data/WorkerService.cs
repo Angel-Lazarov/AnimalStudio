@@ -36,7 +36,9 @@ namespace AnimalStudio.Services.Data
 		{
 			Worker worker = new Worker()
 			{
-				Name = model.Name
+				Name = model.Name,
+				Description = model.Description,
+				ImageUrl = model.ImageUrl
 			};
 
 			await workerRepository.AddAsync(worker);
@@ -59,6 +61,7 @@ namespace AnimalStudio.Services.Data
 					Id = worker.Id,
 					Name = worker.Name,
 					ImageUrl = worker.ImageUrl,
+					Description = worker.Description,
 					Procedures = worker.WorkersProcedures
 						.Where(wp => wp.IsDeleted == false)
 						.Select(wp => new ProcedureDetailsViewModel
@@ -88,7 +91,8 @@ namespace AnimalStudio.Services.Data
 				{
 					Id = w.Id,
 					Name = w.Name,
-					ImageUrl = w.ImageUrl
+					ImageUrl = w.ImageUrl,
+					Description = w.Description
 				})
 				.FirstOrDefaultAsync();
 
@@ -101,7 +105,8 @@ namespace AnimalStudio.Services.Data
 			{
 				Id = model.Id,
 				Name = model.Name,
-				ImageUrl = model.ImageUrl
+				ImageUrl = model.ImageUrl,
+				Description = model.Description
 			};
 
 			await workerRepository.UpdateAsync(worker);

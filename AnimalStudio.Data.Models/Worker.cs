@@ -18,6 +18,12 @@ namespace AnimalStudio.Data.Models
 
 		public string? ImageUrl { get; set; }
 
+
+		[Required]
+		[MaxLength(WorkerDescriptionMaxLength)]
+		[Comment("Description for the worker")]
+		public string Description { get; set; } = null!;
+
 		public virtual ICollection<WorkerProcedure> WorkersProcedures { get; set; } = new HashSet<WorkerProcedure>();
 	}
 }

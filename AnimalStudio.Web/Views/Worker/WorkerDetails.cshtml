@@ -11,7 +11,7 @@
 <hr />
 
 <div class="text-center">
-	<h5 >Details for: @Model.Name</h5>
+	<h5>Details for: @Model.Name</h5>
 	@if (!string.IsNullOrEmpty(Model.ImageUrl))
 	{
 		<img src="@Model.ImageUrl" class="img-fluid" style="max-height: 250px; object-fit: contain;" alt="@Model.Name" />
@@ -23,6 +23,13 @@
 </div>
 
 <hr />
+
+<div class="col-md-8">
+	<div class="card-body">
+		<p class="card-text">@Model.Description</p>
+	</div>
+</div>
+
 
 @if (User?.Identity?.IsAuthenticated ?? false)
 {

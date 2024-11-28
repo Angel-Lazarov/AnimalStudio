@@ -4,7 +4,6 @@ using AnimalStudio.Services.Data.Interfaces;
 using AnimalStudio.Web.ViewModels.AnimalType;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace AnimalStudio.Services.Data
 {
 	public class AnimalTypeService : IAnimalTypeService
@@ -35,8 +34,8 @@ namespace AnimalStudio.Services.Data
 			{
 				Id = model.Id,
 				AnimalTypeName = model.AnimalTypeName,
-				ImageUrl = model.ImageUrl
-
+				ImageUrl = model.ImageUrl,
+				Description = model.Description
 			};
 
 			await animalTypeRepository.AddAsync(animalType);
@@ -49,7 +48,8 @@ namespace AnimalStudio.Services.Data
 			{
 				Id = animalType.Id,
 				AnimalTypeName = animalType.AnimalTypeName,
-				ImageUrl = animalType.ImageUrl
+				ImageUrl = animalType.ImageUrl,
+				Description = animalType.Description
 			};
 
 			return model;
@@ -69,7 +69,8 @@ namespace AnimalStudio.Services.Data
 				 {
 					 Id = at.Id,
 					 AnimalTypeName = at.AnimalTypeName,
-					 ImageUrl = at.ImageUrl
+					 ImageUrl = at.ImageUrl,
+					 Description = at.Description
 				 })
 				 .FirstOrDefaultAsync();
 
@@ -82,7 +83,8 @@ namespace AnimalStudio.Services.Data
 			{
 				Id = model.Id,
 				AnimalTypeName = model.AnimalTypeName,
-				ImageUrl = model.ImageUrl
+				ImageUrl = model.ImageUrl,
+				Description = model.Description
 			};
 			await animalTypeRepository.UpdateAsync(target);
 		}

@@ -17,6 +17,11 @@ namespace AnimalStudio.Data.Models
 
 		public string? ImageUrl { get; set; }
 
+		[Required]
+		[MaxLength(AnimalTypeDescriptionMaxLength)]
+		[Comment("Description for the worker")]
+		public string Description { get; set; } = null!;
+
 		public ICollection<Animal> Animals { get; set; } = new List<Animal>();
 	}
 }
