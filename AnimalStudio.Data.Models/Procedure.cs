@@ -28,7 +28,8 @@ namespace AnimalStudio.Data.Models
 		[Comment("Procedure Price")]
 		public decimal Price { get; set; }
 
-		public virtual ICollection<AnimalProcedure> AnimalsProcedures { get; set; } = new HashSet<AnimalProcedure>();
 		public virtual ICollection<WorkerProcedure> WorkersProcedures { get; set; } = new List<WorkerProcedure>();
-	}
+
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+    }
 }

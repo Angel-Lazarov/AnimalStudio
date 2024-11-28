@@ -38,6 +38,6 @@ namespace AnimalStudio.Data.Models
 		[Comment("Animal's owner")]
 		public IdentityUser Owner { get; set; } = null!;
 
-		public ICollection<AnimalProcedure> AnimalsProcedures { get; set; } = new List<AnimalProcedure>();
-	}
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
+    }
 }

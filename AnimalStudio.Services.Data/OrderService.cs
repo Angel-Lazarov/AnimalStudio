@@ -8,18 +8,18 @@ namespace AnimalStudio.Services.Data
 {
 	public class OrderService : IOrderService
 	{
-		private readonly IRepository<AnimalProcedure, object> animalProcedureRepository;
+		private readonly IRepository<Order, Guid> orderRepository;
 
-		public OrderService(IRepository<AnimalProcedure, object> animalProcedureRepository)
+		public OrderService(IRepository<Order, Guid> orderRepository)
 		{
-			this.animalProcedureRepository = animalProcedureRepository;
+			this.orderRepository = orderRepository;
 		}
 
 		public async Task<IEnumerable<OrderIndexViewModel>> IndexGetMyOrdersAsync(string userId)
 		{
-			var orders = await animalProcedureRepository.GetAllAttached()
+			var orders = await orderRepository.GetAllAttached()
 				.Include(ap => ap.Procedure)
-				.Where(ap => ap.UserId == userId)
+				.Where(ap => ap.OwnerId == userId)
 				.Select(ap => new OrderIndexViewModel()
 				{
 					AnimalName = ap.Animal.Name,
@@ -33,7 +33,7 @@ namespace AnimalStudio.Services.Data
 
 		public async Task<IEnumerable<OrderIndexViewModel>> IndexGetAllOrdersAsync()
 		{
-			var orders = await animalProcedureRepository.GetAllAttached()
+			var orders = await orderRepository.GetAllAttached()
 				.Include(ap => ap.Procedure)
 				.Select(ap => new OrderIndexViewModel()
 				{
@@ -49,48 +49,48 @@ namespace AnimalStudio.Services.Data
 
 		public async Task AddOrderAsync(AddOrderFormViewModel model)
 		{
-			AnimalProcedure order = new AnimalProcedure()
+			Order order = new Order()
 			{
 				AnimalId = model.AnimalId,
 				ProcedureId = model.ProcedureId,
-				UserId = model.UserId
+				OwnerId = model.UserId
 			};
 
-			if (!await animalProcedureRepository.GetAllAttached().AnyAsync(ap =>
+			if (!await orderRepository.GetAllAttached().AnyAsync(ap =>
 					ap.AnimalId == model.AnimalId && ap.ProcedureId == model.ProcedureId))
 			{
-				await animalProcedureRepository.AddAsync(order);
+				await orderRepository.AddAsync(order);
 			}
 		}
 
 		public async Task<bool> AddMyOrderAsync(MakeOrderViewModel model)
 		{
-			AnimalProcedure order = new AnimalProcedure()
+			Order order = new Order()
 			{
 				AnimalId = model.AnimalId,
 				ProcedureId = model.ProcedureId,
-				UserId = model.UserId
+				OwnerId = model.UserId
 			};
 
-			if (await animalProcedureRepository.GetAllAttached().AnyAsync(ap =>
-					ap.AnimalId == model.AnimalId && ap.ProcedureId == model.ProcedureId && ap.UserId == model.UserId))
+			if (await orderRepository.GetAllAttached().AnyAsync(ap =>
+					ap.AnimalId == model.AnimalId && ap.ProcedureId == model.ProcedureId && ap.OwnerId == model.UserId))
 			{
 				return false;
 			}
 
-			await animalProcedureRepository.AddAsync(order);
+			await orderRepository.AddAsync(order);
 
 			return true;
 		}
 
 		public async Task<bool> RemoveOrderAsync(string animalName, string procedureName)
 		{
-			AnimalProcedure order = await animalProcedureRepository.FirstOrDefaultAsync(ap =>
+			Order order = await orderRepository.FirstOrDefaultAsync(ap =>
 				ap.Animal.Name == animalName && ap.Procedure.Name == procedureName);
 
 			if (order != null)
 			{
-				await animalProcedureRepository.DeleteAsync(order);
+				await orderRepository.DeleteAsync(order);
 			}
 
 			return true;

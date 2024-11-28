@@ -16,6 +16,6 @@ namespace AnimalStudio.Web.ViewModels.Animal
 
 		public string Owner { get; set; } = null!;
 
-		public ICollection<AnimalProcedure> AnimalProcedure { get; set; } = new List<AnimalProcedure>();
+		public ICollection<AnimalStudio.Data.Models.Order> Orders { get; set; } = new List<Data.Models.Order>();
 	}
 }

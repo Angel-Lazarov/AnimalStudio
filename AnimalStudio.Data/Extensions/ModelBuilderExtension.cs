@@ -7,7 +7,7 @@ namespace AnimalStudio.Data.Extensions
 	{
 		public static void MappingEntity(this ModelBuilder modelBuilder)
 		{
-			modelBuilder.ApplyConfiguration(new AnimalProcedureConfiguration());
+		    modelBuilder.ApplyConfiguration(new OrderConfiguration());
 			modelBuilder.ApplyConfiguration(new WorkerProcedureConfiguration());
 		}
 

@@ -9,13 +9,13 @@ namespace AnimalStudio.Services.Data
 	public class AnimalService : IAnimalService
 	{
 		private readonly IRepository<Animal, int> animalRepository;
-		private readonly IRepository<AnimalProcedure, object> animalProcedureRepository;
+		private readonly IRepository<Order, Guid> orderRepository;
 
 
-		public AnimalService(IRepository<Animal, int> animalRepository, IRepository<AnimalProcedure, object> animalProcedureRepository)
+		public AnimalService(IRepository<Animal, int> animalRepository, IRepository<Order, Guid> orderRepository)
 		{
 			this.animalRepository = animalRepository;
-			this.animalProcedureRepository = animalProcedureRepository;
+			this.orderRepository = orderRepository;
 		}
 
 		public async Task<IEnumerable<AnimalIndexViewModel>> IndexGetAllAnimalsAsync()
@@ -141,9 +141,9 @@ namespace AnimalStudio.Services.Data
 
 		public async Task<bool> AnimalDeleteAsync(int id)
 		{
-			AnimalProcedure animalProcedure = await animalProcedureRepository.FirstOrDefaultAsync(a => a.AnimalId == id);
+			Order order = await orderRepository.FirstOrDefaultAsync(a => a.AnimalId == id);
 
-			if (animalProcedure != null)
+			if (order != null)
 			{
 				return false;
 			}
