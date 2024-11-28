@@ -15,7 +15,7 @@ namespace AnimalStudio.Data.Configuration
 		{
 			List<AnimalType> animalTypes = new List<AnimalType>()
 			{
-				new AnimalType { Id = 1, AnimalTypeName = "Cat", ImageUrl = "/img/animal-types/cat.jpg", Description = "A cat is a curious, independent creature with a knack for napping, playing, and purring. They may act aloof, but their playful antics and soft purrs melt hearts."},
+				new AnimalType { Id = 1, AnimalTypeName = "Cat", ImageUrl = "/img/animal-types/cat.jpg", Description = "A cat is a curious, independent creature with a knack for napping, playing, and purring. They may act aloof, but their playful antics and soft purrs melt hearts!"},
 				new AnimalType { Id = 2, AnimalTypeName = "Dog", ImageUrl = "/img/animal-types/dog.jpg", Description = "A dog is a loyal, loving companion with a wagging tail and a heart full of joy. They’re always ready for a walk, a game, or a cuddle, making them the perfect best friend." },
 				new AnimalType { Id = 3, AnimalTypeName = "Sheep", ImageUrl = "/img/animal-types/sheep.jpg", Description = "A sheep is a fluffy, four-legged ball of wool that loves to graze and baa. They may be quiet and laid-back, but they’ve got a whole flock of personality – and don’t forget their signature “baaa”!" },
 				new AnimalType { Id = 4, AnimalTypeName = "Duck", ImageUrl = "/img/animal-types/duck.jpg", Description = "A duck is a quacking, waddling expert in water and land. With their silly little feet and charming fluff, they’re always ready for a splash and a good time!" },
