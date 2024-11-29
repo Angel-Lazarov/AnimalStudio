@@ -35,6 +35,12 @@
 			public const int AnimalNameMaxLength = 20;
 			public const int OwnerIdMaxLength = 450;
 		}
+        public static class Manager
+        {
+            public const int ManagerNickNameMinLength = 3;
+            public const int ManagerNickNameMaxLength = 20;
+            public const int ManagerOwnerIdMaxLength = 450;
+        }
 
-	}
+    }
 }

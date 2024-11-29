@@ -1,4 +1,8 @@
 ﻿@using static AnimalStudio.Common.ApplicationConstants
+@using AnimalStudio.Services.Data.Interfaces
+@using AnimalStudio.Web.Infrastructure.Extensions
+@inject IManagerService managerService
+
 @{
     int currentYear = DateTime.UtcNow.Year;
     string footerNote = (ReleaseYear == currentYear) ? $"{currentYear}" : $"{ReleaseYear} - {currentYear}";
@@ -67,17 +71,20 @@
 
                         @if (this.User?.Identity?.IsAuthenticated ?? false)
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Admin Zone</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" asp-controller="Animal" asp-action="Index">All Animals(admin)</a>
-                                    <a class="dropdown-item" asp-controller="Order" asp-action="IndexAll">All Orders(admin)</a>
-                                    <a class="dropdown-item" asp-controller="Procedure" asp-action="AddProcedure">Add Procedure(admin)</a>
-                                    <a class="dropdown-item" asp-controller="AnimalType" asp-action="AddAnimalType">Add Animal Type(admin)</a>
-                                    <a class="dropdown-item" asp-controller="Worker" asp-action="AddWorker">Add Worker(admin)</a>
-                                    <a class="dropdown-item" asp-controller="Procedure" asp-action="AssignToWorker">Assign To Worker(admin)</a>
-                                </div>
-                            </li>
+                            @if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Admin Zone</a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" asp-controller="Animal" asp-action="Index">All Animals(admin)</a>
+                                        <a class="dropdown-item" asp-controller="Order" asp-action="IndexAll">All Orders(admin)</a>
+                                        <a class="dropdown-item" asp-controller="Procedure" asp-action="AddProcedure">Add Procedure(admin)</a>
+                                        <a class="dropdown-item" asp-controller="AnimalType" asp-action="AddAnimalType">Add Animal Type(admin)</a>
+                                        <a class="dropdown-item" asp-controller="Worker" asp-action="AddWorker">Add Worker(admin)</a>
+                                        <a class="dropdown-item" asp-controller="Procedure" asp-action="AssignToWorker">Assign To Worker(admin)</a>
+                                    </div>
+                                </li>
+                            }
                         }
                     </ul>
                     <partial name="_LoginPartial" />

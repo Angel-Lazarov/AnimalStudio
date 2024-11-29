@@ -3,47 +3,39 @@
 @model AnimalTypeViewModel
 
 @{
-	ViewData["Title"] = "AnimalType Details!";
+    ViewData["Title"] = "AnimalType Details!";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 20px;">
-	<h2>@ViewData["Title"]</h2>
+<div class="text-center">
+    <h2>More information about @Model.AnimalTypeName</h2>
 </div>
 <hr />
 
-<div class="row justify-content-center" style="margin: 0 auto; max-width: 800px;">
-	<div class="col-md-4 text-center">
+<div class="text-center">
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <img src="@Model.ImageUrl" class="img-fluid" style="width: auto; height: 250px;" alt="@Model.AnimalTypeName" />
+    }
+    else
+    {
+        <img src="~/img/no_image_available.png" class="img-fluid" style="max-width: 100%; height: auto;" alt="No Image Available" />
+    }
+</div>
 
-		@if (!string.IsNullOrEmpty(Model.ImageUrl))
-		{
-			<img src="@Model.ImageUrl" class="img-fluid" style="max-width: 100%; height: auto;" alt="@Model.AnimalTypeName" />
-		}
-		else
-		{
-			<img src="~/img/no_image_available.png" class="img-fluid" style="max-width: 100%; height: auto;" alt="No Image Available" />
-		}
-	</div>
+<hr />
 
-	<div class="col-md-8">
-		<div class="card-body">
-			<p class="card-text">@Model.Description</p>
-		</div>
-	</div>
+<div class="col-md-8">
+    <div class="card-body">
+        <p class="card-text">@Model.Description</p>
+    </div>
+</div>
 
-
-	<div class="col-md-8">
-		<div class="card-body">
-			<h5 class="card-title">@Model.AnimalTypeName</h5>
-			<hr/>
-		</div>
-		<div class="card-footer text-center">
-			<div class="d-flex justify-content-between align-items-center">
-				<a asp-controller="AnimalType" asp-action="Index" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Back</a>
-				@if (User?.Identity?.IsAuthenticated ?? false)
-				{
-					<a asp-controller="AnimalType" asp-action="DeleteAnimalType" asp-route-id="@Model.Id" class="btn btn-danger d-flex justify-content-center align-items-center flex-fill mx-1" onclick="return confirm('Are you sure you want to delete this Animal Type?');">Delete</a>
-				}
-			</div>
-		</div>
-	</div>
+<div class="card-footer text-center">
+    <div class="d-flex justify-content-between align-items-center">
+        <a asp-controller="AnimalType" asp-action="Index" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Back</a>
+        @if (User?.Identity?.IsAuthenticated ?? false)
+        {
+            <a asp-controller="AnimalType" asp-action="DeleteAnimalType" asp-route-id="@Model.Id" class="btn btn-danger d-flex justify-content-center align-items-center flex-fill mx-1" onclick="return confirm('Are you sure you want to delete this Animal Type?');">Delete</a>
+        }
+    </div>
 </div>
