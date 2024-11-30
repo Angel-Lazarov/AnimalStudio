@@ -2,11 +2,11 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model IEnumerable<WorkerViewModel>
 @{
-	ViewData["Title"] = "Worker List";
+	ViewData["Title"] = "Manage workers";
 }
-
 <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 20px;">
 	<h2>@ViewData["Title"]</h2>
+	<a asp-controller="Worker" asp-action="AddWorker" class="btn btn-primary"><i class="fas fa-plus"></i>Add Worker</a>
 </div>
 <hr />
 
@@ -29,6 +29,8 @@
 					<h5 class="card-title">@worker.Name</h5>
 					<div class="d-flex justify-content-between mt-auto">
 						<a asp-controller="Worker" asp-action="WorkerDetails" asp-route-id="@worker.Id" class=" btn btn-info d-flex justify-content-center align-items-center flex-fill mx-1">Details</a>
+						<a asp-controller="Worker" asp-action="EditWorker" asp-route-id="@worker.Id" class="btn btn-info d-flex justify-content-center align-items-center flex-fill mx-1">Edit</a>
+						<a asp-controller="Worker" asp-action="DeleteWorker" asp-route-id="@worker.Id" class="btn btn-danger d-flex justify-content-center align-items-center flex-fill mx-1" onclick="return confirm('Are you sure you want to delete this worker?');">Delete</a>
 					</div>
 				</div>
 			</div>

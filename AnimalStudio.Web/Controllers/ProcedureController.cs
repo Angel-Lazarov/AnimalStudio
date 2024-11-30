@@ -6,19 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AnimalStudio.Web.Controllers
 {
-	[Authorize]
-	public class ProcedureController : Controller
+	public class ProcedureController : BaseController
 	{
 		private readonly IProcedureService procedureService;
-		private readonly IWorkerService workerService;
 
-		public ProcedureController(IProcedureService procedureService, IWorkerService workerService)
+		public ProcedureController(IProcedureService procedureService, IManagerService managerService)
+		: base(managerService)
 		{
 			this.procedureService = procedureService;
-			this.workerService = workerService;
 		}
 
-		[AllowAnonymous]
 		[HttpGet]
 		public async Task<IActionResult> ProcedureDetails(int id)
 		{
@@ -32,7 +29,6 @@ namespace AnimalStudio.Web.Controllers
 			return View(model);
 		}
 
-		[AllowAnonymous]
 		[HttpGet]
 		public async Task<IActionResult> Index()
 		{
@@ -42,14 +38,28 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult AddProcedure()
+		[Authorize]
+		public async Task<IActionResult> AddProcedure()
 		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return this.RedirectToAction(nameof(Index));
+			}
+
 			return View();
 		}
 
 		[HttpPost]
+		[Authorize]
 		public async Task<IActionResult> AddProcedure(AddProcedureFormModel model)
 		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return this.RedirectToAction(nameof(Index));
+			}
+
 			if (!ModelState.IsValid)
 			{
 				return View(model);
@@ -60,29 +70,57 @@ namespace AnimalStudio.Web.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpPost]
+		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> DeleteProcedure(int id)
 		{
-			ProcedureDetailsViewModel? model = await procedureService.GetProcedureDetailsByIdAsync(id);
-
-			if (model == null)
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
 			{
-				return RedirectToAction(nameof(Index));
+				return this.RedirectToAction(nameof(Index));
 			}
-			return View(model);
+
+			DeleteProcedureViewModel? procedureToDeleteViewModel =
+				await procedureService.GetProcedureForDeleteByIdAsync(id);
+			if (procedureToDeleteViewModel == null)
+			{
+				return RedirectToAction(nameof(Manage));
+			}
+			return View(procedureToDeleteViewModel);
 		}
 
-		[HttpGet]
-		public async Task<IActionResult> DeleteProcedure(ProcedureDetailsViewModel model)
+		[HttpPost]
+		[Authorize]
+		public async Task<IActionResult> SoftDeleteConfirmed(DeleteProcedureViewModel model)
 		{
-			await procedureService.ProcedureDeleteAsync(model);
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return this.RedirectToAction(nameof(Index));
+			}
 
-			return RedirectToAction(nameof(Index));
+			bool isDeleted = await procedureService
+				.SoftDeleteProcedureAsync(model.Id);
+
+			if (!isDeleted)
+			{
+				TempData["ErrorMessage"] =
+					"Unexpected error occurred while trying to delete the procedure! Please contact system administrator!";
+				return this.RedirectToAction(nameof(DeleteProcedure), new { id = model.Id });
+			}
+			return this.RedirectToAction(nameof(Manage));
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> EditProcedure(int id)
 		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return this.RedirectToAction(nameof(Index));
+			}
+
 			EditProcedureFormModel? model = await procedureService.GetEditedModel(id);
 
 			if (model == null)
@@ -94,16 +132,29 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpPost]
+		[Authorize]
 		public async Task<IActionResult> EditProcedure(EditProcedureFormModel model)
 		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return this.RedirectToAction(nameof(Index));
+			}
+
 			if (!ModelState.IsValid)
 			{
 				return View(model);
 			}
 
-			await procedureService.EditProcedureAsync(model);
+			bool isUpdated = await procedureService.EditProcedureAsync(model);
 
-			return RedirectToAction(nameof(Index));
+			if (!isUpdated)
+			{
+				ModelState.AddModelError(string.Empty, "Unexpected error occurred while updating the cinema! Please contact administrator");
+				return this.View(model);
+			}
+
+			return RedirectToAction(nameof(Index), "Procedure", new { id = model.Id });
 		}
 
 		[HttpGet]
@@ -137,5 +188,22 @@ namespace AnimalStudio.Web.Controllers
 
 			return this.RedirectToAction(nameof(Index), "Worker");
 		}
+
+
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> Manage()
+		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return RedirectToAction(nameof(Index));
+			}
+
+			IEnumerable<ProcedureIndexViewModel> procedures = await procedureService.IndexGetAllProceduresAsync();
+
+			return View(procedures);
+		}
+
 	}
 }

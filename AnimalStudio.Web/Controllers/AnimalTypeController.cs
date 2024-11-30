@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace AnimalStudio.Web.Controllers
 {
 	[Authorize]
-	public class AnimalTypeController : Controller
+	public class AnimalTypeController : BaseController
 	{
 		private readonly IAnimalTypeService animalTypeService;
 
-		public AnimalTypeController(IAnimalTypeService animalTypeService)
+		public AnimalTypeController(IAnimalTypeService animalTypeService, IManagerService managerService)
+			: base(managerService)
 		{
 			this.animalTypeService = animalTypeService;
 		}
@@ -86,6 +87,21 @@ namespace AnimalStudio.Web.Controllers
 			await animalTypeService.EditAnimalTypeAsync(model);
 
 			return RedirectToAction(nameof(Index));
+		}
+
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> Manage()
+		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return RedirectToAction(nameof(Index));
+			}
+
+			IEnumerable<AnimalTypeViewModel> animalTypesList = await animalTypeService.IndexGetAllAnimalTypesAsync();
+
+			return View(animalTypesList);
 		}
 	}
 }

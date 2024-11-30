@@ -18,13 +18,14 @@ namespace AnimalStudio.Services.Data
 		public async Task<IEnumerable<OrderIndexViewModel>> IndexGetMyOrdersAsync(string userId)
 		{
 			var orders = await orderRepository.GetAllAttached()
-				.Include(ap => ap.Procedure)
-				.Where(ap => ap.OwnerId == userId)
-				.Select(ap => new OrderIndexViewModel()
+				.Include(o => o.Procedure)
+				.Where(o => o.OwnerId == userId && o.Procedure.IsDeleted == false)
+				.Select(o => new OrderIndexViewModel()
 				{
-					AnimalName = ap.Animal.Name,
-					ProcedureName = ap.Procedure.Name,
-					Price = ap.Procedure.Price
+					Id = o.Id,
+					AnimalName = o.Animal.Name,
+					ProcedureName = o.Procedure.Name,
+					Price = o.Procedure.Price
 				})
 				.ToListAsync();
 
@@ -35,8 +36,10 @@ namespace AnimalStudio.Services.Data
 		{
 			var orders = await orderRepository.GetAllAttached()
 				.Include(ap => ap.Procedure)
+				.Where(o => o.Procedure.IsDeleted == false)
 				.Select(ap => new OrderIndexViewModel()
 				{
+					Id = ap.Id,
 					AnimalName = ap.Animal.Name,
 					ProcedureName = ap.Procedure.Name,
 					Price = ap.Procedure.Price,
@@ -83,16 +86,14 @@ namespace AnimalStudio.Services.Data
 			return true;
 		}
 
-		public async Task<bool> RemoveOrderAsync(string animalName, string procedureName)
+		public async Task<bool> RemoveOrderAsync(Guid id)
 		{
-			Order order = await orderRepository.FirstOrDefaultAsync(ap =>
-				ap.Animal.Name == animalName && ap.Procedure.Name == procedureName);
+			Order order = await orderRepository.GetByIdAsync(id);
 
 			if (order != null)
 			{
 				await orderRepository.DeleteAsync(order);
 			}
-
 			return true;
 		}
 	}

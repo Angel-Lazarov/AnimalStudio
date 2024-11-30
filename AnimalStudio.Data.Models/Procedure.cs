@@ -28,8 +28,10 @@ namespace AnimalStudio.Data.Models
 		[Comment("Procedure Price")]
 		public decimal Price { get; set; }
 
+		public bool IsDeleted { get; set; }
+
 		public virtual ICollection<WorkerProcedure> WorkersProcedures { get; set; } = new List<WorkerProcedure>();
 
-        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
-    }
+		public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+	}
 }

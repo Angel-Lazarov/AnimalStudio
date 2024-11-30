@@ -1,65 +1,66 @@
-﻿@using AnimalStudio.Web.ViewModels.Worker
+﻿@using AnimalStudio.Services.Data.Interfaces
+@using AnimalStudio.Web.Infrastructure.Extensions
+@using AnimalStudio.Web.ViewModels.Worker
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model WorkerDetailsViewModel
+@inject IManagerService managerService
 
 @{
-    ViewData["Title"] = "Worker Details!";
+	ViewData["Title"] = "Worker Details!";
 }
 
 <div class="text-center">
-    <h2>More information about @Model.Name</h2>
+	<h2>More information about @Model.Name</h2>
 </div>
 <hr />
 
 <div class="text-center">
-        @if (!string.IsNullOrEmpty(Model.ImageUrl))
-        {
-            <img src="@Model.ImageUrl" class="img-fluid" style="width: auto; height: 250px;" alt="@Model.Name" />
-        }
-        else
-        {
-            <img src="~/img/no_image_available.png" class="img-fluid" style="max-width: 100%; height: auto;" alt="No Image Available" />
-        }
-    </div>
+	@if (!string.IsNullOrEmpty(Model.ImageUrl))
+	{
+		<img src="@Model.ImageUrl" class="img-fluid" style="width: auto; height: 250px;" alt="@Model.Name" />
+	}
+	else
+	{
+		<img src="~/img/no_image_available.png" class="img-fluid" style="max-width: 100%; height: auto;" alt="No Image Available" />
+	}
+</div>
 
 <hr />
 
 <div class="col-md-8">
-    <div class="card-body">
-        <p class="card-text">@Model.Description</p>
-    </div>
+	<div class="card-body">
+		<p class="card-text">@Model.Description</p>
+	</div>
 </div>
-
-
-@if (User?.Identity?.IsAuthenticated ?? false)
-{
-    <div class="text"><strong>Worker Management</strong> </div>
-    <a asp-controller="Worker" asp-action="EditWorker" asp-route-id="@Model.Id" class="btn btn-info d-inline">Edit</a>
-    <a asp-controller="Worker" asp-action="DeleteWorker" asp-route-id="@Model.Id" class="btn btn-danger d-inline" onclick="return confirm('Are you sure you want to delete this worker?');">Delete</a>
-    <hr />
-    <hr />
-}
 
 <div class="text-center"><strong>Procedures by @Model.Name</strong> </div>
 <table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var procedure in Model.Procedures)
-        {
-            <tr>
-                <td>@procedure.Name</td>
-                <td>@procedure.Price.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("bg-BG"))</td>
-            </tr>
-        }
-    </tbody>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Price</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var procedure in Model.Procedures)
+		{
+			<tr>
+				<td>@procedure.Name</td>
+				<td>@procedure.Price.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("bg-BG"))</td>
+			</tr>
+		}
+	</tbody>
 </table>
 
 <div class="row">
-    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
-        <a asp-controller="Worker" asp-action="Index" class="btn btn-warning btn-dark-text mb-2 w-100 py-3 fw-bold rounded">Back</a>
-    </div>
+	<div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+		@if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
+		{
+			<a asp-controller="Worker" asp-action="Manage" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Back</a>
+		}
+		else
+		{
+			<a asp-controller="Worker" asp-action="Index" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Back</a>
+		}
+	</div>
 </div>

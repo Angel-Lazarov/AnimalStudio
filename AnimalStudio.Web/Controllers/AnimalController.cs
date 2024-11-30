@@ -7,13 +7,13 @@ using static AnimalStudio.Common.ErrorMessages.Animal;
 
 namespace AnimalStudio.Web.Controllers
 {
-	[Authorize]
-	public class AnimalController : Controller
+	public class AnimalController : BaseController
 	{
 		private readonly IAnimalService animalService;
 		private readonly IAnimalTypeService animalTypeService;
 
-		public AnimalController(IAnimalService animalService, IAnimalTypeService animalTypeService)
+		public AnimalController(IAnimalService animalService, IAnimalTypeService animalTypeService, IManagerService managerService)
+		: base(managerService)
 		{
 			this.animalService = animalService;
 			this.animalTypeService = animalTypeService;
@@ -32,11 +32,7 @@ namespace AnimalStudio.Web.Controllers
 		{
 			string currentUserId = GetCurrentUserId()!;
 
-			//if (currentUserId == null)
-			//{
-			//	throw new InvalidOperationException("You are not logged in");
-			//}
-			IEnumerable<AnimalIndexViewModel> animals = await animalService.IndexGetMyAnimalsAsync(currentUserId);
+			IEnumerable<AnimalDetailsViewModel> animals = await animalService.IndexGetMyAnimalsAsync(currentUserId);
 
 			return View(animals);
 		}
@@ -137,6 +133,22 @@ namespace AnimalStudio.Web.Controllers
 
 			return RedirectToAction(nameof(Index));
 		}
+
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> Manage()
+		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return RedirectToAction(nameof(Index));
+			}
+
+			IEnumerable<AnimalIndexViewModel> animals = await animalService.IndexGetAllAnimalsAsync();
+
+			return View(animals);
+		}
+
 
 		private string? GetCurrentUserId()
 		{

@@ -2,21 +2,17 @@
 	ViewData["Title"] = "Welcome to AnimalSpa!";
 }
 
-@* <div class="text-center">
-	<h1 class="index-page-greeting">AnimalSpa</h1>
-	<p class="index-page-greeting-p">Spa for your animal</p>
-
-	<img src="~/img/home.jpg" style="width: 75vh" />
-</div> *@
 <!-- Title Section -->
-<div class="container text-center my-5">
-	<h1 class="display-4">@ViewData["Title"]</h1>
+<div class="container text-center my-1">
+	<h1 class="display-2">@ViewData["Title"]</h1>
 	<p class="lead">Discover the best specialists and SPA procedures for your animal.</p>
-	<hr class="my-4">
+	@* 	<img src="~/img/home.jpg" style="width: 75vh" />
+	*@	@* <hr class="my-4"> *@
 </div>
 
 <!-- Welcome Section -->
-<div class="bg-dark text-white text-center py-5">
+@* <div class="bg-dark text-white text-center py-1"> *@
+<div class="bg-info text-white text-center py-1">
 	<div class="container">
 		<h2 class="display-5 fw-bold">Your favourite animal studio</h2>
 		<p class="mb-4">Find a procedure and explore our specialists.</p>
@@ -25,7 +21,13 @@
 	</div>
 </div>
 
-<!-- Featured Section -->
+
+<div class="text-center">
+	<img src="~/img/home.jpg" style="width: 75vh" />
+</div>
+
+
+@* <!-- Featured Section -->
 <div class="container my-5">
     <h3 class="text-center mb-4">Popular Choices</h3>
     <div class="row">
@@ -45,14 +47,14 @@
         </div>
     </div>
 </div>
-
+ *@
 <div class="row">
-    <div class="container text-center">
-        <p>
-            Follow us on:
-            <a href="#" class="text-muted mx-1">Facebook</a> |
-            <a href="#" class="text-muted mx-1">Twitter</a> |
-            <a href="#" class="text-muted mx-1">Instagram</a>
-        </p>
-    </div>
+	<div class="container text-center">
+		<p>
+			Follow us on:
+			<a href="#" class="text-muted mx-1">Facebook</a> |
+			<a href="#" class="text-muted mx-1">Twitter</a> |
+			<a href="#" class="text-muted mx-1">Instagram</a>
+		</p>
+	</div>
 </div>

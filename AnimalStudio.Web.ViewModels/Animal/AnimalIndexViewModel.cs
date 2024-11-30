@@ -8,7 +8,7 @@
 
 		public int Age { get; set; }
 
-		public string? Owner { get; set; }
+		public string Owner { get; set; } = null!;
 
 	}
 }

@@ -8,13 +8,14 @@ using static AnimalStudio.Common.ErrorMessages.Order;
 namespace AnimalStudio.Web.Controllers
 {
 	[Authorize]
-	public class OrderController : Controller
+	public class OrderController : BaseController
 	{
 		private readonly IOrderService orderService;
 		private readonly IProcedureService procedureService;
 		private readonly IAnimalService animalService;
 
-		public OrderController(IOrderService orderService, IProcedureService procedureService, IAnimalService animalService)
+		public OrderController(IOrderService orderService, IProcedureService procedureService, IAnimalService animalService, IManagerService managerService)
+			: base(managerService)
 		{
 			this.orderService = orderService;
 			this.procedureService = procedureService;
@@ -27,14 +28,6 @@ namespace AnimalStudio.Web.Controllers
 			string userId = GetCurrentUserId()!;
 
 			IEnumerable<OrderIndexViewModel> orders = await orderService.IndexGetMyOrdersAsync(userId);
-
-			return View(orders);
-		}
-
-		[HttpGet]
-		public async Task<IActionResult> IndexAll()
-		{
-			IEnumerable<OrderIndexViewModel> orders = await orderService.IndexGetAllOrdersAsync();
 
 			return View(orders);
 		}
@@ -104,10 +97,11 @@ namespace AnimalStudio.Web.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> RemoveMyOrder(string animalName, string procedureName)
+		[Authorize]
+		[HttpGet]
+		public async Task<IActionResult> RemoveOrder(Guid id)
 		{
-			bool result = await orderService.RemoveOrderAsync(animalName, procedureName);
+			bool result = await orderService.RemoveOrderAsync(id);
 
 			if (result == false)
 			{
@@ -117,20 +111,20 @@ namespace AnimalStudio.Web.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> RemoveOrder(string animalName, string procedureName)
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> Manage()
 		{
-			bool result = await orderService.RemoveOrderAsync(animalName, procedureName);
-
-			if (result == false)
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
 			{
-				return BadRequest();
+				return RedirectToAction(nameof(Index));
 			}
 
-			return RedirectToAction(nameof(IndexAll));
+			IEnumerable<OrderIndexViewModel> orders = await orderService.IndexGetAllOrdersAsync();
+
+			return View(orders);
 		}
-
-
 
 		private string? GetCurrentUserId()
 		{

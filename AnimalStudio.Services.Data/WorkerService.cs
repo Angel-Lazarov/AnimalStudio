@@ -63,7 +63,7 @@ namespace AnimalStudio.Services.Data
 					ImageUrl = worker.ImageUrl,
 					Description = worker.Description,
 					Procedures = worker.WorkersProcedures
-						.Where(wp => wp.IsDeleted == false)
+						.Where(wp => wp.IsDeleted == false && wp.Procedure.IsDeleted == false)
 						.Select(wp => new ProcedureDetailsViewModel
 						{
 							Id = wp.Procedure.Id,

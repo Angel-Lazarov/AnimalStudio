@@ -19,12 +19,14 @@ namespace AnimalStudio.Data.Configuration
 				.WithMany(w => w.WorkersProcedures)
 				.HasForeignKey(wp => wp.WorkerId)
 				.OnDelete(DeleteBehavior.Restrict);
+			//.OnDelete(DeleteBehavior.NoAction);
 
 			builder
 				.HasOne(wp => wp.Procedure)
 				.WithMany(p => p.WorkersProcedures)
 				.HasForeignKey(wp => wp.ProcedureId)
 				.OnDelete(DeleteBehavior.Restrict);
+			//.OnDelete(DeleteBehavior.NoAction);
 
 			builder.HasData(this.SeedWorkerProcedure());
 		}

@@ -1,111 +1,124 @@
 ﻿@using static AnimalStudio.Common.ApplicationConstants
 @using AnimalStudio.Services.Data.Interfaces
 @using AnimalStudio.Web.Infrastructure.Extensions
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject IManagerService managerService
 
 @{
-    int currentYear = DateTime.UtcNow.Year;
-    string footerNote = (ReleaseYear == currentYear) ? $"{currentYear}" : $"{ReleaseYear} - {currentYear}";
+	int currentYear = DateTime.UtcNow.Year;
+	string footerNote = (ReleaseYear == currentYear) ? $"{currentYear}" : $"{ReleaseYear} - {currentYear}";
 }
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AnimalStudio</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/AnimalStudio.Web.styles.css" asp-append-version="true" />
-    <link rel="icon" href="~/img/favicon.png" type="image/x-icon" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - AnimalStudio</title>
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/AnimalStudio.Web.styles.css" asp-append-version="true" />
+	<link rel="icon" href="~/img/favicon.png" type="image/x-icon" />
 </head>
 <body class="d-flex flex-column min-vh-100">
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
+	<header>
+		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+			<div class="container-fluid">
 
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AnimalSpa</a>
+				<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AnimalSpa</a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+						aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+				<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+					<ul class="navbar-nav flex-grow-1">
 
-                        <li class="nav-item">
-                            @if (User?.Identity?.IsAuthenticated ?? false)
-                            {
-                                <a class="nav-link text-dark" asp-controller="Procedure" asp-action="Index">Home</a>
-                            }
-                            else
-                            {
-                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
-                            }
-                        </li>
+						<li class="nav-item">
+							@if (User?.Identity?.IsAuthenticated ?? false)
+							{
+								<a class="nav-link text-dark" asp-controller="Procedure" asp-action="Index">Home</a>
+							}
+							else
+							{
+								<a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+							}
+						</li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Worker" asp-action="Index">Workers</a>
-                        </li>
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-area="" asp-controller="Worker" asp-action="Index">Workers</a>
+						</li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Procedure" asp-action="Index">Procedures<span class="visually-hidden">(current)</span></a>
-                        </li>
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-area="" asp-controller="Procedure" asp-action="Index">Procedures<span class="visually-hidden">(current)</span></a>
+						</li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AnimalType" asp-action="Index">Animal Types</a>
-                        </li>
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-area="" asp-controller="AnimalType" asp-action="Index">Animal Types</a>
+						</li>
 
-                        @if (this.User?.Identity?.IsAuthenticated ?? false)
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">My Zone</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" asp-controller="Order" asp-action="AddOrder">Add Order</a>
-                                    <a class="dropdown-item" asp-controller="Order" asp-action="Index">My Orders</a>
-                                    <a class="dropdown-item" asp-controller="Animal" asp-action="MyIndex">My Animals</a>
-                                </div>
-                            </li>
-                        }
+						@if (this.User?.Identity?.IsAuthenticated ?? false)
+						{
+							<li class="nav-item dropdown">
+								<a class="nav-link text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">My Zone</a>
+								<div class="dropdown-menu">
+									<a class="dropdown-item" asp-controller="Order" asp-action="AddOrder">Add Order</a>
+									<a class="dropdown-item" asp-controller="Order" asp-action="Index">My Orders</a>
+									<a class="dropdown-item" asp-controller="Animal" asp-action="MyIndex">My Animals</a>
+								</div>
+							</li>
+						}
 
-                        @if (this.User?.Identity?.IsAuthenticated ?? false)
-                        {
-                            @if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
-                            {
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Admin Zone</a>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" asp-controller="Animal" asp-action="Index">All Animals(admin)</a>
-                                        <a class="dropdown-item" asp-controller="Order" asp-action="IndexAll">All Orders(admin)</a>
-                                        <a class="dropdown-item" asp-controller="Procedure" asp-action="AddProcedure">Add Procedure(admin)</a>
-                                        <a class="dropdown-item" asp-controller="AnimalType" asp-action="AddAnimalType">Add Animal Type(admin)</a>
-                                        <a class="dropdown-item" asp-controller="Worker" asp-action="AddWorker">Add Worker(admin)</a>
-                                        <a class="dropdown-item" asp-controller="Procedure" asp-action="AssignToWorker">Assign To Worker(admin)</a>
-                                    </div>
-                                </li>
-                            }
-                        }
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+						@if (this.User?.Identity?.IsAuthenticated ?? false)
+						{
+							@* @if (await this.managerService.IsUserManagerAsync(User.FindFirstValue(ClaimTypes.NameIdentifier))) *@
+							@if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
+							{
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle text-dark" href="#" id="managerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+										Manager Zone
+									</a>
+									<ul class="dropdown-menu" aria-labelledby="managerDropdown">
+										<li>
+											<a class="dropdown-item" asp-area="" asp-controller="Animal" asp-action="Manage">Manage Animals</a>
+										</li>
+										<li>
+											<a class="dropdown-item" asp-area="" asp-controller="Order" asp-action="Manage">Manage Orders</a>
+										</li>
+										<li>
+											<a class="dropdown-item" asp-area="" asp-controller="Procedure" asp-action="Manage">Manage Procedures</a>
+										</li>
+										<li>
+											<a class="dropdown-item" asp-area="" asp-controller="AnimalType" asp-action="Manage">Manage AnimalTypes</a>
+										</li>
+										<li>
+											<a class="dropdown-item" asp-area="" asp-controller="Worker" asp-action="Manage">Manage Workers</a>
+										</li>
+									</ul>
+								</li>
+							}
+						}
+					</ul>
+					<partial name="_LoginPartial" />
+				</div>
+			</div>
+		</nav>
+	</header>
+	<div class="container">
+		<main role="main" class="pb-3">
+			@RenderBody()
+		</main>
+	</div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; @footerNote - AnimalStudio - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+	<footer class="border-top footer text-muted">
+		<div class="container">
+			&copy; @footerNote - AnimalStudio - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+		</div>
+	</footer>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace AnimalStudio.Web.Controllers
 {
 	[Authorize]
-	public class WorkerController : Controller
+	public class WorkerController : BaseController
 	{
 		private readonly IWorkerService workerService;
 
-		public WorkerController(IWorkerService workerService)
+		public WorkerController(IWorkerService workerService, IManagerService managerService)
+			: base(managerService)
 		{
 			this.workerService = workerService;
 		}
@@ -102,6 +103,21 @@ namespace AnimalStudio.Web.Controllers
 			await workerService.EditWorkerAsync(model);
 
 			return RedirectToAction(nameof(Index));
+		}
+
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> Manage()
+		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return RedirectToAction(nameof(Index));
+			}
+
+			IEnumerable<WorkerViewModel> workersList = await workerService.IndexGetAllWorkersAsync();
+
+			return View(workersList);
 		}
 	}
 }

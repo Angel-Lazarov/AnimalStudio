@@ -2,6 +2,8 @@
 {
 	public class OrderIndexViewModel
 	{
+		public Guid Id { get; set; }
+
 		public string AnimalName { get; set; } = null!;
 
 		public string ProcedureName { get; set; } = null!;

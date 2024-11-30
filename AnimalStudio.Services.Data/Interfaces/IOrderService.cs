@@ -12,7 +12,7 @@ namespace AnimalStudio.Services.Data.Interfaces
 
 		Task<bool> AddMyOrderAsync(MakeOrderViewModel model);
 
-		Task<bool> RemoveOrderAsync(string animalName, string procedureName);
+		Task<bool> RemoveOrderAsync(Guid id);
 
 
 	}

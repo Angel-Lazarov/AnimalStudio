@@ -25,24 +25,25 @@ namespace AnimalStudio.Services.Data
 				{
 					Id = animal.Id,
 					Name = animal.Name,
-					Age = animal.Age,
-					Owner = animal.Owner.UserName
+					Owner = animal.Owner.UserName!
 				})
 				.ToArrayAsync();
 
 			return index;
 		}
 
-		public async Task<IEnumerable<AnimalIndexViewModel>> IndexGetMyAnimalsAsync(string id)
+		public async Task<IEnumerable<AnimalDetailsViewModel>> IndexGetMyAnimalsAsync(string id)
 		{
-			IEnumerable<AnimalIndexViewModel> index = await animalRepository.GetAllAttached()
+			IEnumerable<AnimalDetailsViewModel> index = await animalRepository.GetAllAttached()
+				.Include(a => a.AnimalType)
 				.Where(a => a.OwnerId == id)
-				.Select(animal => new AnimalIndexViewModel()
+				.Select(animal => new AnimalDetailsViewModel()
 				{
 					Id = animal.Id,
 					Name = animal.Name,
 					Age = animal.Age,
-					Owner = animal.Owner.UserName
+					AnimalType = animal.AnimalType.AnimalTypeName,
+					Owner = animal.Owner.UserName!
 				})
 				.ToArrayAsync();
 

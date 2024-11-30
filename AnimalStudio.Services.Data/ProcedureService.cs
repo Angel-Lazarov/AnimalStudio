@@ -24,6 +24,7 @@ namespace AnimalStudio.Services.Data
 		{
 			IEnumerable<ProcedureIndexViewModel> procedures = await procedureRepository
 				 .GetAllAttached()
+				 .Where(p => p.IsDeleted == false)
 				 .Select(p => new ProcedureIndexViewModel()
 				 {
 					 Id = p.Id,
@@ -78,9 +79,34 @@ namespace AnimalStudio.Services.Data
 			return procedureViewModel;
 		}
 
-		public async Task ProcedureDeleteAsync(ProcedureDetailsViewModel model)
+
+		public async Task<DeleteProcedureViewModel?> GetProcedureForDeleteByIdAsync(int id)
 		{
-			await procedureRepository.DeleteAsync(model.Id);
+			DeleteProcedureViewModel? procedureToDelete = await procedureRepository
+				.GetAllAttached()
+				.Where(p => p.IsDeleted == false)
+				.Select(p => new DeleteProcedureViewModel
+				{
+					Id = p.Id,
+					Description = p.Description,
+					Name = p.Name
+				})
+				.FirstOrDefaultAsync(p => p.Id == id);
+			return procedureToDelete;
+		}
+
+		public async Task<bool> SoftDeleteProcedureAsync(int id)
+		{
+			Procedure? procedureToDelete = await procedureRepository
+				.FirstOrDefaultAsync(p => p.Id == id);
+
+			if (procedureToDelete == null)
+			{
+				return false;
+			}
+
+			procedureToDelete.IsDeleted = true;
+			return await procedureRepository.UpdateAsync(procedureToDelete);
 		}
 
 		public async Task<EditProcedureFormModel?> GetEditedModel(int id)
@@ -100,7 +126,7 @@ namespace AnimalStudio.Services.Data
 			return model;
 		}
 
-		public async Task EditProcedureAsync(EditProcedureFormModel model)
+		public async Task<bool> EditProcedureAsync(EditProcedureFormModel model)
 		{
 			Procedure procedure = new Procedure()
 			{
@@ -110,7 +136,8 @@ namespace AnimalStudio.Services.Data
 				Description = model.Description,
 			};
 
-			await procedureRepository.UpdateAsync(procedure);
+			bool result = await procedureRepository.UpdateAsync(procedure);
+			return result;
 		}
 
 		public async Task<AssignProcedureToWorkerInputModel?> GetAssignProcedureToWorkerInputModelByIdAsync(int id)

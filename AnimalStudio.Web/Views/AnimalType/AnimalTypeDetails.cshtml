@@ -1,41 +1,48 @@
-﻿@using AnimalStudio.Web.ViewModels.AnimalType
+﻿@using AnimalStudio.Services.Data.Interfaces
+@using AnimalStudio.Web.Infrastructure.Extensions
+@using AnimalStudio.Web.ViewModels.AnimalType
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model AnimalTypeViewModel
+@inject IManagerService managerService
 
 @{
-    ViewData["Title"] = "AnimalType Details!";
+	ViewData["Title"] = "AnimalType Details!";
 }
 
 <div class="text-center">
-    <h2>More information about @Model.AnimalTypeName</h2>
+	<h2>More information about @Model.AnimalTypeName</h2>
 </div>
 <hr />
 
 <div class="text-center">
-    @if (!string.IsNullOrEmpty(Model.ImageUrl))
-    {
-        <img src="@Model.ImageUrl" class="img-fluid" style="width: auto; height: 250px;" alt="@Model.AnimalTypeName" />
-    }
-    else
-    {
-        <img src="~/img/no_image_available.png" class="img-fluid" style="max-width: 100%; height: auto;" alt="No Image Available" />
-    }
+	@if (!string.IsNullOrEmpty(Model.ImageUrl))
+	{
+		<img src="@Model.ImageUrl" class="img-fluid" style="width: auto; height: 250px;" alt="@Model.AnimalTypeName" />
+	}
+	else
+	{
+		<img src="~/img/no_image_available.png" class="img-fluid" style="max-width: 100%; height: auto;" alt="No Image Available" />
+	}
 </div>
 
 <hr />
 
 <div class="col-md-8">
-    <div class="card-body">
-        <p class="card-text">@Model.Description</p>
-    </div>
+	<div class="card-body">
+		<p class="card-text">@Model.Description</p>
+	</div>
 </div>
 
 <div class="card-footer text-center">
-    <div class="d-flex justify-content-between align-items-center">
-        <a asp-controller="AnimalType" asp-action="Index" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Back</a>
-        @if (User?.Identity?.IsAuthenticated ?? false)
-        {
-            <a asp-controller="AnimalType" asp-action="DeleteAnimalType" asp-route-id="@Model.Id" class="btn btn-danger d-flex justify-content-center align-items-center flex-fill mx-1" onclick="return confirm('Are you sure you want to delete this Animal Type?');">Delete</a>
-        }
-    </div>
+	<div class="d-flex justify-content-between align-items-center">
+		
+		@if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
+		{
+			<a asp-controller="AnimalType" asp-action="Manage" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Back</a>
+		}
+		else
+		{
+			<a asp-controller="AnimalType" asp-action="Index" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Back</a>
+		}
+	</div>
 </div>

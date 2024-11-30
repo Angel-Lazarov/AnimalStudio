@@ -1,5 +1,9 @@
-﻿@using AnimalStudio.Web.ViewModels.Animal
+﻿@using AnimalStudio.Services.Data.Interfaces
+@using AnimalStudio.Web.Infrastructure.Extensions
+@using AnimalStudio.Web.ViewModels.Animal
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model AnimalDetailsViewModel
+@inject IManagerService managerService
 
 @{
 	ViewData["Title"] = "Animal Details!";
@@ -24,10 +28,17 @@
 
 		<div class="card-footer text-center">
 			<div class="d-flex justify-content-between align-items-center">
-				<a asp-controller="Animal" asp-action="Index" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Back</a>
-				@if (User?.Identity?.Name == Model.Owner )
+
+				@if (User?.Identity?.Name == Model.Owner)
 				{
-					<a asp-controller="Animal" asp-action="DeleteAnimal" asp-route-id="@Model.Id" class="btn btn-danger d-flex justify-content-center align-items-center flex-fill mx-1" onclick="return confirm('Are you sure you want to delete this animal?');">Delete</a>
+					@if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
+					{
+						<a asp-controller="Animal" asp-action="Index" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Back</a>
+					}
+					else
+					{
+						<a asp-controller="Animal" asp-action="MyIndex" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Back</a>
+					}
 				}
 			</div>
 		</div>
