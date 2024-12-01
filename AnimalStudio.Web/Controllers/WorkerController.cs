@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AnimalStudio.Web.Controllers
 {
-	[Authorize]
 	public class WorkerController : BaseController
 	{
 		private readonly IWorkerService workerService;
@@ -16,7 +15,6 @@ namespace AnimalStudio.Web.Controllers
 			this.workerService = workerService;
 		}
 
-		[AllowAnonymous]
 		[HttpGet]
 		public async Task<IActionResult> WorkerDetails(int id)
 		{
@@ -30,7 +28,6 @@ namespace AnimalStudio.Web.Controllers
 			return View(model);
 		}
 
-		[AllowAnonymous]
 		[HttpGet]
 		public async Task<IActionResult> Index()
 		{
@@ -40,14 +37,27 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult AddWorker()
+		[Authorize]
+		public async Task<IActionResult> AddWorker()
 		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return this.RedirectToAction(nameof(Index));
+			}
 			return View();
 		}
 
 		[HttpPost]
+		[Authorize]
 		public async Task<IActionResult> AddWorker(WorkerViewModel model)
 		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return this.RedirectToAction(nameof(Index));
+			}
+
 			if (!ModelState.IsValid)
 			{
 				return View(model);
@@ -58,28 +68,51 @@ namespace AnimalStudio.Web.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpPost]
+		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> DeleteWorker(int id)
 		{
-			WorkerDetailsViewModel? model = await workerService.GetWorkerDetailsByIdAsync(id);
-
-			if (model == null)
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
 			{
 				return RedirectToAction(nameof(Index));
 			}
 
-			return View(model);
+			DeleteWorkerViewModel? workerToDeleteViewModel = await workerService.GetWorkerForDeleteByIdAsync(id);
+
+			if (workerToDeleteViewModel == null)
+			{
+				return RedirectToAction(nameof(Manage));
+			}
+
+			return View(workerToDeleteViewModel);
 		}
 
-		[HttpGet]
-		public async Task<IActionResult> DeleteWorker(WorkerViewModel model)
+		[HttpPost]
+		[Authorize]
+		public async Task<IActionResult> DeleteConfirmed(DeleteWorkerViewModel model)
 		{
-			await workerService.WorkerDeleteAsync(model);
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return this.RedirectToAction(nameof(Index));
+			}
 
-			return RedirectToAction(nameof(Index));
+			bool isInUse = await workerService
+				.WorkerDeleteAsync(model.Id);
+
+			if (!isInUse)
+			{
+				TempData["ErrorMessage"] =
+					"The worker is deleted or the worker is in use. ";
+				return this.RedirectToAction(nameof(DeleteWorker), new { id = model.Id });
+			}
+
+			return this.RedirectToAction(nameof(Manage));
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> EditWorker(int id)
 		{
 			WorkerViewModel? model = await workerService.GetEditedModel(id);
@@ -93,6 +126,7 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpPost]
+		[Authorize]
 		public async Task<IActionResult> EditWorker(WorkerViewModel model)
 		{
 			if (!ModelState.IsValid)

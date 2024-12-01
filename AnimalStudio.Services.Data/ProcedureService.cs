@@ -11,13 +11,15 @@ namespace AnimalStudio.Services.Data
 	{
 		private readonly IRepository<Procedure, int> procedureRepository;
 		private readonly IRepository<Worker, int> workerRepository;
+		private readonly IRepository<Order, Guid> orderRepository;
 		private readonly IRepository<WorkerProcedure, object> workerProcedureRepository;
 
-		public ProcedureService(IRepository<Procedure, int> procedureRepository, IRepository<Worker, int> workerRepository, IRepository<WorkerProcedure, object> workerProcedureRepository)
+		public ProcedureService(IRepository<Procedure, int> procedureRepository, IRepository<Worker, int> workerRepository, IRepository<WorkerProcedure, object> workerProcedureRepository, IRepository<Order, Guid> orderRepository)
 		{
 			this.procedureRepository = procedureRepository;
 			this.workerRepository = workerRepository;
 			this.workerProcedureRepository = workerProcedureRepository;
+			this.orderRepository = orderRepository;
 		}
 
 		public async Task<IEnumerable<ProcedureIndexViewModel>> IndexGetAllProceduresAsync()
@@ -100,12 +102,15 @@ namespace AnimalStudio.Services.Data
 			Procedure? procedureToDelete = await procedureRepository
 				.FirstOrDefaultAsync(p => p.Id == id);
 
-			if (procedureToDelete == null)
+			bool isProcedureInUse = await orderRepository.GetAllAttached().AnyAsync(o => o.ProcedureId == id);
+
+			if (procedureToDelete == null || isProcedureInUse == true)
 			{
 				return false;
 			}
 
 			procedureToDelete.IsDeleted = true;
+
 			return await procedureRepository.UpdateAsync(procedureToDelete);
 		}
 

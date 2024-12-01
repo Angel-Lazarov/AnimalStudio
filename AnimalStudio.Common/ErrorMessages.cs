@@ -12,5 +12,11 @@
 			public const string AnimalIsInUse = "The selected animal has an appointment and cannot be deleted!";
 			public const string DuplicatedAnimal = "You have already registered the animal.";
 		}
+
+		public static class AnimalType
+		{
+			public const string AnimalTypeIsInUse = "The selected AnimalType is in use and cannot be deleted!";
+			public const string DuplicatedAnimalType = "You have already registered the AnimalType.";
+		}
 	}
 }

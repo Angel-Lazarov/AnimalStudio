@@ -28,6 +28,7 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> MyIndex()
 		{
 			string currentUserId = GetCurrentUserId()!;
@@ -38,6 +39,7 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> AddAnimal()
 		{
 			string currentUserId = GetCurrentUserId()!;
@@ -57,6 +59,7 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpPost]
+		[Authorize]
 		public async Task<IActionResult> AddAnimal(AddAnimalFormModel model)
 		{
 			if (!ModelState.IsValid)
@@ -91,6 +94,7 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> EditAnimal(int id)
 		{
 			EditAnimalFormModel? model = await animalService.GetEditedModel(id);
@@ -106,6 +110,7 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpPost]
+		[Authorize]
 		public async Task<IActionResult> EditAnimal(EditAnimalFormModel model)
 		{
 			if (!ModelState.IsValid)
@@ -121,6 +126,7 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> DeleteAnimal(int id)
 		{
 			bool result = await animalService.AnimalDeleteAsync(id);

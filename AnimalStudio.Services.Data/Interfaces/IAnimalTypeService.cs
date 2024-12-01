@@ -2,19 +2,20 @@
 
 namespace AnimalStudio.Services.Data.Interfaces
 {
-    public interface IAnimalTypeService
-    {
-        Task<IEnumerable<AnimalTypeViewModel>> IndexGetAllAnimalTypesAsync();
+	public interface IAnimalTypeService
+	{
+		Task<IEnumerable<AnimalTypeViewModel>> IndexGetAllAnimalTypesAsync();
 
-        Task AddAnimalTypeAsync(AnimalTypeViewModel model);
+		Task AddAnimalTypeAsync(AnimalTypeViewModel model);
 
-        Task<AnimalTypeViewModel> GetAnimalTypeDetailsByIdAsync(int id);
+		Task<AnimalTypeViewModel> GetAnimalTypeDetailsByIdAsync(int id);
 
+		Task<DeleteAnimalTypeViewModel?> GetAnimalTypeForDeleteByIdAsync(int id);
 
-        Task AnimalTypeDeleteAsync(AnimalTypeViewModel model);
+		Task<bool> DeleteAnimalTypeAsync(int id);
 
-        Task<AnimalTypeViewModel> GetEditedModel(int id);
+		Task<AnimalTypeViewModel> GetEditedModel(int id);
 
-        Task EditAnimalTypeAsync(AnimalTypeViewModel model);
-    }
+		Task EditAnimalTypeAsync(AnimalTypeViewModel model);
+	}
 }

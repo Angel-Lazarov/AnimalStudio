@@ -1,5 +1,21 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@using AnimalStudio.Web.ViewModels.AnimalType
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model DeleteAnimalTypeViewModel
+
+<h2>Delete Animal Type</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+	<div class="alert alert-danger">
+		@TempData["ErrorMessage"]
+	</div>
 }
+
+<p>Are you sure you want to delete the Animal Type: <strong>@Model.AnimalTypeName</strong>?</p>
+
+<form asp-action="DeleteConfirmed" method="post">
+	@Html.AntiForgeryToken()
+	<input type="hidden" asp-for="Id" />
+	<button type="submit" class="btn btn-danger">Yes, Delete</button>
+	<a asp-action="Manage" class="btn btn-secondary">Cancel</a>
+</form>

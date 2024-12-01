@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AnimalStudio.Web.Controllers
 {
-	[Authorize]
 	public class AnimalTypeController : BaseController
 	{
 		private readonly IAnimalTypeService animalTypeService;
@@ -16,7 +15,6 @@ namespace AnimalStudio.Web.Controllers
 			this.animalTypeService = animalTypeService;
 		}
 
-		[AllowAnonymous]
 		[HttpGet]
 		public async Task<IActionResult> Index()
 		{
@@ -25,7 +23,7 @@ namespace AnimalStudio.Web.Controllers
 			return View(animalTypesList);
 		}
 
-		[AllowAnonymous]
+
 		[HttpGet]
 		public async Task<IActionResult> AnimalTypeDetails(int id)
 		{
@@ -35,14 +33,28 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult AddAnimalType()
+		[Authorize]
+		public async Task<IActionResult> AddAnimalType()
 		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return RedirectToAction(nameof(Index));
+			}
+
 			return View();
 		}
 
 		[HttpPost]
+		[Authorize]
 		public async Task<IActionResult> AddAnimalType(AnimalTypeViewModel model)
 		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return RedirectToAction(nameof(Index));
+			}
+
 			if (!ModelState.IsValid)
 			{
 				return View(model);
@@ -53,32 +65,74 @@ namespace AnimalStudio.Web.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpPost]
+		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> DeleteAnimalType(int id)
 		{
-			await animalTypeService.GetAnimalTypeDetailsByIdAsync(id);
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return RedirectToAction(nameof(Index));
+			}
 
-			return View();
+			DeleteAnimalTypeViewModel? animalTypeToDeleteViewModel = await animalTypeService.GetAnimalTypeForDeleteByIdAsync(id);
+
+			if (animalTypeToDeleteViewModel == null)
+			{
+				return RedirectToAction(nameof(Manage));
+			}
+
+			return View(animalTypeToDeleteViewModel);
 		}
 
-		[HttpGet]
-		public async Task<IActionResult> DeleteAnimalType(AnimalTypeViewModel model)
+		[HttpPost]
+		[Authorize]
+		public async Task<IActionResult> DeleteConfirmed(DeleteAnimalTypeViewModel model)
 		{
-			await animalTypeService.AnimalTypeDeleteAsync(model);
-			return RedirectToAction(nameof(Index));
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return this.RedirectToAction(nameof(Index));
+			}
+
+			bool isInUse = await animalTypeService
+				.DeleteAnimalTypeAsync(model.Id);
+
+			if (!isInUse)
+			{
+				TempData["ErrorMessage"] =
+					"The animal type is deleted or the animal type is in use. ";
+				return this.RedirectToAction(nameof(DeleteAnimalType), new { id = model.Id });
+			}
+
+			return this.RedirectToAction(nameof(Manage));
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> EditAnimalType(int id)
 		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return RedirectToAction(nameof(Index));
+			}
+
 			AnimalTypeViewModel model = await animalTypeService.GetEditedModel(id);
 
 			return View(model);
 		}
 
 		[HttpPost]
+		[Authorize]
 		public async Task<IActionResult> EditAnimalType(AnimalTypeViewModel model)
 		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return RedirectToAction(nameof(Index));
+			}
+
 			if (!ModelState.IsValid)
 			{
 				return View(model);

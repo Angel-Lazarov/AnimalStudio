@@ -9,9 +9,11 @@ namespace AnimalStudio.Services.Data
 	public class AnimalTypeService : IAnimalTypeService
 	{
 		private readonly IRepository<AnimalType, int> animalTypeRepository;
-		public AnimalTypeService(IRepository<AnimalType, int> animalTypeRepository)
+		private readonly IRepository<Animal, int> animalRepository;
+		public AnimalTypeService(IRepository<AnimalType, int> animalTypeRepository, IRepository<Animal, int> animalRepository)
 		{
 			this.animalTypeRepository = animalTypeRepository;
+			this.animalRepository = animalRepository;
 		}
 
 		public async Task<IEnumerable<AnimalTypeViewModel>> IndexGetAllAnimalTypesAsync()
@@ -55,9 +57,35 @@ namespace AnimalStudio.Services.Data
 			return model;
 		}
 
-		public async Task AnimalTypeDeleteAsync(AnimalTypeViewModel model)
+		public async Task<DeleteAnimalTypeViewModel?> GetAnimalTypeForDeleteByIdAsync(int id)
 		{
-			await animalTypeRepository.DeleteAsync(model.Id);
+			DeleteAnimalTypeViewModel? animalTypeToDelete = await animalTypeRepository
+				.GetAllAttached()
+				.Where(at => at.Id == id)
+				.Select(at => new DeleteAnimalTypeViewModel()
+				{
+					Id = at.Id,
+					AnimalTypeName = at.AnimalTypeName
+				})
+				.FirstOrDefaultAsync();
+
+			return animalTypeToDelete;
+		}
+
+		public async Task<bool> DeleteAnimalTypeAsync(int id)
+		{
+			AnimalType? animalTypeToDelete = await animalTypeRepository
+				.FirstOrDefaultAsync(at => at.Id == id);
+
+			bool isAnimalTypeInUse = await animalRepository.GetAllAttached()
+				.AnyAsync(a => a.AnimalTypeId == id);
+
+			if (animalTypeToDelete == null || isAnimalTypeInUse)
+			{
+				return false;
+			}
+
+			return await animalTypeRepository.DeleteAsync(id); ;
 		}
 
 		public async Task<AnimalTypeViewModel> GetEditedModel(int id)

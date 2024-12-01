@@ -80,8 +80,8 @@ namespace AnimalStudio.Web.Controllers
 				return this.RedirectToAction(nameof(Index));
 			}
 
-			DeleteProcedureViewModel? procedureToDeleteViewModel =
-				await procedureService.GetProcedureForDeleteByIdAsync(id);
+			DeleteProcedureViewModel? procedureToDeleteViewModel = await procedureService.GetProcedureForDeleteByIdAsync(id);
+
 			if (procedureToDeleteViewModel == null)
 			{
 				return RedirectToAction(nameof(Manage));
@@ -105,7 +105,7 @@ namespace AnimalStudio.Web.Controllers
 			if (!isDeleted)
 			{
 				TempData["ErrorMessage"] =
-					"Unexpected error occurred while trying to delete the procedure! Please contact system administrator!";
+					"The procedure is deleted or the procedure is in use. ";
 				return this.RedirectToAction(nameof(DeleteProcedure), new { id = model.Id });
 			}
 			return this.RedirectToAction(nameof(Manage));

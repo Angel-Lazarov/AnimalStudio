@@ -10,10 +10,12 @@ namespace AnimalStudio.Services.Data
 	public class WorkerService : IWorkerService
 	{
 		private readonly IRepository<Worker, int> workerRepository;
+		private readonly IRepository<WorkerProcedure, object> workerProcedureRepository;
 
-		public WorkerService(IRepository<Worker, int> workerRepository)
+		public WorkerService(IRepository<Worker, int> workerRepository, IRepository<WorkerProcedure, object> workerProcedureRepository)
 		{
 			this.workerRepository = workerRepository;
+			this.workerProcedureRepository = workerProcedureRepository;
 		}
 
 		public async Task<IEnumerable<WorkerViewModel>> IndexGetAllWorkersAsync()
@@ -77,9 +79,35 @@ namespace AnimalStudio.Services.Data
 			return workerViewModel;
 		}
 
-		public async Task WorkerDeleteAsync(WorkerViewModel model)
+		public async Task<DeleteWorkerViewModel?> GetWorkerForDeleteByIdAsync(int id)
 		{
-			await workerRepository.DeleteAsync(model.Id);
+			DeleteWorkerViewModel? workerToDeleteWorker = await workerRepository
+					.GetAllAttached()
+					.Where(at => at.Id == id)
+					.Select(a => new DeleteWorkerViewModel()
+					{
+						Id = a.Id,
+						Name = a.Name
+					})
+					.FirstOrDefaultAsync();
+
+			return workerToDeleteWorker;
+		}
+
+		public async Task<bool> WorkerDeleteAsync(int id)
+		{
+			Worker workerToDelete = await workerRepository
+				.FirstOrDefaultAsync(w => w.Id == id);
+
+			bool isWorkerInUse = await workerProcedureRepository.GetAllAttached()
+				.AnyAsync(wp => wp.WorkerId == id);
+
+			if (workerToDelete == null || isWorkerInUse)
+			{
+				return false;
+			}
+
+			return await workerRepository.DeleteAsync(id); ;
 		}
 
 		public async Task<WorkerViewModel?> GetEditedModel(int id)
