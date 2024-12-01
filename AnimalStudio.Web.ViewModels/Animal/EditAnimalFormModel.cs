@@ -7,16 +7,18 @@ namespace AnimalStudio.Web.ViewModels.Animal
 	public class EditAnimalFormModel
 	{
 		[Required]
-        public int Id { get; set; }	
-
-        [Required]
-        public string UserId { get; set; } = null!;
+		public int Id { get; set; }
 
 		[Required]
+		public string UserId { get; set; } = null!;
+
+		[Required]
+		[MinLength(AnimalNameMinLength)]
 		[MaxLength(AnimalNameMaxLength)]
 		public string Name { get; set; } = null!;
 
 		[Required]
+		[Range(AnimalAgeMinValue, AnimalAgeMaxValue)]
 		public int Age { get; set; }
 
 		[Required]

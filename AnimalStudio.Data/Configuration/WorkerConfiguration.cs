@@ -8,6 +8,9 @@ namespace AnimalStudio.Data.Configuration
 	{
 		public void Configure(EntityTypeBuilder<Worker> builder)
 		{
+			builder
+				.Property(w => w.IsDeleted)
+				.IsRequired();
 
 			builder.HasData(this.SeedWorkers());
 		}

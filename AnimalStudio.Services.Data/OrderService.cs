@@ -19,7 +19,7 @@ namespace AnimalStudio.Services.Data
 		{
 			var orders = await orderRepository.GetAllAttached()
 				.Include(o => o.Procedure)
-				.Where(o => o.OwnerId == userId && o.Procedure.IsDeleted == false)
+				.Where(o => o.OwnerId == userId && o.Procedure.IsDeleted == false && o.IsDeleted == false)
 				.Select(o => new OrderIndexViewModel()
 				{
 					Id = o.Id,
@@ -36,7 +36,7 @@ namespace AnimalStudio.Services.Data
 		{
 			var orders = await orderRepository.GetAllAttached()
 				.Include(ap => ap.Procedure)
-				.Where(o => o.Procedure.IsDeleted == false)
+				.Where(o => o.Procedure.IsDeleted == false && o.IsDeleted == false)
 				.Select(ap => new OrderIndexViewModel()
 				{
 					Id = ap.Id,
@@ -86,15 +86,33 @@ namespace AnimalStudio.Services.Data
 			return true;
 		}
 
-		public async Task<bool> RemoveOrderAsync(Guid id)
+		public async Task<DeleteOrderViewModel?> GetOrderForDeleteByIdAsync(Guid id)
 		{
-			Order order = await orderRepository.GetByIdAsync(id);
+			DeleteOrderViewModel? orderToDelete = await orderRepository
+				.GetAllAttached()
+				.Where(o => o.IsDeleted == false)
+				.Select(o => new DeleteOrderViewModel
+				{
+					Id = o.Id.ToString()
+				})
+				.FirstOrDefaultAsync(o => o.Id.ToLower() == id.ToString().ToLower());
 
-			if (order != null)
+			return orderToDelete;
+		}
+
+		public async Task<bool> SoftDeleteOrderAsync(Guid id)
+		{
+			Order? orderToDelete = await orderRepository
+				.FirstOrDefaultAsync(o => o.Id.ToString().ToLower() == id.ToString().ToLower() && o.IsDeleted == false);
+
+			if (orderToDelete == null)
 			{
-				await orderRepository.DeleteAsync(order);
+				return false;
 			}
-			return true;
+
+			orderToDelete.IsDeleted = true;
+
+			return await orderRepository.UpdateAsync(orderToDelete);
 		}
 	}
 }

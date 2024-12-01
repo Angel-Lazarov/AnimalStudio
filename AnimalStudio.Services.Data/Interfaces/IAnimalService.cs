@@ -12,7 +12,9 @@ namespace AnimalStudio.Services.Data.Interfaces
 
 		Task<AnimalDetailsViewModel?> GetAnimalDetailsByIdAsync(int id);
 
-		Task<bool> AnimalDeleteAsync(int id);
+		Task<DeleteAnimalViewModel?> GetAnimalForDeleteByIdAsync(int id);
+
+		Task<bool> SoftDeleteAnimalAsync(int id);
 
 		Task<EditAnimalFormModel?> GetEditedModel(int id);
 

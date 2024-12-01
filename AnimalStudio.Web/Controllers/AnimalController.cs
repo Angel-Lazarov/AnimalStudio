@@ -129,15 +129,42 @@ namespace AnimalStudio.Web.Controllers
 		[Authorize]
 		public async Task<IActionResult> DeleteAnimal(int id)
 		{
-			bool result = await animalService.AnimalDeleteAsync(id);
-
-			if (result == false)
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
 			{
-				TempData[nameof(AnimalIsInUse)] = AnimalIsInUse;
-				return RedirectToAction("Index", "Order");
+				return RedirectToAction(nameof(Index));
 			}
 
-			return RedirectToAction(nameof(Index));
+			DeleteAnimalViewModel? animalToDeleteViewModel = await animalService.GetAnimalForDeleteByIdAsync(id);
+
+			if (animalToDeleteViewModel == null)
+			{
+				return RedirectToAction(nameof(Manage));
+			}
+
+			return View(animalToDeleteViewModel);
+		}
+
+		[HttpPost]
+		[Authorize]
+		public async Task<IActionResult> SoftDeleteConfirmed(DeleteAnimalViewModel model)
+		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return this.RedirectToAction(nameof(Index));
+			}
+
+			bool isInUse = await animalService
+				.SoftDeleteAnimalAsync(model.Id);
+
+			if (!isInUse)
+			{
+				TempData[nameof(DeleteAnimalError)] = DeleteAnimalError;
+				return this.RedirectToAction(nameof(DeleteAnimal), new { id = model.Id });
+			}
+
+			return this.RedirectToAction(nameof(Manage));
 		}
 
 		[HttpGet]

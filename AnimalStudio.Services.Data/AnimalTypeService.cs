@@ -19,6 +19,7 @@ namespace AnimalStudio.Services.Data
 		public async Task<IEnumerable<AnimalTypeViewModel>> IndexGetAllAnimalTypesAsync()
 		{
 			IEnumerable<AnimalTypeViewModel> animalTypes = await animalTypeRepository.GetAllAttached()
+				.Where(at => at.IsDeleted == false)
 				.Select(x => new AnimalTypeViewModel()
 				{
 					Id = x.Id,
@@ -30,17 +31,27 @@ namespace AnimalStudio.Services.Data
 			return animalTypes;
 		}
 
-		public async Task AddAnimalTypeAsync(AnimalTypeViewModel model)
+		public async Task<bool> AddAnimalTypeAsync(AnimalTypeViewModel model)
 		{
-			AnimalType animalType = new AnimalType()
+			AnimalType animalTypeToAdd = new AnimalType()
 			{
-				Id = model.Id,
 				AnimalTypeName = model.AnimalTypeName,
 				ImageUrl = model.ImageUrl,
 				Description = model.Description
 			};
 
-			await animalTypeRepository.AddAsync(animalType);
+			AnimalType? animalTypeToCheck = animalTypeRepository
+				.FirstOrDefault(at =>
+					at.AnimalTypeName == model.AnimalTypeName && at.ImageUrl == model.ImageUrl && at.Description == model.Description);
+
+			if (animalTypeToCheck != null)
+			{
+				return false;
+			}
+
+			await animalTypeRepository.AddAsync(animalTypeToAdd);
+
+			return true;
 		}
 
 		public async Task<AnimalTypeViewModel> GetAnimalTypeDetailsByIdAsync(int id)
@@ -72,10 +83,10 @@ namespace AnimalStudio.Services.Data
 			return animalTypeToDelete;
 		}
 
-		public async Task<bool> DeleteAnimalTypeAsync(int id)
+		public async Task<bool> SoftDeleteAnimalTypeAsync(int id)
 		{
 			AnimalType? animalTypeToDelete = await animalTypeRepository
-				.FirstOrDefaultAsync(at => at.Id == id);
+				.FirstOrDefaultAsync(at => at.Id == id && at.IsDeleted == false);
 
 			bool isAnimalTypeInUse = await animalRepository.GetAllAttached()
 				.AnyAsync(a => a.AnimalTypeId == id);
@@ -85,7 +96,9 @@ namespace AnimalStudio.Services.Data
 				return false;
 			}
 
-			return await animalTypeRepository.DeleteAsync(id); ;
+			animalTypeToDelete.IsDeleted = true;
+
+			return await animalTypeRepository.UpdateAsync(animalTypeToDelete);
 		}
 
 		public async Task<AnimalTypeViewModel> GetEditedModel(int id)

@@ -7,7 +7,6 @@ using static AnimalStudio.Common.ErrorMessages.Order;
 
 namespace AnimalStudio.Web.Controllers
 {
-	[Authorize]
 	public class OrderController : BaseController
 	{
 		private readonly IOrderService orderService;
@@ -23,6 +22,7 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> Index()
 		{
 			string userId = GetCurrentUserId()!;
@@ -33,6 +33,7 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> AddOrder()
 		{
 			string userId = GetCurrentUserId()!;
@@ -51,6 +52,7 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpPost]
+		[Authorize]
 		public async Task<IActionResult> AddOrder(AddOrderFormViewModel model)
 		{
 			if (!ModelState.IsValid)
@@ -67,6 +69,7 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> MakeOrder(int id)
 		{
 			string userId = GetCurrentUserId()!;
@@ -84,6 +87,7 @@ namespace AnimalStudio.Web.Controllers
 		}
 
 		[HttpPost]
+		[Authorize]
 		public async Task<IActionResult> MakeOrder(MakeOrderViewModel order)
 		{
 			bool result = await orderService.AddMyOrderAsync(order);
@@ -97,18 +101,46 @@ namespace AnimalStudio.Web.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-		[Authorize]
-		[HttpGet]
-		public async Task<IActionResult> RemoveOrder(Guid id)
-		{
-			bool result = await orderService.RemoveOrderAsync(id);
 
-			if (result == false)
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> DeleteOrder(string? id)
+		{
+			Guid orderGuid = Guid.Empty;
+			if (!this.IsGuidValid(id, ref orderGuid))
 			{
-				return BadRequest();
+				return this.RedirectToAction(nameof(Manage));
 			}
 
-			return RedirectToAction(nameof(Index));
+			DeleteOrderViewModel? orderToDeleteViewModel = await orderService.GetOrderForDeleteByIdAsync(orderGuid);
+
+			if (orderToDeleteViewModel == null)
+			{
+				return RedirectToAction(nameof(Manage));
+			}
+
+			return View(orderToDeleteViewModel);
+		}
+
+		[HttpPost]
+		[Authorize]
+		public async Task<IActionResult> SoftDeleteConfirmed(DeleteOrderViewModel model)
+		{
+			Guid orderGuid = Guid.Empty;
+			if (!this.IsGuidValid(model.Id, ref orderGuid))
+			{
+				return this.RedirectToAction(nameof(Manage));
+			}
+
+			bool isDeleted = await orderService
+				.SoftDeleteOrderAsync(orderGuid);
+
+			if (!isDeleted)
+			{
+				TempData[nameof(DeleteOrderError)] = DeleteOrderError;
+				return this.RedirectToAction(nameof(DeleteOrder), new { id = model.Id });
+			}
+			return this.RedirectToAction(nameof(Manage));
 		}
 
 		[HttpGet]

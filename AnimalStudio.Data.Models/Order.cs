@@ -40,10 +40,6 @@ namespace AnimalStudio.Data.Models
 		[ForeignKey(nameof(ProcedureId))]
 		public virtual Procedure Procedure { get; set; } = null!;
 
-
-
-
-
-		//public ICollection<AnimalProcedure> AnimalsProcedures { get; set; } = new List<AnimalProcedure>();
+		public bool IsDeleted { get; set; }
 	}
 }

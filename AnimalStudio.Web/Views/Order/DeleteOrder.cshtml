@@ -1,18 +1,18 @@
-﻿@using AnimalStudio.Web.ViewModels.Animal
+﻿@using AnimalStudio.Web.ViewModels.Order
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using static AnimalStudio.Common.ErrorMessages.Animal
-@model DeleteAnimalViewModel
+@using static AnimalStudio.Common.ErrorMessages.Order
+@model DeleteOrderViewModel
 
-<h2>Delete Animal</h2>
+<h2>Delete Order</h2>
 
-@if (TempData[nameof(DeleteAnimalError)] != null)
+@if (TempData[nameof(DeleteOrderError)] != null)
 {
 	<div class="alert alert-danger">
-		@TempData[nameof(DeleteAnimalError)]
+		@TempData[nameof(DeleteOrderError)]
 	</div>
 }
 
-<p>Are you sure you want to delete the animal: <strong>@Model.Name</strong>?</p>
+<p>Are you sure you want to delete the order?</p>
 
 <form asp-action="SoftDeleteConfirmed" method="post">
 	@Html.AntiForgeryToken()

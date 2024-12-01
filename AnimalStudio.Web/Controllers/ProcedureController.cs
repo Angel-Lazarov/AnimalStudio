@@ -2,7 +2,7 @@
 using AnimalStudio.Web.ViewModels.Procedure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using static AnimalStudio.Common.ErrorMessages.Procedure;
 
 namespace AnimalStudio.Web.Controllers
 {
@@ -65,7 +65,13 @@ namespace AnimalStudio.Web.Controllers
 				return View(model);
 			}
 
-			await procedureService.AddProcedureAsync(model);
+			bool result = await procedureService.AddProcedureAsync(model);
+
+			if (result == false)
+			{
+				TempData[nameof(DuplicatedProcedure)] = DuplicatedProcedure;
+				return RedirectToAction("Index", "Procedure");
+			}
 
 			return RedirectToAction(nameof(Index));
 		}
@@ -104,8 +110,7 @@ namespace AnimalStudio.Web.Controllers
 
 			if (!isDeleted)
 			{
-				TempData["ErrorMessage"] =
-					"The procedure is deleted or the procedure is in use. ";
+				TempData[nameof(DeleteProcedureError)] = DeleteProcedureError;
 				return this.RedirectToAction(nameof(DeleteProcedure), new { id = model.Id });
 			}
 			return this.RedirectToAction(nameof(Manage));

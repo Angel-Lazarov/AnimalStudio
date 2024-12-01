@@ -12,8 +12,8 @@ namespace AnimalStudio.Services.Data.Interfaces
 
 		Task<bool> AddMyOrderAsync(MakeOrderViewModel model);
 
-		Task<bool> RemoveOrderAsync(Guid id);
+		Task<DeleteOrderViewModel?> GetOrderForDeleteByIdAsync(Guid id);
 
-
+		Task<bool> SoftDeleteOrderAsync(Guid id);
 	}
 }

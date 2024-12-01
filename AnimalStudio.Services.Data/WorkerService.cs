@@ -22,28 +22,39 @@ namespace AnimalStudio.Services.Data
 		{
 			IEnumerable<WorkerViewModel> workers = await workerRepository
 				.GetAllAttached()
-				.Select(s => new WorkerViewModel()
+				.Where(w => w.IsDeleted == false)
+				.Select(w => new WorkerViewModel()
 				{
-					Id = s.Id,
-					Name = s.Name,
-					ImageUrl = s.ImageUrl
-				}
-				)
+					Id = w.Id,
+					Name = w.Name,
+					ImageUrl = w.ImageUrl
+				})
 				.ToListAsync();
 
 			return workers;
 		}
 
-		public async Task AddWorkerAsync(WorkerViewModel model)
+		public async Task<bool> AddWorkerAsync(WorkerViewModel model)
 		{
-			Worker worker = new Worker()
+			Worker workerToAdd = new Worker()
 			{
 				Name = model.Name,
-				Description = model.Description,
-				ImageUrl = model.ImageUrl
+				ImageUrl = model.ImageUrl,
+				Description = model.Description
 			};
 
-			await workerRepository.AddAsync(worker);
+			Worker? workerToCheck = workerRepository
+				.FirstOrDefault(w =>
+					w.Name == model.Name && w.ImageUrl == model.ImageUrl && w.Description == model.Description);
+
+			if (workerToCheck != null)
+			{
+				return false;
+			}
+
+			await workerRepository.AddAsync(workerToAdd);
+
+			return true;
 		}
 
 		public async Task<WorkerDetailsViewModel?> GetWorkerDetailsByIdAsync(int id)
@@ -81,33 +92,35 @@ namespace AnimalStudio.Services.Data
 
 		public async Task<DeleteWorkerViewModel?> GetWorkerForDeleteByIdAsync(int id)
 		{
-			DeleteWorkerViewModel? workerToDeleteWorker = await workerRepository
+			DeleteWorkerViewModel? workerToDelete = await workerRepository
 					.GetAllAttached()
-					.Where(at => at.Id == id)
-					.Select(a => new DeleteWorkerViewModel()
+					.Where(w => w.Id == id)
+					.Select(w => new DeleteWorkerViewModel()
 					{
-						Id = a.Id,
-						Name = a.Name
+						Id = w.Id,
+						Name = w.Name
 					})
 					.FirstOrDefaultAsync();
 
-			return workerToDeleteWorker;
+			return workerToDelete;
 		}
 
-		public async Task<bool> WorkerDeleteAsync(int id)
+		public async Task<bool> SoftDeleteWorkerAsync(int id)
 		{
-			Worker workerToDelete = await workerRepository
-				.FirstOrDefaultAsync(w => w.Id == id);
+			Worker? workerToDelete = await workerRepository
+				.FirstOrDefaultAsync(w => w.Id == id && w.IsDeleted == false);
 
 			bool isWorkerInUse = await workerProcedureRepository.GetAllAttached()
-				.AnyAsync(wp => wp.WorkerId == id);
+				.AnyAsync(wp => wp.WorkerId == id && wp.IsDeleted == false);
 
 			if (workerToDelete == null || isWorkerInUse)
 			{
 				return false;
 			}
 
-			return await workerRepository.DeleteAsync(id); ;
+			workerToDelete.IsDeleted = true;
+
+			return await workerRepository.UpdateAsync(workerToDelete);
 		}
 
 		public async Task<WorkerViewModel?> GetEditedModel(int id)

@@ -2,6 +2,7 @@
 using AnimalStudio.Web.ViewModels.AnimalType;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static AnimalStudio.Common.ErrorMessages.AnimalType;
 
 namespace AnimalStudio.Web.Controllers
 {
@@ -60,7 +61,13 @@ namespace AnimalStudio.Web.Controllers
 				return View(model);
 			}
 
-			await animalTypeService.AddAnimalTypeAsync(model);
+			bool result = await animalTypeService.AddAnimalTypeAsync(model);
+
+			if (result == false)
+			{
+				TempData[nameof(DuplicatedAnimalType)] = DuplicatedAnimalType;
+				return RedirectToAction("Index", "AnimalType");
+			}
 
 			return RedirectToAction(nameof(Index));
 		}
@@ -87,7 +94,7 @@ namespace AnimalStudio.Web.Controllers
 
 		[HttpPost]
 		[Authorize]
-		public async Task<IActionResult> DeleteConfirmed(DeleteAnimalTypeViewModel model)
+		public async Task<IActionResult> SoftDeleteConfirmed(DeleteAnimalTypeViewModel model)
 		{
 			bool isManager = await this.IsUserManagerAsync();
 			if (!isManager)
@@ -96,12 +103,11 @@ namespace AnimalStudio.Web.Controllers
 			}
 
 			bool isInUse = await animalTypeService
-				.DeleteAnimalTypeAsync(model.Id);
+				.SoftDeleteAnimalTypeAsync(model.Id);
 
 			if (!isInUse)
 			{
-				TempData["ErrorMessage"] =
-					"The animal type is deleted or the animal type is in use. ";
+				TempData[nameof(DeleteAnimalTypeError)] = DeleteAnimalTypeError;
 				return this.RedirectToAction(nameof(DeleteAnimalType), new { id = model.Id });
 			}
 

@@ -38,16 +38,27 @@ namespace AnimalStudio.Services.Data
 			return procedures;
 		}
 
-		public async Task AddProcedureAsync(AddProcedureFormModel model)
+		public async Task<bool> AddProcedureAsync(AddProcedureFormModel model)
 		{
-			Procedure procedure = new Procedure()
+			Procedure procedureToAdd = new Procedure()
 			{
 				Name = model.Name,
-				Price = model.Price,
 				Description = model.Description,
+				Price = model.Price
 			};
 
-			await procedureRepository.AddAsync(procedure);
+			Procedure? procedureToCheck = procedureRepository
+				.FirstOrDefault(p =>
+					p.Name == model.Name && p.Description == model.Description && p.Price == model.Price);
+
+			if (procedureToCheck != null)
+			{
+				return false;
+			}
+
+			await procedureRepository.AddAsync(procedureToAdd);
+
+			return true;
 		}
 
 		public async Task<ProcedureDetailsViewModel?> GetProcedureDetailsByIdAsync(int id)
@@ -100,7 +111,7 @@ namespace AnimalStudio.Services.Data
 		public async Task<bool> SoftDeleteProcedureAsync(int id)
 		{
 			Procedure? procedureToDelete = await procedureRepository
-				.FirstOrDefaultAsync(p => p.Id == id);
+				.FirstOrDefaultAsync(p => p.Id == id && p.IsDeleted == false);
 
 			bool isProcedureInUse = await orderRepository.GetAllAttached().AnyAsync(o => o.ProcedureId == id);
 

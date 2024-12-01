@@ -9,11 +9,13 @@ namespace AnimalStudio.Web.ViewModels.Animal
 		[Required]
 		public string UserId { get; set; } = null!;
 
-        [Required]
+		[Required]
+		[MinLength(AnimalNameMinLength)]
 		[MaxLength(AnimalNameMaxLength)]
 		public string Name { get; set; } = null!;
 
 		[Required]
+		[Range(AnimalAgeMinValue, AnimalAgeMaxValue)]
 		public int Age { get; set; }
 
 		[Required]

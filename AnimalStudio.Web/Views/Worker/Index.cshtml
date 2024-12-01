@@ -1,8 +1,16 @@
 ﻿@using AnimalStudio.Web.ViewModels.Worker
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using static AnimalStudio.Common.ErrorMessages.Worker
 @model IEnumerable<WorkerViewModel>
 @{
 	ViewData["Title"] = "Worker List";
+}
+
+@if (TempData[nameof(DuplicatedWorker)] != null)
+{
+	<div class="alert alert-danger" role="alert">
+		@TempData[nameof(DuplicatedWorker)]
+	</div>
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 20px;">

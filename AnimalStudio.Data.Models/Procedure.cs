@@ -15,7 +15,7 @@ namespace AnimalStudio.Data.Models
 
 		[Required]
 		[MaxLength(ProcedureNameMaxLength)]
-		[Comment("Animal name")]
+		[Comment("Procedure name")]
 		public string Name { get; set; } = null!;
 
 		[Required]
@@ -25,6 +25,7 @@ namespace AnimalStudio.Data.Models
 
 		[Required]
 		[Column(TypeName = PriceColumnTypeName)]
+		[Range(typeof(decimal), ProcedurePriceMinValue, ProcedurePriceMaxValue)]
 		[Comment("Procedure Price")]
 		public decimal Price { get; set; }
 

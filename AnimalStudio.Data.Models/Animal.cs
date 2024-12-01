@@ -22,11 +22,16 @@ namespace AnimalStudio.Data.Models
 		[Comment("Age of the animal")]
 		public int Age { get; set; }
 
+		public bool IsDeleted { get; set; }
+
 		[Required]
 		[Comment("Animal type Id")]
 		public int AnimalTypeId { get; set; }
 
-		public AnimalType AnimalType { get; set; } = null!;
+		[Required]
+		[ForeignKey(nameof(AnimalTypeId))]
+		[Comment("Type of the animal")]
+		public virtual AnimalType AnimalType { get; set; } = null!;
 
 		[Required]
 		[Comment("The user who is owner of the animal")]
@@ -36,8 +41,8 @@ namespace AnimalStudio.Data.Models
 		[Required]
 		[ForeignKey(nameof(OwnerId))]
 		[Comment("Animal's owner")]
-		public IdentityUser Owner { get; set; } = null!;
+		public virtual IdentityUser Owner { get; set; } = null!;
 
-        public ICollection<Order> Orders { get; set; } = new List<Order>();
-    }
+		public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+	}
 }

@@ -2,6 +2,7 @@
 using AnimalStudio.Web.ViewModels.Worker;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static AnimalStudio.Common.ErrorMessages.Worker;
 
 namespace AnimalStudio.Web.Controllers
 {
@@ -45,6 +46,7 @@ namespace AnimalStudio.Web.Controllers
 			{
 				return this.RedirectToAction(nameof(Index));
 			}
+
 			return View();
 		}
 
@@ -63,7 +65,13 @@ namespace AnimalStudio.Web.Controllers
 				return View(model);
 			}
 
-			await workerService.AddWorkerAsync(model);
+			bool result = await workerService.AddWorkerAsync(model);
+
+			if (result == false)
+			{
+				TempData[nameof(DuplicatedWorker)] = DuplicatedWorker;
+				return RedirectToAction("Index", "Worker");
+			}
 
 			return RedirectToAction(nameof(Index));
 		}
@@ -90,7 +98,7 @@ namespace AnimalStudio.Web.Controllers
 
 		[HttpPost]
 		[Authorize]
-		public async Task<IActionResult> DeleteConfirmed(DeleteWorkerViewModel model)
+		public async Task<IActionResult> SoftDeleteConfirmed(DeleteWorkerViewModel model)
 		{
 			bool isManager = await this.IsUserManagerAsync();
 			if (!isManager)
@@ -99,12 +107,11 @@ namespace AnimalStudio.Web.Controllers
 			}
 
 			bool isInUse = await workerService
-				.WorkerDeleteAsync(model.Id);
+				.SoftDeleteWorkerAsync(model.Id);
 
 			if (!isInUse)
 			{
-				TempData["ErrorMessage"] =
-					"The worker is deleted or the worker is in use. ";
+				TempData[nameof(DeleteWorkerError)] = DeleteWorkerError;
 				return this.RedirectToAction(nameof(DeleteWorker), new { id = model.Id });
 			}
 
@@ -115,6 +122,12 @@ namespace AnimalStudio.Web.Controllers
 		[Authorize]
 		public async Task<IActionResult> EditWorker(int id)
 		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return this.RedirectToAction(nameof(Index));
+			}
+
 			WorkerViewModel? model = await workerService.GetEditedModel(id);
 
 			if (model == null)
@@ -129,6 +142,12 @@ namespace AnimalStudio.Web.Controllers
 		[Authorize]
 		public async Task<IActionResult> EditWorker(WorkerViewModel model)
 		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return this.RedirectToAction(nameof(Index));
+			}
+
 			if (!ModelState.IsValid)
 			{
 				return View(model);

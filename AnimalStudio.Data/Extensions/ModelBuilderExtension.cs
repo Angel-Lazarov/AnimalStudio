@@ -7,11 +7,11 @@ namespace AnimalStudio.Data.Extensions
 	{
 		public static void MappingEntity(this ModelBuilder modelBuilder)
 		{
-		    modelBuilder.ApplyConfiguration(new OrderConfiguration());
-		    modelBuilder.ApplyConfiguration(new ManagerConfiguration());
+			modelBuilder.ApplyConfiguration(new AnimalConfiguration());
+			modelBuilder.ApplyConfiguration(new OrderConfiguration());
+			modelBuilder.ApplyConfiguration(new ManagerConfiguration());
 			modelBuilder.ApplyConfiguration(new WorkerProcedureConfiguration());
 		}
-
 		public static void Seed(this ModelBuilder modelBuilder)
 		{
 			modelBuilder.ApplyConfiguration(new AnimalTypeConfiguration());

@@ -17,6 +17,7 @@ namespace AnimalStudio.Web.ViewModels.Procedure
 
 		[Required]
 		[Column(TypeName = PriceColumnTypeName)]
+		[Range(typeof(decimal), ProcedurePriceMinValue, ProcedurePriceMaxValue)]
 		public decimal Price { get; set; }
 	}
 }

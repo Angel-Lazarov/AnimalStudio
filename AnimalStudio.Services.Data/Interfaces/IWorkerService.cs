@@ -6,13 +6,13 @@ namespace AnimalStudio.Services.Data.Interfaces
 	{
 		Task<IEnumerable<WorkerViewModel>> IndexGetAllWorkersAsync();
 
-		Task AddWorkerAsync(WorkerViewModel model);
+		Task<bool> AddWorkerAsync(WorkerViewModel model);
 
 		Task<WorkerDetailsViewModel?> GetWorkerDetailsByIdAsync(int id);
 
 		Task<DeleteWorkerViewModel?> GetWorkerForDeleteByIdAsync(int id);
 
-		Task<bool> WorkerDeleteAsync(int id);
+		Task<bool> SoftDeleteWorkerAsync(int id);
 
 		Task<WorkerViewModel?> GetEditedModel(int id);
 

@@ -8,7 +8,7 @@ namespace AnimalStudio.Services.Data.Interfaces
 
 		Task<ProcedureDetailsViewModel?> GetProcedureDetailsByIdAsync(int id);
 
-		Task AddProcedureAsync(AddProcedureFormModel model);
+		Task<bool> AddProcedureAsync(AddProcedureFormModel model);
 
 		Task<AssignProcedureToWorkerInputModel?> GetAssignProcedureToWorkerInputModelByIdAsync(int id);
 

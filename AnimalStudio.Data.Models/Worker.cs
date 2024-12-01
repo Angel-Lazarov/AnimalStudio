@@ -18,6 +18,7 @@ namespace AnimalStudio.Data.Models
 
 		public string? ImageUrl { get; set; }
 
+		public bool IsDeleted { get; set; }
 
 		[Required]
 		[MaxLength(WorkerDescriptionMaxLength)]

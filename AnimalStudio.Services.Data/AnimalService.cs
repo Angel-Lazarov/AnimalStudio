@@ -21,11 +21,12 @@ namespace AnimalStudio.Services.Data
 		public async Task<IEnumerable<AnimalIndexViewModel>> IndexGetAllAnimalsAsync()
 		{
 			IEnumerable<AnimalIndexViewModel> index = await animalRepository.GetAllAttached()
-				.Select(animal => new AnimalIndexViewModel()
+				.Where(a => a.IsDeleted == false)
+				.Select(a => new AnimalIndexViewModel()
 				{
-					Id = animal.Id,
-					Name = animal.Name,
-					Owner = animal.Owner.UserName!
+					Id = a.Id,
+					Name = a.Name,
+					Owner = a.Owner.UserName!
 				})
 				.ToArrayAsync();
 
@@ -36,7 +37,7 @@ namespace AnimalStudio.Services.Data
 		{
 			IEnumerable<AnimalDetailsViewModel> index = await animalRepository.GetAllAttached()
 				.Include(a => a.AnimalType)
-				.Where(a => a.OwnerId == id)
+				.Where(a => a.OwnerId == id && a.IsDeleted == false)
 				.Select(animal => new AnimalDetailsViewModel()
 				{
 					Id = animal.Id,
@@ -60,7 +61,8 @@ namespace AnimalStudio.Services.Data
 				OwnerId = model.UserId
 			};
 
-			Animal animalToCheck = animalRepository.FirstOrDefault(a =>
+			Animal? animalToCheck = animalRepository
+				.FirstOrDefault(a =>
 				a.OwnerId == model.UserId && a.Name == model.Name && a.Age == model.Age && a.AnimalTypeId == model.AnimalTypeId);
 
 			if (animalToCheck != null)
@@ -72,7 +74,6 @@ namespace AnimalStudio.Services.Data
 
 			return true;
 		}
-
 
 		public async Task<AnimalDetailsViewModel?> GetAnimalDetailsByIdAsync(int id)
 		{
@@ -140,17 +141,37 @@ namespace AnimalStudio.Services.Data
 			return animals;
 		}
 
-		public async Task<bool> AnimalDeleteAsync(int id)
+		public async Task<DeleteAnimalViewModel?> GetAnimalForDeleteByIdAsync(int id)
 		{
-			Order order = await orderRepository.FirstOrDefaultAsync(a => a.AnimalId == id);
+			DeleteAnimalViewModel? animalToDelete = await animalRepository
+				.GetAllAttached()
+				.Where(a => a.Id == id)
+				.Select(a => new DeleteAnimalViewModel()
+				{
+					Id = a.Id,
+					Name = a.Name
+				})
+				.FirstOrDefaultAsync();
 
-			if (order != null)
+			return animalToDelete;
+		}
+
+		public async Task<bool> SoftDeleteAnimalAsync(int id)
+		{
+			Animal? animalToDelete = await animalRepository
+				.FirstOrDefaultAsync(a => a.Id == id && a.IsDeleted == false);
+
+			bool isAnimalInUse = await orderRepository.GetAllAttached()
+				.AnyAsync(o => o.AnimalId == id);
+
+			if (animalToDelete == null || isAnimalInUse)
 			{
 				return false;
 			}
 
-			await animalRepository.DeleteAsync(id);
-			return true;
+			animalToDelete.IsDeleted = true;
+
+			return await animalRepository.UpdateAsync(animalToDelete);
 		}
 	}
 }

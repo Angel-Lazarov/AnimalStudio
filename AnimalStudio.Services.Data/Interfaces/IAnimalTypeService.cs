@@ -6,13 +6,13 @@ namespace AnimalStudio.Services.Data.Interfaces
 	{
 		Task<IEnumerable<AnimalTypeViewModel>> IndexGetAllAnimalTypesAsync();
 
-		Task AddAnimalTypeAsync(AnimalTypeViewModel model);
+		Task<bool> AddAnimalTypeAsync(AnimalTypeViewModel model);
 
 		Task<AnimalTypeViewModel> GetAnimalTypeDetailsByIdAsync(int id);
 
 		Task<DeleteAnimalTypeViewModel?> GetAnimalTypeForDeleteByIdAsync(int id);
 
-		Task<bool> DeleteAnimalTypeAsync(int id);
+		Task<bool> SoftDeleteAnimalTypeAsync(int id);
 
 		Task<AnimalTypeViewModel> GetEditedModel(int id);
 

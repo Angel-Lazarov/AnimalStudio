@@ -4,6 +4,7 @@ using static AnimalStudio.Common.EntityValidationConstants.AnimalType;
 
 namespace AnimalStudio.Data.Models
 {
+	[Comment("An AnimalType entity")]
 	public class AnimalType
 	{
 		[Key]
@@ -22,6 +23,8 @@ namespace AnimalStudio.Data.Models
 		[Comment("Description for the worker")]
 		public string Description { get; set; } = null!;
 
-		public ICollection<Animal> Animals { get; set; } = new List<Animal>();
+		public bool IsDeleted { get; set; }
+
+		public virtual ICollection<Animal> Animals { get; set; } = new List<Animal>();
 	}
 }

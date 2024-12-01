@@ -8,6 +8,10 @@ namespace AnimalStudio.Data.Configuration
 	{
 		public void Configure(EntityTypeBuilder<AnimalType> builder)
 		{
+			builder
+				.Property(p => p.IsDeleted)
+				.IsRequired();
+
 			builder.HasData(this.SeedAnimalTypes());
 		}
 
