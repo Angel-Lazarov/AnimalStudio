@@ -152,7 +152,7 @@ namespace AnimalStudio.Web.Controllers
 			{
 				return View(model);
 			}
-
+			
 			await workerService.EditWorkerAsync(model);
 
 			return RedirectToAction(nameof(Index));
@@ -160,6 +160,7 @@ namespace AnimalStudio.Web.Controllers
 
 		[HttpGet]
 		[Authorize]
+		
 		public async Task<IActionResult> Manage()
 		{
 			bool isManager = await this.IsUserManagerAsync();
