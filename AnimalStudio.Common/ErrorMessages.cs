@@ -6,6 +6,7 @@
 		{
 			public const string DeleteOrderError = "The selected order is deleted or the order is in use!";
 			public const string DuplicatedOrder = "The procedure can't be ordered! Make sure that the procedure is already ordered.";
+
 		}
 
 		public static class Animal

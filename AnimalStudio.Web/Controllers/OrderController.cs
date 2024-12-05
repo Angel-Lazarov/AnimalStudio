@@ -2,8 +2,12 @@
 using AnimalStudio.Web.ViewModels.Order;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using System.Security.Claims;
+using static AnimalStudio.Common.EntityValidationConstants.Order;
+using static AnimalStudio.Common.EntityValidationMessages.Order;
 using static AnimalStudio.Common.ErrorMessages.Order;
+
 
 namespace AnimalStudio.Web.Controllers
 {
@@ -45,7 +49,6 @@ namespace AnimalStudio.Web.Controllers
 				Procedures = procedures,
 				Animals = animals,
 				UserId = userId,
-				Owner = GetCurrentUserName()!
 			};
 
 			return View(model);
@@ -63,20 +66,39 @@ namespace AnimalStudio.Web.Controllers
 				return View(model);
 			}
 
-			await orderService.AddOrderAsync(model);
+			bool isCreatedOnDateValid = DateTime.TryParseExact(model.CreatedOn, CreatedOnDateFormat, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime createdOn);
+
+			if (!isCreatedOnDateValid)
+			{
+				ModelState.AddModelError(nameof(model.CreatedOn), CreatedOnRequiredMessage);
+				return View(model);
+			}
+
+			if (createdOn < DateTime.Today)
+			{
+				ModelState.AddModelError(nameof(model.CreatedOn), CreatedOnBeforeMessage);
+				return View(model);
+			}
+
+			bool result = await orderService.AddOrderAsync(model);
+
+			if (result == false)
+			{
+				TempData[nameof(DuplicatedOrder)] = DuplicatedOrder;
+				return RedirectToAction("Index", "Procedure");
+			}
 
 			return RedirectToAction(nameof(Index));
 		}
 
 		[HttpGet]
 		[Authorize]
-		public async Task<IActionResult> MakeOrder(int id)
+		public async Task<IActionResult> BuyOrder(int id)
 		{
 			string userId = GetCurrentUserId()!;
-
 			var animals = await animalService.GetAllAnimalsByUserId(userId);
 
-			MakeOrderViewModel order = new MakeOrderViewModel()
+			AddOrderFormViewModel order = new AddOrderFormViewModel()
 			{
 				ProcedureId = id,
 				Animals = animals,
@@ -88,9 +110,14 @@ namespace AnimalStudio.Web.Controllers
 
 		[HttpPost]
 		[Authorize]
-		public async Task<IActionResult> MakeOrder(MakeOrderViewModel order)
+		public async Task<IActionResult> BuyOrder(AddOrderFormViewModel order)
 		{
-			bool result = await orderService.AddMyOrderAsync(order);
+			if (!ModelState.IsValid)
+			{
+				return RedirectToAction(nameof(Index));
+			}
+
+			bool result = await orderService.AddOrderAsync(order);
 
 			if (result == false)
 			{
@@ -100,7 +127,6 @@ namespace AnimalStudio.Web.Controllers
 
 			return RedirectToAction(nameof(Index));
 		}
-
 
 		[HttpGet]
 		[Authorize]

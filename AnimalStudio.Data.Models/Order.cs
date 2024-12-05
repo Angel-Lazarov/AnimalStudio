@@ -41,5 +41,9 @@ namespace AnimalStudio.Data.Models
 		public virtual Procedure Procedure { get; set; } = null!;
 
 		public bool IsFinished { get; set; }
+
+		[Required]
+		[Comment("Date of order creation.")]
+		public DateTime CreatedOn { get; set; }
 	}
 }

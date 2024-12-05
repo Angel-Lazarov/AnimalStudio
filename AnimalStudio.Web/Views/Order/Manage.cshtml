@@ -14,6 +14,7 @@
         <tr>
             <th scope="col">Animal Name</th>
             <th scope="col">Procedure Name</th>
+            <th>Create Date</th>
             <th scope="col">Price</th>
             <th scope="col">Owner</th>
             <th scope="col">Action</th>
@@ -25,6 +26,7 @@
             <tr>
                 <td>@order.AnimalName</td>
                 <td>@order.ProcedureName</td>
+                <td>@order.CreatedOn</td>
                 <td>@order.Price.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("bg-BG"))</td>
                 <td>@order.Owner</td>
                 <td>

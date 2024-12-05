@@ -36,6 +36,12 @@
 			public const int AnimalAgeMinValue = 0;
 			public const int AnimalAgeMaxValue = 50;
 		}
+
+		public static class Order
+		{
+			public const string CreatedOnDateFormat = "dd/MM/yyyy";
+		}
+
 		public static class Manager
 		{
 			public const int ManagerNickNameMinLength = 3;

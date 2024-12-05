@@ -40,7 +40,7 @@
 						
 						@if (this.User?.Identity?.IsAuthenticated ?? false)
 						{
-							<a asp-controller="Order" asp-action="MakeOrder" asp-route-id="@procedure.Id" class="btn btn-warning">Buy</a>
+							<a asp-controller="Order" asp-action="BuyOrder" asp-route-id="@procedure.Id" class="btn btn-warning">Buy</a>
 						}
 					</div>
 				</div>

@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using AnimalStudio.Web.ViewModels.Order
+@using static AnimalStudio.Common.EntityValidationConstants.Order
 @model AddOrderFormViewModel
 
 @{
@@ -16,7 +17,6 @@
 		<form asp-action="AddOrder" method="post" enctype="multipart/form-data">
 		
 			<input type="hidden" name="UserId" value="@Model.UserId" />
-			<input type="hidden" name="Owner" value="@Model.Owner" />
 
 			<div class="row">
 				<div class="col-sm-6 mb-2">
@@ -38,6 +38,12 @@
 
 					<span asp-validation-for="@Model.ProcedureId" class="text-danger"></span>
 				</div>
+			</div>
+			
+			<div class="row">
+				<label asp-for="@Model.CreatedOn" class="form-label-add-edit">Order Date</label>
+				<input asp-for="@Model.CreatedOn" class="form-control" aria-required="true" value="@DateTime.Now.ToString(CreatedOnDateFormat)" />
+				<span asp-validation-for="@Model.CreatedOn" class="text-danger"></span>
 			</div>
 
 			<div class="mb-2">

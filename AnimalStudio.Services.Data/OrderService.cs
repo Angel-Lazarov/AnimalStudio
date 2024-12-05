@@ -3,6 +3,7 @@ using AnimalStudio.Data.Repository.Interfaces;
 using AnimalStudio.Services.Data.Interfaces;
 using AnimalStudio.Web.ViewModels.Order;
 using Microsoft.EntityFrameworkCore;
+using static AnimalStudio.Common.EntityValidationConstants.Order;
 
 namespace AnimalStudio.Services.Data
 {
@@ -25,7 +26,8 @@ namespace AnimalStudio.Services.Data
 					Id = o.Id,
 					AnimalName = o.Animal.Name,
 					ProcedureName = o.Procedure.Name,
-					Price = o.Procedure.Price
+					Price = o.Procedure.Price,
+					CreatedOn = o.CreatedOn.ToString(CreatedOnDateFormat)
 				})
 				.ToListAsync();
 
@@ -35,50 +37,38 @@ namespace AnimalStudio.Services.Data
 		public async Task<IEnumerable<OrderIndexViewModel>> IndexGetAllOrdersAsync()
 		{
 			var orders = await orderRepository.GetAllAttached()
-				.Include(ap => ap.Procedure)
+				.Include(o => o.Procedure)
 				.Where(o => o.Procedure.IsDeleted == false && o.IsFinished == false)
-				.Select(ap => new OrderIndexViewModel()
+				.Select(o => new OrderIndexViewModel()
 				{
-					Id = ap.Id,
-					AnimalName = ap.Animal.Name,
-					ProcedureName = ap.Procedure.Name,
-					Price = ap.Procedure.Price,
-					Owner = ap.Animal.Owner.UserName!
+					Id = o.Id,
+					AnimalName = o.Animal.Name,
+					ProcedureName = o.Procedure.Name,
+					Price = o.Procedure.Price,
+					CreatedOn = o.CreatedOn.ToString(CreatedOnDateFormat),
+					Owner = o.Animal.Owner.UserName!
 				})
 				.ToListAsync();
 
 			return orders;
 		}
 
-		public async Task AddOrderAsync(AddOrderFormViewModel model)
+		public async Task<bool> AddOrderAsync(AddOrderFormViewModel model)
 		{
+
 			Order order = new Order()
 			{
 				AnimalId = model.AnimalId,
 				ProcedureId = model.ProcedureId,
+				CreatedOn = DateTime.Now,     // parse date !!!
 				OwnerId = model.UserId
 			};
 
-			if (!await orderRepository.GetAllAttached().AnyAsync(ap =>
-					ap.AnimalId == model.AnimalId && ap.ProcedureId == model.ProcedureId))
-			{
-				await orderRepository.AddAsync(order);
-			}
-		}
-
-		public async Task<bool> AddMyOrderAsync(MakeOrderViewModel model)
-		{
-			Order order = new Order()
-			{
-				AnimalId = model.AnimalId,
-				ProcedureId = model.ProcedureId,
-				OwnerId = model.UserId
-			};
-
-			if (await orderRepository.GetAllAttached().AnyAsync(ap =>
-					ap.AnimalId == model.AnimalId && ap.ProcedureId == model.ProcedureId && ap.OwnerId == model.UserId))
+			if (await orderRepository.GetAllAttached().AnyAsync(o =>
+					o.AnimalId == model.AnimalId && o.ProcedureId == model.ProcedureId && o.OwnerId == model.UserId))
 			{
 				return false;
+
 			}
 
 			await orderRepository.AddAsync(order);

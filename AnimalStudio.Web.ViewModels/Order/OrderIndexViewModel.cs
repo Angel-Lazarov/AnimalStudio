@@ -14,5 +14,6 @@
 
 		public decimal Price { get; set; }
 
+		public string CreatedOn { get; set; } = null!;
 	}
 }
