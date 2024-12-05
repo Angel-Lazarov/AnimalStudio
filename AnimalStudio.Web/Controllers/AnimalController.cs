@@ -44,11 +44,6 @@ namespace AnimalStudio.Web.Controllers
 		{
 			string currentUserId = GetCurrentUserId()!;
 
-			if (currentUserId == null)
-			{
-				throw new InvalidOperationException("You are not logged in");
-			}
-
 			AddAnimalFormModel model = new AddAnimalFormModel()
 			{
 				AnimalTypes = await animalTypeService.IndexGetAllAnimalTypesAsync(),

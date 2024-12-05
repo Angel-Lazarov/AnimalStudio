@@ -11,7 +11,7 @@ namespace AnimalStudio.Data.Configuration
 			builder.HasKey(o => o.Id);
 
 			builder
-				.Property(o => o.IsDeleted)
+				.Property(o => o.IsFinished)
 				.IsRequired();
 
 			builder.HasOne(o => o.Owner)

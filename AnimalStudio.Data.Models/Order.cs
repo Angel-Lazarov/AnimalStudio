@@ -10,7 +10,7 @@ namespace AnimalStudio.Data.Models
 	public class Order
 	{
 		[Key]
-		public Guid Id { get; set; }
+		public Guid Id { get; set; } = Guid.NewGuid();
 
 		[Required]
 		[Comment("Identifier of the owner of the order")]
@@ -40,6 +40,6 @@ namespace AnimalStudio.Data.Models
 		[ForeignKey(nameof(ProcedureId))]
 		public virtual Procedure Procedure { get; set; } = null!;
 
-		public bool IsDeleted { get; set; }
+		public bool IsFinished { get; set; }
 	}
 }

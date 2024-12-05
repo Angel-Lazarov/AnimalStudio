@@ -44,8 +44,7 @@ namespace AnimalStudio.Services.Data
 			};
 
 			Worker? workerToCheck = workerRepository
-				.FirstOrDefault(w =>
-					w.Name == model.Name && w.ImageUrl == model.ImageUrl && w.Description == model.Description);
+				.FirstOrDefault(w => w.Name == model.Name);
 
 			if (workerToCheck != null)
 			{

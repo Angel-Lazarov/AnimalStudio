@@ -41,8 +41,7 @@ namespace AnimalStudio.Services.Data
 			};
 
 			AnimalType? animalTypeToCheck = animalTypeRepository
-				.FirstOrDefault(at =>
-					at.AnimalTypeName == model.AnimalTypeName && at.ImageUrl == model.ImageUrl && at.Description == model.Description);
+				.FirstOrDefault(at => at.AnimalTypeName == model.AnimalTypeName );
 
 			if (animalTypeToCheck != null)
 			{

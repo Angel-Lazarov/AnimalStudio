@@ -48,8 +48,7 @@ namespace AnimalStudio.Services.Data
 			};
 
 			Procedure? procedureToCheck = procedureRepository
-				.FirstOrDefault(p =>
-					p.Name == model.Name && p.Description == model.Description && p.Price == model.Price);
+				.FirstOrDefault(p => p.Name == model.Name );
 
 			if (procedureToCheck != null)
 			{
