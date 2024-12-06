@@ -72,14 +72,23 @@ namespace AnimalStudio.Web.Controllers
 				return RedirectToAction("MyIndex", "Animal");
 			}
 
-			return RedirectToAction(nameof(Index));
+			return RedirectToAction(nameof(MyIndex));
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> AnimalDetails(int id)
+		public async Task<IActionResult> AnimalDetails(string? id)
 		{
-			AnimalDetailsViewModel? details = await animalService.GetAnimalDetailsByIdAsync(id);
+			Guid animalGuid = Guid.Empty;
+			bool isIdValid = IsGuidValid(id, ref animalGuid);
+			if (!isIdValid)
+			{
+				return RedirectToAction(nameof(MyIndex));
+			}
 
+
+			AnimalDetailsViewModel? details = await animalService.GetAnimalDetailsByIdAsync(animalGuid);
+
+			// Invalid(non-existing) GUID in the URL
 			if (details == null)
 			{
 				return RedirectToAction(nameof(Index));
@@ -90,13 +99,20 @@ namespace AnimalStudio.Web.Controllers
 
 		[HttpGet]
 		[Authorize]
-		public async Task<IActionResult> EditAnimal(int id)
+		public async Task<IActionResult> EditAnimal(string? id)
 		{
-			EditAnimalFormModel? model = await animalService.GetEditedModel(id);
+			Guid animalGuid = Guid.Empty;
+			bool isIdValid = IsGuidValid(id, ref animalGuid);
+			if (!isIdValid)
+			{
+				return RedirectToAction(nameof(MyIndex));
+			}
+
+			EditAnimalFormModel? model = await animalService.GetEditedModel(animalGuid);
 
 			if (model == null)
 			{
-				return RedirectToAction(nameof(Index));
+				return RedirectToAction(nameof(MyIndex));
 			}
 
 			model.AnimalTypes = await animalTypeService.IndexGetAllAnimalTypesAsync();
@@ -115,26 +131,33 @@ namespace AnimalStudio.Web.Controllers
 				return View(model);
 			}
 
-			await animalService.EditAnimalAsync(model);
+			bool isUpdated = await animalService.EditAnimalAsync(model);
+
+			if (!isUpdated)
+			{
+				ModelState.AddModelError(string.Empty, UpdateAnimalError);
+				return View(model);
+			}
 
 			return RedirectToAction(nameof(Index));
 		}
 
 		[HttpGet]
 		[Authorize]
-		public async Task<IActionResult> DeleteAnimal(int id)
+		public async Task<IActionResult> DeleteAnimal(string? id)
 		{
-			bool isManager = await this.IsUserManagerAsync();
-			if (!isManager)
+			Guid animalGuid = Guid.Empty;
+			bool isIdValid = IsGuidValid(id, ref animalGuid);
+			if (!isIdValid)
 			{
 				return RedirectToAction(nameof(Index));
 			}
 
-			DeleteAnimalViewModel? animalToDeleteViewModel = await animalService.GetAnimalForDeleteByIdAsync(id);
+			DeleteAnimalViewModel? animalToDeleteViewModel = await animalService.GetAnimalForDeleteByIdAsync(animalGuid);
 
 			if (animalToDeleteViewModel == null)
 			{
-				return RedirectToAction(nameof(Manage));
+				return RedirectToAction(nameof(MyIndex));
 			}
 
 			return View(animalToDeleteViewModel);
@@ -144,14 +167,15 @@ namespace AnimalStudio.Web.Controllers
 		[Authorize]
 		public async Task<IActionResult> SoftDeleteConfirmed(DeleteAnimalViewModel model)
 		{
-			bool isManager = await this.IsUserManagerAsync();
-			if (!isManager)
+			Guid animalGuid = Guid.Empty;
+			bool isIdValid = IsGuidValid(model.Id, ref animalGuid);
+			if (!isIdValid)
 			{
-				return this.RedirectToAction(nameof(Index));
+				return RedirectToAction(nameof(Index));
 			}
 
 			bool isInUse = await animalService
-				.SoftDeleteAnimalAsync(model.Id);
+				.SoftDeleteAnimalAsync(animalGuid);
 
 			if (!isInUse)
 			{
@@ -159,7 +183,7 @@ namespace AnimalStudio.Web.Controllers
 				return this.RedirectToAction(nameof(DeleteAnimal), new { id = model.Id });
 			}
 
-			return this.RedirectToAction(nameof(Manage));
+			return this.RedirectToAction(nameof(MyIndex));
 		}
 
 		[HttpGet]

@@ -13,6 +13,7 @@
 		{
 			public const string DeleteAnimalError = "The selected animal has an appointment and cannot be deleted or is already deleted!";
 			public const string DuplicatedAnimal = "You have already registered the animal.";
+			public const string UpdateAnimalError = "Unexpected error occurred while updating the animal! Please contact administrator";
 		}
 
 		public static class AnimalType

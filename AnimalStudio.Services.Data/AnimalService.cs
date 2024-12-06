@@ -8,11 +8,11 @@ namespace AnimalStudio.Services.Data
 {
 	public class AnimalService : IAnimalService
 	{
-		private readonly IRepository<Animal, int> animalRepository;
+		private readonly IRepository<Animal, Guid> animalRepository;
 		private readonly IRepository<Order, Guid> orderRepository;
 
 
-		public AnimalService(IRepository<Animal, int> animalRepository, IRepository<Order, Guid> orderRepository)
+		public AnimalService(IRepository<Animal, Guid> animalRepository, IRepository<Order, Guid> orderRepository)
 		{
 			this.animalRepository = animalRepository;
 			this.orderRepository = orderRepository;
@@ -22,9 +22,10 @@ namespace AnimalStudio.Services.Data
 		{
 			IEnumerable<AnimalIndexViewModel> index = await animalRepository.GetAllAttached()
 				.Where(a => a.IsDeleted == false)
+				.OrderBy(a => a.Owner.UserName)
 				.Select(a => new AnimalIndexViewModel()
 				{
-					Id = a.Id,
+					Id = a.Id.ToString(),
 					Name = a.Name,
 					Owner = a.Owner.UserName!
 				})
@@ -37,10 +38,10 @@ namespace AnimalStudio.Services.Data
 		{
 			IEnumerable<AnimalDetailsViewModel> index = await animalRepository.GetAllAttached()
 				.Include(a => a.AnimalType)
-				.Where(a => a.OwnerId == id && a.IsDeleted == false)
+				.Where(a => a.OwnerId == id.ToString() && a.IsDeleted == false)
 				.Select(animal => new AnimalDetailsViewModel()
 				{
-					Id = animal.Id,
+					Id = animal.Id.ToString(),
 					Name = animal.Name,
 					Age = animal.Age,
 					AnimalType = animal.AnimalType.AnimalTypeName,
@@ -75,54 +76,69 @@ namespace AnimalStudio.Services.Data
 			return true;
 		}
 
-		public async Task<AnimalDetailsViewModel?> GetAnimalDetailsByIdAsync(int id)
+		public async Task<AnimalDetailsViewModel?> GetAnimalDetailsByIdAsync(Guid id)
 		{
-			AnimalDetailsViewModel? model = await animalRepository
+			Animal? animal = await animalRepository
 				.GetAllAttached()
-				.Where(a => a.Id == id)
-				.Select(a => new AnimalDetailsViewModel()
-				{
-					Id = a.Id,
-					Name = a.Name,
-					Age = a.Age,
-					AnimalType = a.AnimalType.AnimalTypeName,
-					Owner = a.Owner.UserName!
-				})
-				.FirstOrDefaultAsync();
+				.Include(a => a.AnimalType)
+				.Where(a => a.IsDeleted == false)
+			.FirstOrDefaultAsync(a => a.Id == id);
 
-			return model;
+			AnimalDetailsViewModel? viewModel = new AnimalDetailsViewModel();
+
+			if (animal != null)
+			{
+				viewModel.Id = animal.Id.ToString();
+				viewModel.Name = animal.Name;
+				viewModel.Age = animal.Age;
+				viewModel.AnimalType = animal.AnimalType.AnimalTypeName;
+				viewModel.Owner = animal.Owner.UserName!;
+
+				//viewModel = new AnimalDetailsViewModel()
+				//{
+				//	Id = animal.Id.ToString(),
+				//	Name = animal.Name,
+				//	Age = animal.Age,
+				//	AnimalType = animal.AnimalType.AnimalTypeName,
+				//	Owner = animal.Owner.UserName!
+				//};
+			}
+
+			return viewModel;
 		}
 
-		public async Task<EditAnimalFormModel?> GetEditedModel(int id)
+		public async Task<EditAnimalFormModel?> GetEditedModel(Guid id)
 		{
 			EditAnimalFormModel? model = await animalRepository
 				.GetAllAttached()
-				.Where(a => a.Id == id)
+				.Where(a => a.IsDeleted == false)
 				.Select(a => new EditAnimalFormModel()
 				{
-					Id = id,
+					Id = id.ToString(),
 					Name = a.Name,
 					Age = a.Age,
 					AnimalTypeId = a.AnimalTypeId,
 					UserId = a.OwnerId
 				})
-				.FirstOrDefaultAsync();
+				.FirstOrDefaultAsync(a => a.Id.ToLower() == id.ToString().ToLower());
 
 			return model;
 		}
 
-		public async Task EditAnimalAsync(EditAnimalFormModel model)
+		public async Task<bool> EditAnimalAsync(EditAnimalFormModel model)
 		{
 			Animal animal = new Animal()
 			{
-				Id = model.Id,
+				Id = Guid.Parse(model.Id),
 				Name = model.Name,
 				Age = model.Age,
 				AnimalTypeId = model.AnimalTypeId,
 				OwnerId = model.UserId
 			};
 
-			await animalRepository.UpdateAsync(animal);
+			bool result = await animalRepository.UpdateAsync(animal);
+
+			return result;
 		}
 
 		public async Task<IEnumerable<AnimalIndexViewModel>> GetAllAnimalsByUserId(string userId)
@@ -131,35 +147,35 @@ namespace AnimalStudio.Services.Data
 				.Where(a => a.OwnerId == userId)
 				.Select(animal => new AnimalIndexViewModel()
 				{
-					Id = animal.Id,
+					Id = animal.Id.ToString(),
 					Name = animal.Name,
 					Age = animal.Age,
-					Owner = animal.Owner.UserName
+					Owner = animal.Owner.UserName!
 				})
 				.ToArrayAsync();
 
 			return animals;
 		}
 
-		public async Task<DeleteAnimalViewModel?> GetAnimalForDeleteByIdAsync(int id)
+		public async Task<DeleteAnimalViewModel?> GetAnimalForDeleteByIdAsync(Guid id)
 		{
 			DeleteAnimalViewModel? animalToDelete = await animalRepository
 				.GetAllAttached()
-				.Where(a => a.Id == id)
+				.Where(a => a.IsDeleted == false)
 				.Select(a => new DeleteAnimalViewModel()
 				{
-					Id = a.Id,
+					Id = a.Id.ToString(),
 					Name = a.Name
 				})
-				.FirstOrDefaultAsync();
+				.FirstOrDefaultAsync(a => a.Id.ToLower() == id.ToString().ToLower());
 
 			return animalToDelete;
 		}
 
-		public async Task<bool> SoftDeleteAnimalAsync(int id)
+		public async Task<bool> SoftDeleteAnimalAsync(Guid id)
 		{
 			Animal? animalToDelete = await animalRepository
-				.FirstOrDefaultAsync(a => a.Id == id && a.IsDeleted == false);
+				.FirstOrDefaultAsync(a => a.Id.ToString().ToLower() == id.ToString() && a.IsDeleted == false);
 
 			bool isAnimalInUse = await orderRepository.GetAllAttached()
 				.AnyAsync(o => o.AnimalId == id);

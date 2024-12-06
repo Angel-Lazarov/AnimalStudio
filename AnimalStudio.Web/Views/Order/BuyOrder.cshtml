@@ -27,9 +27,9 @@
 				</div>
 				
 				<div class="row">
-					<label asp-for="@Model.CreatedOn" class="form-label-add-edit">Order Date</label>
-					<input asp-for="@Model.CreatedOn" class="form-control" aria-required="true" value="@DateTime.Now.ToString(CreatedOnDateFormat)" />
-					<span asp-validation-for="@Model.CreatedOn" class="text-danger"></span>
+					<label asp-for="@Model.ReservationDate" class="form-label-add-edit">Order Date</label>
+					<input asp-for="@Model.ReservationDate" class="form-control" aria-required="true" value="@DateTime.Now.ToString(ReservationDateFormat)" />
+					<span asp-validation-for="@Model.ReservationDate" class="text-danger"></span>
 				</div>
 
 				<input type="hidden" name="id"/>

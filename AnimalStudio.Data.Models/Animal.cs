@@ -11,7 +11,7 @@ namespace AnimalStudio.Data.Models
 	{
 		[Key]
 		[Comment("Animal Identifier")]
-		public int Id { get; set; }
+		public Guid Id { get; set; } = Guid.NewGuid();
 
 		[Required]
 		[MaxLength(AnimalNameMaxLength)]
@@ -22,6 +22,7 @@ namespace AnimalStudio.Data.Models
 		[Comment("Age of the animal")]
 		public int Age { get; set; }
 
+		[Required]
 		public bool IsDeleted { get; set; }
 
 		[Required]

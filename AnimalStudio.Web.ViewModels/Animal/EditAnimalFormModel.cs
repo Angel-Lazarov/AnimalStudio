@@ -7,7 +7,7 @@ namespace AnimalStudio.Web.ViewModels.Animal
 	public class EditAnimalFormModel
 	{
 		[Required]
-		public int Id { get; set; }
+		public string Id { get; set; }
 
 		[Required]
 		public string UserId { get; set; } = null!;

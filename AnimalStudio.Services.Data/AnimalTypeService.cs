@@ -9,8 +9,8 @@ namespace AnimalStudio.Services.Data
 	public class AnimalTypeService : IAnimalTypeService
 	{
 		private readonly IRepository<AnimalType, int> animalTypeRepository;
-		private readonly IRepository<Animal, int> animalRepository;
-		public AnimalTypeService(IRepository<AnimalType, int> animalTypeRepository, IRepository<Animal, int> animalRepository)
+		private readonly IRepository<Animal, Guid> animalRepository;
+		public AnimalTypeService(IRepository<AnimalType, int> animalTypeRepository, IRepository<Animal, Guid> animalRepository)
 		{
 			this.animalTypeRepository = animalTypeRepository;
 			this.animalRepository = animalRepository;

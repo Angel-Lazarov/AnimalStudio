@@ -8,9 +8,6 @@ namespace AnimalStudio.Data.Configuration
 	{
 		public void Configure(EntityTypeBuilder<Animal> builder)
 		{
-			builder
-				.Property(a => a.IsDeleted)
-				.IsRequired();
 		}
 	}
 }

@@ -14,6 +14,6 @@
 
 		public decimal Price { get; set; }
 
-		public string CreatedOn { get; set; } = null!;
+		public string ReservationDate { get; set; } = null!;
 	}
 }

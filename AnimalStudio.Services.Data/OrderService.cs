@@ -3,6 +3,7 @@ using AnimalStudio.Data.Repository.Interfaces;
 using AnimalStudio.Services.Data.Interfaces;
 using AnimalStudio.Web.ViewModels.Order;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using static AnimalStudio.Common.EntityValidationConstants.Order;
 
 namespace AnimalStudio.Services.Data
@@ -27,7 +28,7 @@ namespace AnimalStudio.Services.Data
 					AnimalName = o.Animal.Name,
 					ProcedureName = o.Procedure.Name,
 					Price = o.Procedure.Price,
-					CreatedOn = o.CreatedOn.ToString(CreatedOnDateFormat)
+					ReservationDate = o.ReservationDate.ToString(ReservationDateFormat)
 				})
 				.ToListAsync();
 
@@ -45,7 +46,7 @@ namespace AnimalStudio.Services.Data
 					AnimalName = o.Animal.Name,
 					ProcedureName = o.Procedure.Name,
 					Price = o.Procedure.Price,
-					CreatedOn = o.CreatedOn.ToString(CreatedOnDateFormat),
+					ReservationDate = o.ReservationDate.ToString(ReservationDateFormat),
 					Owner = o.Animal.Owner.UserName!
 				})
 				.ToListAsync();
@@ -55,20 +56,20 @@ namespace AnimalStudio.Services.Data
 
 		public async Task<bool> AddOrderAsync(AddOrderFormViewModel model)
 		{
+			DateTime createdOn = DateTime.ParseExact(model.ReservationDate, ReservationDateFormat, CultureInfo.CurrentCulture, DateTimeStyles.None);
 
 			Order order = new Order()
 			{
-				AnimalId = model.AnimalId,
+				AnimalId = Guid.Parse(model.AnimalId),
 				ProcedureId = model.ProcedureId,
-				CreatedOn = DateTime.Now,     // parse date !!!
+				ReservationDate = createdOn,
 				OwnerId = model.UserId
 			};
 
 			if (await orderRepository.GetAllAttached().AnyAsync(o =>
-					o.AnimalId == model.AnimalId && o.ProcedureId == model.ProcedureId && o.OwnerId == model.UserId))
+					o.AnimalId.ToString().ToLower() == model.AnimalId.ToLower() && o.ProcedureId == model.ProcedureId && o.OwnerId == model.UserId && o.IsFinished == false))
 			{
 				return false;
-
 			}
 
 			await orderRepository.AddAsync(order);

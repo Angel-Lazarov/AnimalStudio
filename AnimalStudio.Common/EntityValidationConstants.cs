@@ -39,7 +39,7 @@
 
 		public static class Order
 		{
-			public const string CreatedOnDateFormat = "dd/MM/yyyy";
+			public const string ReservationDateFormat = "dd/MM/yyyy";
 		}
 
 		public static class Manager

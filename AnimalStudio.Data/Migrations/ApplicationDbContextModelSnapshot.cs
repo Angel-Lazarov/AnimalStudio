@@ -24,12 +24,10 @@ namespace AnimalStudio.Data.Migrations
 
             modelBuilder.Entity("AnimalStudio.Data.Models.Animal", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasComment("Animal Identifier");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Age")
                         .HasColumnType("int")
@@ -197,13 +195,9 @@ namespace AnimalStudio.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AnimalId")
-                        .HasColumnType("int")
+                    b.Property<Guid>("AnimalId")
+                        .HasColumnType("uniqueidentifier")
                         .HasComment("Identifier of the animal in the order");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2")
-                        .HasComment("Date of order creation.");
 
                     b.Property<bool>("IsFinished")
                         .HasColumnType("bit");
@@ -217,6 +211,10 @@ namespace AnimalStudio.Data.Migrations
                     b.Property<int>("ProcedureId")
                         .HasColumnType("int")
                         .HasComment("Identifier of the procedure in the order");
+
+                    b.Property<DateTime>("ReservationDate")
+                        .HasColumnType("datetime2")
+                        .HasComment("Date of order creation.");
 
                     b.HasKey("Id");
 

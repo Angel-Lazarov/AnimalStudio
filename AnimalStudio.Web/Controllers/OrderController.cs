@@ -66,17 +66,21 @@ namespace AnimalStudio.Web.Controllers
 				return View(model);
 			}
 
-			bool isCreatedOnDateValid = DateTime.TryParseExact(model.CreatedOn, CreatedOnDateFormat, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime createdOn);
+			bool isCreatedOnDateValid = DateTime.TryParseExact(model.ReservationDate, ReservationDateFormat, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime createdOn);
 
 			if (!isCreatedOnDateValid)
 			{
-				ModelState.AddModelError(nameof(model.CreatedOn), CreatedOnRequiredMessage);
+				ModelState.AddModelError(nameof(model.ReservationDate), CreatedOnRequiredMessage);
+				model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
+				model.Procedures = await procedureService.IndexGetAllProceduresAsync();
 				return View(model);
 			}
 
 			if (createdOn < DateTime.Today)
 			{
-				ModelState.AddModelError(nameof(model.CreatedOn), CreatedOnBeforeMessage);
+				ModelState.AddModelError(nameof(model.ReservationDate), CreatedOnBeforeMessage);
+				model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
+				model.Procedures = await procedureService.IndexGetAllProceduresAsync();
 				return View(model);
 			}
 
@@ -110,14 +114,30 @@ namespace AnimalStudio.Web.Controllers
 
 		[HttpPost]
 		[Authorize]
-		public async Task<IActionResult> BuyOrder(AddOrderFormViewModel order)
+		public async Task<IActionResult> BuyOrder(AddOrderFormViewModel model)
 		{
 			if (!ModelState.IsValid)
 			{
 				return RedirectToAction(nameof(Index));
 			}
 
-			bool result = await orderService.AddOrderAsync(order);
+			bool isCreatedOnDateValid = DateTime.TryParseExact(model.ReservationDate, ReservationDateFormat, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime createdOn);
+
+			if (!isCreatedOnDateValid)
+			{
+				ModelState.AddModelError(nameof(model.ReservationDate), CreatedOnRequiredMessage);
+				model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
+				return View(model);
+			}
+
+			if (createdOn < DateTime.Today)
+			{
+				ModelState.AddModelError(nameof(model.ReservationDate), CreatedOnBeforeMessage);
+				model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
+				return View(model);
+			}
+
+			bool result = await orderService.AddOrderAsync(model);
 
 			if (result == false)
 			{

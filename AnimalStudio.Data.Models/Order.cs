@@ -24,7 +24,7 @@ namespace AnimalStudio.Data.Models
 
 		[Required]
 		[Comment("Identifier of the animal in the order")]
-		public int AnimalId { get; set; }
+		public Guid AnimalId { get; set; }
 
 		[Required]
 		[Comment("The animal in order")]
@@ -44,6 +44,6 @@ namespace AnimalStudio.Data.Models
 
 		[Required]
 		[Comment("Date of order creation.")]
-		public DateTime CreatedOn { get; set; }
+		public DateTime ReservationDate { get; set; }
 	}
 }

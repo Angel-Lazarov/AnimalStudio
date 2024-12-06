@@ -10,15 +10,15 @@ namespace AnimalStudio.Services.Data.Interfaces
 
 		Task<bool> AddAnimalAsync(AddAnimalFormModel model);
 
-		Task<AnimalDetailsViewModel?> GetAnimalDetailsByIdAsync(int id);
+		Task<AnimalDetailsViewModel?> GetAnimalDetailsByIdAsync(Guid id);
 
-		Task<DeleteAnimalViewModel?> GetAnimalForDeleteByIdAsync(int id);
+		Task<DeleteAnimalViewModel?> GetAnimalForDeleteByIdAsync(Guid id);
 
-		Task<bool> SoftDeleteAnimalAsync(int id);
+		Task<bool> SoftDeleteAnimalAsync(Guid id);
 
-		Task<EditAnimalFormModel?> GetEditedModel(int id);
+		Task<EditAnimalFormModel?> GetEditedModel(Guid id);
 
-		Task EditAnimalAsync(EditAnimalFormModel model);
+		Task<bool> EditAnimalAsync(EditAnimalFormModel model);
 
 		Task<IEnumerable<AnimalIndexViewModel>> GetAllAnimalsByUserId(string userId);
 

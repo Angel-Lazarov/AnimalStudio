@@ -9,7 +9,7 @@ namespace AnimalStudio.Web.ViewModels.Order
     public class AddOrderFormViewModel
     {
         [Required]
-        public int AnimalId { get; set; }
+        public string AnimalId { get; set; } = null!;
 
         public IEnumerable<AnimalIndexViewModel> Animals { get; set; } = new List<AnimalIndexViewModel>();
 
@@ -22,6 +22,6 @@ namespace AnimalStudio.Web.ViewModels.Order
         public string UserId { get; set; } = null!;
 
         [Required(ErrorMessage = CreatedOnRequiredMessage)]
-        public string CreatedOn { get; set; } = DateTime.Today.ToString(CreatedOnDateFormat);
+        public string ReservationDate { get; set; } = DateTime.Today.ToString(ReservationDateFormat);
     }
 }
