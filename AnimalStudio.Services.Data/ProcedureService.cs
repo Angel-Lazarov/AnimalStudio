@@ -48,7 +48,7 @@ namespace AnimalStudio.Services.Data
 			};
 
 			Procedure? procedureToCheck = procedureRepository
-				.FirstOrDefault(p => p.Name == model.Name );
+				.FirstOrDefault(p => p.Name == model.Name);
 
 			if (procedureToCheck != null)
 			{
@@ -168,6 +168,7 @@ namespace AnimalStudio.Services.Data
 					Id = id,
 					Name = procedure.Name,
 					Workers = await workerRepository.GetAllAttached()
+						.Where(w => w.IsDeleted == false)
 						.Include(w => w.WorkersProcedures)
 						.ThenInclude(wp => wp.Procedure)
 						.Select(w => new WorkerCheckBoxInputModel()

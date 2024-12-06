@@ -34,11 +34,11 @@ namespace AnimalStudio.Services.Data
 			return index;
 		}
 
-		public async Task<IEnumerable<AnimalDetailsViewModel>> IndexGetMyAnimalsAsync(string id)
+		public async Task<IEnumerable<AnimalDetailsViewModel>> IndexGetMyAnimalsAsync(string userId)
 		{
 			IEnumerable<AnimalDetailsViewModel> index = await animalRepository.GetAllAttached()
 				.Include(a => a.AnimalType)
-				.Where(a => a.OwnerId == id.ToString() && a.IsDeleted == false)
+				.Where(a => a.OwnerId == userId && a.IsDeleted == false)
 				.Select(animal => new AnimalDetailsViewModel()
 				{
 					Id = animal.Id.ToString(),
@@ -64,7 +64,7 @@ namespace AnimalStudio.Services.Data
 
 			Animal? animalToCheck = animalRepository
 				.FirstOrDefault(a =>
-				a.OwnerId == model.UserId && a.Name == model.Name && a.Age == model.Age && a.AnimalTypeId == model.AnimalTypeId);
+				a.OwnerId == model.UserId && a.Name == model.Name && a.Age == model.Age && a.AnimalTypeId == model.AnimalTypeId && a.IsDeleted == false);
 
 			if (animalToCheck != null)
 			{
@@ -76,51 +76,46 @@ namespace AnimalStudio.Services.Data
 			return true;
 		}
 
-		public async Task<AnimalDetailsViewModel?> GetAnimalDetailsByIdAsync(Guid id)
+		public async Task<AnimalDetailsViewModel?> GetAnimalDetailsByIdAsync(Guid animalId)
 		{
 			Animal? animal = await animalRepository
 				.GetAllAttached()
 				.Include(a => a.AnimalType)
-				.Where(a => a.IsDeleted == false)
-			.FirstOrDefaultAsync(a => a.Id == id);
+				.Include(a => a.Owner)
+				.Where(a => a.Id.ToString().ToLower() == animalId.ToString().ToLower() && a.IsDeleted == false)
+			.FirstOrDefaultAsync();
 
-			AnimalDetailsViewModel? viewModel = new AnimalDetailsViewModel();
+			AnimalDetailsViewModel? viewModel = null;
 
 			if (animal != null)
 			{
-				viewModel.Id = animal.Id.ToString();
-				viewModel.Name = animal.Name;
-				viewModel.Age = animal.Age;
-				viewModel.AnimalType = animal.AnimalType.AnimalTypeName;
-				viewModel.Owner = animal.Owner.UserName!;
-
-				//viewModel = new AnimalDetailsViewModel()
-				//{
-				//	Id = animal.Id.ToString(),
-				//	Name = animal.Name,
-				//	Age = animal.Age,
-				//	AnimalType = animal.AnimalType.AnimalTypeName,
-				//	Owner = animal.Owner.UserName!
-				//};
+				viewModel = new AnimalDetailsViewModel()
+				{
+					Id = animal.Id.ToString(),
+					Name = animal.Name,
+					Age = animal.Age,
+					AnimalType = animal.AnimalType.AnimalTypeName,
+					Owner = animal.Owner.UserName!,
+				};
 			}
 
 			return viewModel;
 		}
 
-		public async Task<EditAnimalFormModel?> GetEditedModel(Guid id)
+		public async Task<EditAnimalFormModel?> GetEditedModel(Guid animalId)
 		{
 			EditAnimalFormModel? model = await animalRepository
 				.GetAllAttached()
-				.Where(a => a.IsDeleted == false)
+				.Where(a => a.Id.ToString().ToLower() == animalId.ToString().ToLower() && a.IsDeleted == false)
 				.Select(a => new EditAnimalFormModel()
 				{
-					Id = id.ToString(),
+					Id = a.Id.ToString(),
 					Name = a.Name,
 					Age = a.Age,
 					AnimalTypeId = a.AnimalTypeId,
 					UserId = a.OwnerId
 				})
-				.FirstOrDefaultAsync(a => a.Id.ToLower() == id.ToString().ToLower());
+				.FirstOrDefaultAsync();
 
 			return model;
 		}
@@ -144,7 +139,7 @@ namespace AnimalStudio.Services.Data
 		public async Task<IEnumerable<AnimalIndexViewModel>> GetAllAnimalsByUserId(string userId)
 		{
 			IEnumerable<AnimalIndexViewModel> animals = await animalRepository.GetAllAttached()
-				.Where(a => a.OwnerId == userId)
+				.Where(a => a.OwnerId == userId && a.IsDeleted == false)
 				.Select(animal => new AnimalIndexViewModel()
 				{
 					Id = animal.Id.ToString(),
@@ -178,7 +173,7 @@ namespace AnimalStudio.Services.Data
 				.FirstOrDefaultAsync(a => a.Id.ToString().ToLower() == id.ToString() && a.IsDeleted == false);
 
 			bool isAnimalInUse = await orderRepository.GetAllAttached()
-				.AnyAsync(o => o.AnimalId == id);
+				.AnyAsync(o => o.AnimalId.ToString().ToLower() == id.ToString().ToLower() && o.IsFinished == false);
 
 			if (animalToDelete == null || isAnimalInUse)
 			{

@@ -139,7 +139,7 @@ namespace AnimalStudio.Web.Controllers
 				return View(model);
 			}
 
-			return RedirectToAction(nameof(Index));
+			return RedirectToAction(nameof(MyIndex));
 		}
 
 		[HttpGet]
