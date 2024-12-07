@@ -40,6 +40,7 @@
 		public static class Order
 		{
 			public const string ReservationDateFormat = "dd/MM/yyyy";
+			public const string PriceColumnTypeName = "decimal(18,2)";
 		}
 
 		public static class Manager

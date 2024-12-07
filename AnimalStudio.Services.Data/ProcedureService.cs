@@ -79,7 +79,7 @@ namespace AnimalStudio.Services.Data
 					Description = procedure.Description,
 					Workers = workerProcedureRepository
 						.GetAllAttached()
-						.Where(wp => wp.ProcedureId == id && wp.IsDeleted == false)
+						.Where(wp => wp.ProcedureId == id && wp.IsDeleted == false && wp.Worker.IsDeleted == false)
 						.Select(wp => new WorkerViewModel()
 						{
 							Id = wp.WorkerId,
@@ -90,7 +90,6 @@ namespace AnimalStudio.Services.Data
 			}
 			return procedureViewModel;
 		}
-
 
 		public async Task<DeleteProcedureViewModel?> GetProcedureForDeleteByIdAsync(int id)
 		{
@@ -199,7 +198,7 @@ namespace AnimalStudio.Services.Data
 			{
 				Worker? worker = await workerRepository.GetByIdAsync(workerInputModel.Id);
 
-				if (worker == null)
+				if (worker == null || worker.IsDeleted)
 				{
 					return false;
 				}

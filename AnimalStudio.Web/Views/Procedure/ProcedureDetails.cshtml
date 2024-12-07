@@ -19,7 +19,7 @@
 			<hr />
 			<p class="card-text">@Model.Description</p>
 			<hr />
-			
+
 			<div class="text-center"><strong>Assigned Workers for the procedure @Model.Name</strong> </div>
 			<table class="table table-striped">
 				<thead>
@@ -28,10 +28,21 @@
 					</tr>
 				</thead>
 				<tbody>
-					@foreach (var procedure in Model.Workers)
+					@if (Model.Workers.Any())
+					{
+						@foreach (var worker in Model.Workers)
+						{
+							<tr>
+								<td>@worker.Name</td>
+							</tr>
+						}
+					}
+					else
 					{
 						<tr>
-							<td>@procedure.Name</td>
+							<td>
+								<p>No workers for this procedure!</p>
+							</td>
 						</tr>
 					}
 				</tbody>

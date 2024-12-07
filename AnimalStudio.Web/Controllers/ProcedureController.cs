@@ -159,7 +159,7 @@ namespace AnimalStudio.Web.Controllers
 				return this.View(model);
 			}
 
-			return RedirectToAction(nameof(Index), "Procedure", new { id = model.Id });
+			return RedirectToAction(nameof(ProcedureDetails), "Procedure", new { id = model.Id });
 		}
 
 		[HttpGet]

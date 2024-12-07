@@ -11,10 +11,12 @@ namespace AnimalStudio.Services.Data
 	public class OrderService : IOrderService
 	{
 		private readonly IRepository<Order, Guid> orderRepository;
+		private readonly IRepository<Procedure, int> procedureRepository;
 
-		public OrderService(IRepository<Order, Guid> orderRepository)
+		public OrderService(IRepository<Order, Guid> orderRepository, IRepository<Procedure, int> procedureRepository)
 		{
 			this.orderRepository = orderRepository;
+			this.procedureRepository = procedureRepository;
 		}
 
 		public async Task<IEnumerable<OrderIndexViewModel>> IndexGetMyOrdersAsync(string userId)
@@ -27,7 +29,7 @@ namespace AnimalStudio.Services.Data
 					Id = o.Id,
 					AnimalName = o.Animal.Name,
 					ProcedureName = o.Procedure.Name,
-					Price = o.Procedure.Price,
+					Price = o.Price,
 					ReservationDate = o.ReservationDate.ToString(ReservationDateFormat)
 				})
 				.ToListAsync();
@@ -45,7 +47,7 @@ namespace AnimalStudio.Services.Data
 					Id = o.Id,
 					AnimalName = o.Animal.Name,
 					ProcedureName = o.Procedure.Name,
-					Price = o.Procedure.Price,
+					Price = o.Price,
 					ReservationDate = o.ReservationDate.ToString(ReservationDateFormat),
 					Owner = o.Animal.Owner.UserName!
 				})
@@ -58,12 +60,16 @@ namespace AnimalStudio.Services.Data
 		{
 			DateTime createdOn = DateTime.ParseExact(model.ReservationDate, ReservationDateFormat, CultureInfo.CurrentCulture, DateTimeStyles.None);
 
+			Procedure selectedProcedure = await procedureRepository.GetByIdAsync(model.ProcedureId);
+			decimal procedurePrice = selectedProcedure.Price;
+
 			Order order = new Order()
 			{
 				AnimalId = Guid.Parse(model.AnimalId),
 				ProcedureId = model.ProcedureId,
 				ReservationDate = createdOn,
-				OwnerId = model.UserId
+				OwnerId = model.UserId,
+				Price = procedurePrice
 			};
 
 			if (await orderRepository.GetAllAttached().AnyAsync(o =>

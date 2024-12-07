@@ -15,7 +15,7 @@
 <div class="row">
 	<div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
 		<form asp-action="AddOrder" method="post" enctype="multipart/form-data">
-		
+
 			<input type="hidden" name="UserId" value="@Model.UserId" />
 
 			<div class="row">
@@ -24,7 +24,6 @@
 					<select asp-for="@Model.AnimalId" class="form-control" aria-required="true" asp-items="@(new SelectList(Model.Animals, "Id", "Name"))">
 						<option value="">Select Animal...</option>
 					</select>
-
 					<span asp-validation-for="@Model.AnimalId" class="text-danger"></span>
 				</div>
 			</div>
@@ -35,19 +34,23 @@
 					<select asp-for="@Model.ProcedureId" class="form-control" aria-required="true" asp-items="@(new SelectList(Model.Procedures, "Id", "Name"))">
 						<option value="">Select Procedure...</option>
 					</select>
-
 					<span asp-validation-for="@Model.ProcedureId" class="text-danger"></span>
 				</div>
 			</div>
-			
+
 			<div class="row">
-				<label asp-for="@Model.ReservationDate" class="form-label-add-edit">Reservation Date</label>
-				<input asp-for="@Model.ReservationDate" class="form-control" aria-required="true" value="@DateTime.Now.ToString(ReservationDateFormat)" />
-				<span asp-validation-for="@Model.ReservationDate" class="text-danger"></span>
+				<div class="col-sm-6 mb-2">
+					<label asp-for="@Model.ReservationDate" class="form-label-add-edit">Reservation Date</label>
+					<input asp-for="@Model.ReservationDate" class="form-control" aria-required="true" value="@DateTime.Now.ToString(ReservationDateFormat)" />
+					<span asp-validation-for="@Model.ReservationDate" class="text-danger"></span>
+				</div>
 			</div>
 
-			<div class="mb-2">
-				<input class="btn btn-warning btn-dark-text w-100 py-2 fw-bold rounded" type="submit" value="Save" />
+			<div class="row">
+				<div class="col-sm-6 mb-2">
+					<button type="submit" class="btn btn-warning w-100 fw-bold rounded mt-2">Save</button>
+					<a asp-action="Index" class="btn btn-warning w-100 fw-bold rounded mt-2">Back</a>
+				</div>
 			</div>
 		</form>
 	</div>

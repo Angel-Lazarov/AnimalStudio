@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static AnimalStudio.Common.EntityValidationConstants.Animal;
+using static AnimalStudio.Common.EntityValidationConstants.Order;
 
 namespace AnimalStudio.Data.Models
 {
@@ -45,5 +46,10 @@ namespace AnimalStudio.Data.Models
 		[Required]
 		[Comment("Date of order creation.")]
 		public DateTime ReservationDate { get; set; }
+
+		[Required]
+		[Column(TypeName = PriceColumnTypeName)]
+		[Comment("Order Price")]
+		public decimal Price { get; set; }
 	}
 }
