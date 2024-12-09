@@ -58,7 +58,7 @@ namespace AnimalStudio.Data.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Animals", t =>
+                    b.ToTable("Animals", null, t =>
                         {
                             t.HasComment("An animal entity");
                         });
@@ -93,7 +93,7 @@ namespace AnimalStudio.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AnimalTypes", t =>
+                    b.ToTable("AnimalTypes", null, t =>
                         {
                             t.HasComment("An AnimalType entity");
                         });
@@ -186,7 +186,7 @@ namespace AnimalStudio.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Managers");
+                    b.ToTable("Managers", (string)null);
                 });
 
             modelBuilder.Entity("AnimalStudio.Data.Models.Order", b =>
@@ -228,7 +228,7 @@ namespace AnimalStudio.Data.Migrations
 
                     b.HasIndex("ProcedureId");
 
-                    b.ToTable("Orders", t =>
+                    b.ToTable("Orders", null, t =>
                         {
                             t.HasComment("Order entity");
                         });
@@ -264,7 +264,7 @@ namespace AnimalStudio.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Procedures", t =>
+                    b.ToTable("Procedures", null, t =>
                         {
                             t.HasComment("Procedure entity.");
                         });
@@ -381,7 +381,7 @@ namespace AnimalStudio.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Workers", t =>
+                    b.ToTable("Workers", null, t =>
                         {
                             t.HasComment("Worker entity.");
                         });
@@ -494,7 +494,7 @@ namespace AnimalStudio.Data.Migrations
 
                     b.HasIndex("ProcedureId");
 
-                    b.ToTable("WorkersProcedures");
+                    b.ToTable("WorkersProcedures", (string)null);
 
                     b.HasData(
                         new

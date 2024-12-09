@@ -9,6 +9,7 @@
 		public int Age { get; set; }
 
 		public string Owner { get; set; } = null!;
+		public string AnimalType { get; set; } = null!;
 
 	}
 }

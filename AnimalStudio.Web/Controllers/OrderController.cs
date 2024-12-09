@@ -49,6 +49,7 @@ namespace AnimalStudio.Web.Controllers
 				Procedures = procedures,
 				Animals = animals,
 				UserId = userId,
+
 			};
 
 			return View(model);

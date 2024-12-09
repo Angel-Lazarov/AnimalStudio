@@ -12,6 +12,7 @@ namespace AnimalStudio.Data.Configuration
 
 			builder
 				.Property(wp => wp.IsDeleted)
+				.IsRequired()
 				.HasDefaultValue(false);
 
 			builder
@@ -19,14 +20,12 @@ namespace AnimalStudio.Data.Configuration
 				.WithMany(w => w.WorkersProcedures)
 				.HasForeignKey(wp => wp.WorkerId)
 				.OnDelete(DeleteBehavior.Restrict);
-			//.OnDelete(DeleteBehavior.NoAction);
 
 			builder
 				.HasOne(wp => wp.Procedure)
 				.WithMany(p => p.WorkersProcedures)
 				.HasForeignKey(wp => wp.ProcedureId)
 				.OnDelete(DeleteBehavior.Restrict);
-			//.OnDelete(DeleteBehavior.NoAction);
 
 			builder.HasData(this.SeedWorkerProcedure());
 		}
@@ -39,7 +38,7 @@ namespace AnimalStudio.Data.Configuration
 				new WorkerProcedure {WorkerId = 1, ProcedureId = 3, IsDeleted = false},
 				new WorkerProcedure {WorkerId = 2, ProcedureId = 4, IsDeleted = false},
 				new WorkerProcedure {WorkerId = 3, ProcedureId = 2, IsDeleted = false},
-				new WorkerProcedure {WorkerId = 4, ProcedureId = 2, IsDeleted = false},
+				new WorkerProcedure {WorkerId = 4, ProcedureId = 2, IsDeleted = false}
 			};
 
 			return workerProcedures;

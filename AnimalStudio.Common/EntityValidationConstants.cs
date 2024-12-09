@@ -9,7 +9,6 @@
 			public const int WorkerDescriptionMaxLength = 2500;
 			public const int WorkerDescriptionMinLength = 10;
 		}
-
 		public static class Procedure
 		{
 			public const int ProcedureNameMinLength = 5;
@@ -20,7 +19,6 @@
 			public const string ProcedurePriceMinValue = "1.00";
 			public const string ProcedurePriceMaxValue = "1000.00";
 		}
-
 		public static class AnimalType
 		{
 			public const int AnimalTypeInfoMaxLength = 30;
@@ -36,11 +34,14 @@
 			public const int AnimalAgeMinValue = 0;
 			public const int AnimalAgeMaxValue = 50;
 		}
-
 		public static class Order
 		{
 			public const string ReservationDateFormat = "dd/MM/yyyy";
 			public const string PriceColumnTypeName = "decimal(18,2)";
+		}
+
+		public static class WorkerProcedure
+		{
 		}
 
 		public static class Manager

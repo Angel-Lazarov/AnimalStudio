@@ -11,7 +11,6 @@ namespace AnimalStudio.Data.Configuration
 			builder
 				.Property(p => p.IsDeleted)
 				.IsRequired();
-			//.HasDefaultValue(false);
 
 			builder.HasData(this.SeedProcedures());
 		}

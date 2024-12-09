@@ -12,11 +12,15 @@ namespace AnimalStudio.Services.Data
 	{
 		private readonly IRepository<Order, Guid> orderRepository;
 		private readonly IRepository<Procedure, int> procedureRepository;
+		private readonly IRepository<WorkerProcedure, object> workerProcedureRepository;
 
-		public OrderService(IRepository<Order, Guid> orderRepository, IRepository<Procedure, int> procedureRepository)
+		public OrderService(IRepository<Order, Guid> orderRepository,
+			IRepository<Procedure, int> procedureRepository,
+			IRepository<WorkerProcedure, object> workerProcedureRepository)
 		{
 			this.orderRepository = orderRepository;
 			this.procedureRepository = procedureRepository;
+			this.workerProcedureRepository = workerProcedureRepository;
 		}
 
 		public async Task<IEnumerable<OrderIndexViewModel>> IndexGetMyOrdersAsync(string userId)

@@ -1,6 +1,9 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using AnimalStudio.Services.Data.Interfaces
+@using AnimalStudio.Web.Infrastructure.Extensions
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using AnimalStudio.Web.ViewModels.Procedure
 @model EditProcedureFormModel
+@inject IManagerService managerService
 
 @{
     ViewData["Title"] = "Edit Procedure";
@@ -36,10 +39,16 @@
     </div>
 </div>
 
-
 <div class="row">
     <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
-        <a asp-controller="Procedure" asp-action="Index" class="btn btn-warning btn-dark-text mb-2 w-100 py-3 fw-bold rounded">Back</a>
+        @if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
+        {
+            <a asp-controller="Procedure" asp-action="Manage" class="btn btn-warning btn-dark-text mb-2 w-100 py-3 fw-bold rounded">Back</a>
+        }
+        else
+        {
+            <a asp-controller="Procedure" asp-action="Index" class="btn btn-warning btn-dark-text mb-2 w-100 py-3 fw-bold rounded">Back</a>
+        }
     </div>
 </div>
 

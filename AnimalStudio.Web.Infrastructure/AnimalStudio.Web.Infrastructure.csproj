@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AnimalStudio.Common\AnimalStudio.Common.csproj" />
     <ProjectReference Include="..\AnimalStudio.Data\AnimalStudio.Data.csproj" />
   </ItemGroup>
 

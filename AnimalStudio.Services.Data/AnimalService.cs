@@ -22,11 +22,13 @@ namespace AnimalStudio.Services.Data
 		{
 			IEnumerable<AnimalIndexViewModel> index = await animalRepository.GetAllAttached()
 				.Where(a => a.IsDeleted == false)
-				.OrderBy(a => a.Owner.UserName)
+				.OrderBy(a => a.AnimalType)
+				.ThenBy(a => a.Owner.UserName)
 				.Select(a => new AnimalIndexViewModel()
 				{
 					Id = a.Id.ToString(),
 					Name = a.Name,
+					AnimalType = a.AnimalType.AnimalTypeName,
 					Owner = a.Owner.UserName!
 				})
 				.ToArrayAsync();
@@ -39,6 +41,7 @@ namespace AnimalStudio.Services.Data
 			IEnumerable<AnimalDetailsViewModel> index = await animalRepository.GetAllAttached()
 				.Include(a => a.AnimalType)
 				.Where(a => a.OwnerId == userId && a.IsDeleted == false)
+				.OrderBy(a => a.Name)
 				.Select(animal => new AnimalDetailsViewModel()
 				{
 					Id = animal.Id.ToString(),

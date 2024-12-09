@@ -1,6 +1,9 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using AnimalStudio.Services.Data.Interfaces
+@using AnimalStudio.Web.Infrastructure.Extensions
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using AnimalStudio.Web.ViewModels.Animal
 @model EditAnimalFormModel
+@inject IManagerService managerService
 
 @{
 	ViewData["Title"] = "Edit Animal";
@@ -41,9 +44,22 @@
 			</div>
 
 			<div class="mb-2">
-				<input class="btn btn-warning btn-dark-text w-100 py-2 fw-bold rounded" type="submit" value="Save" />
+				<input class="btn btn-warning btn-dark-text mb-2 w-100 py-3 fw-bold rounded" type="submit" value="Save" />
 			</div>
 		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+		@if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
+		{
+			<a asp-controller="Animal" asp-action="Manage" class="btn btn-warning btn-dark-text mb-2 w-100 py-3 fw-bold rounded">Back</a>
+		}
+		else
+		{
+			<a asp-controller="Animal" asp-action="MyIndex" class="btn btn-warning btn-dark-text mb-2 w-100 py-3 fw-bold rounded">Back</a>
+		}
 	</div>
 </div>
 
