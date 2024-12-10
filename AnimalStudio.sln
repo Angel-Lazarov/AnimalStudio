@@ -25,6 +25,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimalStudio.Web.Infrastruc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimalStudio.Services.Data", "AnimalStudio.Services.Data\AnimalStudio.Services.Data.csproj", "{82CEF5C2-47F7-4101-A891-FF434AF1EF90}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EB735848-0DAE-4E14-A883-BA3B7797B028}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimalStudio.Services.Tests", "AnimalStudio.Services.Tests\AnimalStudio.Services.Tests.csproj", "{684E7F4A-2B41-4D6A-97CD-163EC9B73FF4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +63,10 @@ Global
 		{82CEF5C2-47F7-4101-A891-FF434AF1EF90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82CEF5C2-47F7-4101-A891-FF434AF1EF90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82CEF5C2-47F7-4101-A891-FF434AF1EF90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{684E7F4A-2B41-4D6A-97CD-163EC9B73FF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{684E7F4A-2B41-4D6A-97CD-163EC9B73FF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{684E7F4A-2B41-4D6A-97CD-163EC9B73FF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{684E7F4A-2B41-4D6A-97CD-163EC9B73FF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +79,7 @@ Global
 		{037A125D-AD6A-47E5-AF27-719FAE81CABA} = {CEE76DBC-708D-4B41-8269-DF0B28ACA067}
 		{0D0AF401-FA20-4D4F-922F-C85608FCE13F} = {95898102-2AFC-4599-BC44-153CAA5FE0AD}
 		{82CEF5C2-47F7-4101-A891-FF434AF1EF90} = {1A0AE909-4DED-4881-BB85-E5D10861F764}
+		{684E7F4A-2B41-4D6A-97CD-163EC9B73FF4} = {EB735848-0DAE-4E14-A883-BA3B7797B028}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9454D415-F46C-4DE1-BEFD-B971D0A7DF0A}
