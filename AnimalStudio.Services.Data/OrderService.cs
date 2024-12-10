@@ -8,177 +8,221 @@ using static AnimalStudio.Common.EntityValidationConstants.Order;
 
 namespace AnimalStudio.Services.Data
 {
-    public class OrderService : IOrderService
-    {
-        private readonly IRepository<Order, Guid> orderRepository;
-        private readonly IRepository<Procedure, int> procedureRepository;
+	public class OrderService : IOrderService
+	{
+		private readonly IRepository<Order, Guid> orderRepository;
+		private readonly IRepository<Procedure, int> procedureRepository;
 
-        public OrderService(IRepository<Order, Guid> orderRepository,
-            IRepository<Procedure, int> procedureRepository)
-        {
-            this.orderRepository = orderRepository;
-            this.procedureRepository = procedureRepository;
-        }
+		public OrderService(IRepository<Order, Guid> _orderRepository,
+			IRepository<Procedure, int> _procedureRepository)
+		{
+			orderRepository = _orderRepository;
+			procedureRepository = _procedureRepository;
+		}
 
-        public async Task<IEnumerable<OrderIndexViewModel>> IndexGetMyOrdersAsync(string userId, OrderSearchFilterViewModel inputModel)
-        {
-            IQueryable<Order> allMyOrdersQuery = orderRepository.GetAllAttached()
-                .Include(o => o.Procedure)
-                .Include(o => o.Animal)
-                .Where(o => o.OwnerId == userId && o.Procedure.IsDeleted == false && o.IsFinished == false);
+		public async Task<IEnumerable<OrderIndexViewModel>> IndexGetMyOrdersAsync(string userId, OrderSearchFilterViewModel inputModel)
+		{
+			IQueryable<Order> allMyOrdersQuery = orderRepository.GetAllAttached()
+				.Include(o => o.Procedure)
+				.Include(o => o.Animal)
+				.Where(o => o.OwnerId == userId && o.Procedure.IsDeleted == false && o.IsFinished == false);
 
-            if (!string.IsNullOrWhiteSpace(inputModel.SearchQuery))
-            {
-                allMyOrdersQuery = allMyOrdersQuery
-                    .Where(o => o.Animal.Name.ToLower().Contains(inputModel.SearchQuery.ToLower()));
-            }
+			if (!string.IsNullOrWhiteSpace(inputModel.SearchQuery))
+			{
+				allMyOrdersQuery = allMyOrdersQuery
+					.Where(o => o.Animal.Name.ToLower().Contains(inputModel.SearchQuery.ToLower()));
+			}
 
-            if (!string.IsNullOrWhiteSpace(inputModel.ProcedureFilter))
-            {
-                allMyOrdersQuery = allMyOrdersQuery
-                    .Where(o => o.Procedure.Name.ToLower() == inputModel.ProcedureFilter.ToLower());
-            }
+			if (!string.IsNullOrWhiteSpace(inputModel.ProcedureFilter))
+			{
+				allMyOrdersQuery = allMyOrdersQuery
+					.Where(o => o.Procedure.Name.ToLower() == inputModel.ProcedureFilter.ToLower());
+			}
 
-            var orders = await allMyOrdersQuery
-                .OrderBy(o => o.Animal.Name)
-                .Select(o => new OrderIndexViewModel()
-                {
-                    Id = o.Id,
-                    AnimalName = o.Animal.Name,
-                    AnimalType = o.Animal.AnimalType.AnimalTypeName,
-                    ProcedureName = o.Procedure.Name,
-                    Price = o.Price,
-                    ReservationDate = o.ReservationDate.ToString(ReservationDateFormat)
-                })
-                .ToArrayAsync();
+			if (inputModel.CurrentPage.HasValue && inputModel.EntitiesPerPage.HasValue)
+			{
+				allMyOrdersQuery = allMyOrdersQuery
+					.Skip(inputModel.EntitiesPerPage.Value * (inputModel.CurrentPage.Value - 1))
+					.Take(inputModel.EntitiesPerPage.Value);
+			}
 
-            return orders;
-        }
+			var orders = await allMyOrdersQuery
+				.OrderBy(o => o.Animal.Name)
+				.Select(o => new OrderIndexViewModel()
+				{
+					Id = o.Id,
+					AnimalName = o.Animal.Name,
+					AnimalType = o.Animal.AnimalType.AnimalTypeName,
+					ProcedureName = o.Procedure.Name,
+					Price = o.Price,
+					ReservationDate = o.ReservationDate.ToString(ReservationDateFormat)
+				})
+				.ToArrayAsync();
 
-        public async Task<IEnumerable<OrderIndexViewModel>> IndexGetAllOrdersAsync(OrderSearchFilterViewModel inputModel)
-        {
-            IQueryable<Order> allOrdersQuery = orderRepository.GetAllAttached()
-                .Include(o => o.Procedure)
-                .Include(o => o.Animal)
-                .ThenInclude(a => a.AnimalType)
-                .Where(o => o.Procedure.IsDeleted == false && o.IsFinished == false);
+			return orders;
+		}
 
-            if (!string.IsNullOrWhiteSpace(inputModel.SearchQuery))
-            {
-                allOrdersQuery = allOrdersQuery
-                    .Where(o => o.Animal.Name.ToLower().Contains(inputModel.SearchQuery.ToLower()));
-            }
+		public async Task<IEnumerable<OrderIndexViewModel>> IndexGetAllOrdersAsync(OrderSearchFilterViewModel inputModel)
+		{
+			IQueryable<Order> allOrdersQuery = orderRepository.GetAllAttached()
+				.Include(o => o.Procedure)
+				.Include(o => o.Animal)
+				.ThenInclude(a => a.AnimalType)
+				.Where(o => o.Procedure.IsDeleted == false && o.IsFinished == false);
 
-            if (!string.IsNullOrWhiteSpace(inputModel.ProcedureFilter))
-            {
-                allOrdersQuery = allOrdersQuery
-                    .Where(o => o.Procedure.Name.ToLower() == inputModel.ProcedureFilter.ToLower());
-            }
+			if (!string.IsNullOrWhiteSpace(inputModel.SearchQuery))
+			{
+				allOrdersQuery = allOrdersQuery
+					.Where(o => o.Animal.Name.ToLower().Contains(inputModel.SearchQuery.ToLower()));
+			}
 
-            if (!string.IsNullOrWhiteSpace(inputModel.AnimalTypeFilter))
-            {
-                allOrdersQuery = allOrdersQuery
-                    .Where(o => o.Animal.AnimalType.AnimalTypeName.ToLower() == inputModel.AnimalTypeFilter.ToLower());
-            }
+			if (!string.IsNullOrWhiteSpace(inputModel.ProcedureFilter))
+			{
+				allOrdersQuery = allOrdersQuery
+					.Where(o => o.Procedure.Name.ToLower() == inputModel.ProcedureFilter.ToLower());
+			}
 
-            var orders = await allOrdersQuery
-                .OrderBy(o => o.Animal.Name)
-                .Select(o => new OrderIndexViewModel()
-                {
-                    Id = o.Id,
-                    AnimalName = o.Animal.Name,
-                    AnimalType = o.Animal.AnimalType.AnimalTypeName,
-                    ProcedureName = o.Procedure.Name,
-                    Price = o.Price,
-                    ReservationDate = o.ReservationDate.ToString(ReservationDateFormat),
-                    Owner = o.Animal.Owner.UserName!
-                })
-                .ToListAsync();
+			if (!string.IsNullOrWhiteSpace(inputModel.AnimalTypeFilter))
+			{
+				allOrdersQuery = allOrdersQuery
+					.Where(o => o.Animal.AnimalType.AnimalTypeName.ToLower() == inputModel.AnimalTypeFilter.ToLower());
+			}
 
-            return orders;
-        }
+			if (inputModel.CurrentPage.HasValue && inputModel.EntitiesPerPage.HasValue)
+			{
+				allOrdersQuery = allOrdersQuery
+					.Skip(inputModel.EntitiesPerPage.Value * (inputModel.CurrentPage.Value - 1))
+					.Take(inputModel.EntitiesPerPage.Value);
+			}
 
-        public async Task<bool> AddOrderAsync(AddOrderFormViewModel model)
-        {
-            DateTime createdOn = DateTime.ParseExact(model.ReservationDate, ReservationDateFormat, CultureInfo.CurrentCulture, DateTimeStyles.None);
+			var orders = await allOrdersQuery
+				.OrderBy(o => o.Animal.Name)
+				.Select(o => new OrderIndexViewModel()
+				{
+					Id = o.Id,
+					AnimalName = o.Animal.Name,
+					AnimalType = o.Animal.AnimalType.AnimalTypeName,
+					ProcedureName = o.Procedure.Name,
+					Price = o.Price,
+					ReservationDate = o.ReservationDate.ToString(ReservationDateFormat),
+					Owner = o.Animal.Owner.UserName!
+				})
+				.ToArrayAsync();
 
-            Procedure selectedProcedure = await procedureRepository.GetByIdAsync(model.ProcedureId);
-            decimal procedurePrice = selectedProcedure.Price;
+			return orders;
+		}
 
-            Order order = new Order()
-            {
-                AnimalId = Guid.Parse(model.AnimalId),
-                ProcedureId = model.ProcedureId,
-                ReservationDate = createdOn,
-                OwnerId = model.UserId,
-                Price = procedurePrice
-            };
+		public async Task<bool> AddOrderAsync(AddOrderFormViewModel model)
+		{
+			DateTime createdOn = DateTime.ParseExact(model.ReservationDate, ReservationDateFormat, CultureInfo.CurrentCulture, DateTimeStyles.None);
 
-            if (await orderRepository.GetAllAttached().AnyAsync(o =>
-                    o.AnimalId.ToString().ToLower() == model.AnimalId.ToLower() && o.ProcedureId == model.ProcedureId && o.OwnerId == model.UserId && o.IsFinished == false))
-            {
-                return false;
-            }
+			Procedure selectedProcedure = await procedureRepository.GetByIdAsync(model.ProcedureId);
+			decimal procedurePrice = selectedProcedure.Price;
 
-            await orderRepository.AddAsync(order);
+			Order order = new Order()
+			{
+				AnimalId = Guid.Parse(model.AnimalId),
+				ProcedureId = model.ProcedureId,
+				ReservationDate = createdOn,
+				OwnerId = model.UserId,
+				Price = procedurePrice
+			};
 
-            return true;
-        }
+			if (await orderRepository.GetAllAttached().AnyAsync(o =>
+					o.AnimalId.ToString().ToLower() == model.AnimalId.ToLower() && o.ProcedureId == model.ProcedureId && o.OwnerId == model.UserId && o.IsFinished == false))
+			{
+				return false;
+			}
 
-        public async Task<DeleteOrderViewModel?> GetOrderForDeleteByIdAsync(Guid id)
-        {
-            DeleteOrderViewModel? orderToDelete = await orderRepository
-                .GetAllAttached()
-                .Where(o => o.IsFinished == false)
-                .Select(o => new DeleteOrderViewModel
-                {
-                    Id = o.Id.ToString()
-                })
-                .FirstOrDefaultAsync(o => o.Id.ToLower() == id.ToString().ToLower());
+			await orderRepository.AddAsync(order);
 
-            return orderToDelete;
-        }
+			return true;
+		}
 
-        public async Task<bool> SoftDeleteOrderAsync(Guid id)
-        {
-            Order? orderToDelete = await orderRepository
-                .FirstOrDefaultAsync(o => o.Id.ToString().ToLower() == id.ToString().ToLower() && o.IsFinished == false);
+		public async Task<DeleteOrderViewModel?> GetOrderForDeleteByIdAsync(Guid id)
+		{
+			DeleteOrderViewModel? orderToDelete = await orderRepository
+				.GetAllAttached()
+				.Where(o => o.IsFinished == false)
+				.Select(o => new DeleteOrderViewModel
+				{
+					Id = o.Id.ToString()
+				})
+				.FirstOrDefaultAsync(o => o.Id.ToLower() == id.ToString().ToLower());
 
-            if (orderToDelete == null)
-            {
-                return false;
-            }
+			return orderToDelete;
+		}
 
-            orderToDelete.IsFinished = true;
+		public async Task<bool> SoftDeleteOrderAsync(Guid id)
+		{
+			Order? orderToDelete = await orderRepository
+				.FirstOrDefaultAsync(o => o.Id.ToString().ToLower() == id.ToString().ToLower() && o.IsFinished == false);
 
-            return await orderRepository.UpdateAsync(orderToDelete);
-        }
+			if (orderToDelete == null)
+			{
+				return false;
+			}
 
-        public async Task<IEnumerable<string>> GetAllProceduresAsync()
-        {
-            IEnumerable<string> allProcedures = await orderRepository
-                .GetAllAttached()
-                .Include(o => o.Procedure)
-                .OrderBy(o => o.Procedure.Name)
-                .Select(o => o.Procedure.Name)
-                .Distinct()
-                .ToArrayAsync();
+			orderToDelete.IsFinished = true;
 
-            return allProcedures;
-        }
+			return await orderRepository.UpdateAsync(orderToDelete);
+		}
 
-        public async Task<IEnumerable<string>> GetAllAnimalTypesAsync()
-        {
-            IEnumerable<string> allAnimalTypes = await orderRepository
-                .GetAllAttached()
-                .Include(o => o.Animal)
-                .ThenInclude(a => a.AnimalType)
-                .OrderBy(o => o.Animal.AnimalType.AnimalTypeName)
-                .Select(o => o.Animal.AnimalType.AnimalTypeName)
-                .Distinct()
-                .ToArrayAsync();
+		public async Task<IEnumerable<string>> GetAllProceduresAsync()
+		{
+			IEnumerable<string> allProcedures = await orderRepository
+				.GetAllAttached()
+				.Include(o => o.Procedure)
+				.OrderBy(o => o.Procedure.Name)
+				.Select(o => o.Procedure.Name)
+				.Distinct()
+				.ToArrayAsync();
 
-            return allAnimalTypes;
-        }
-    }
+			return allProcedures;
+		}
+
+		public async Task<IEnumerable<string>> GetAllAnimalTypesAsync()
+		{
+			IEnumerable<string> allAnimalTypes = await orderRepository
+				.GetAllAttached()
+				.Include(o => o.Animal)
+				.ThenInclude(a => a.AnimalType)
+				.OrderBy(o => o.Animal.AnimalType.AnimalTypeName)
+				.Select(o => o.Animal.AnimalType.AnimalTypeName)
+				.Distinct()
+				.ToArrayAsync();
+
+			return allAnimalTypes;
+		}
+
+		public async Task<int> GetOrdersCountByFilterAsync(OrderSearchFilterViewModel inputModel)
+		{
+			OrderSearchFilterViewModel inputModelCopy = new OrderSearchFilterViewModel()
+			{
+				CurrentPage = null,
+				EntitiesPerPage = null,
+				SearchQuery = inputModel.SearchQuery,
+				AnimalTypeFilter = inputModel.AnimalTypeFilter,
+				ProcedureFilter = inputModel.ProcedureFilter
+			};
+			int ordersCount = (await IndexGetAllOrdersAsync(inputModelCopy)).Count();
+
+			return ordersCount;
+		}
+
+		public async Task<int> GetMyOrdersCountByFilterAsync(string userId, OrderSearchFilterViewModel inputModel)
+		{
+			OrderSearchFilterViewModel inputModelCopy = new OrderSearchFilterViewModel()
+			{
+				CurrentPage = null,
+				EntitiesPerPage = null,
+				SearchQuery = inputModel.SearchQuery,
+				AnimalTypeFilter = inputModel.AnimalTypeFilter,
+				ProcedureFilter = inputModel.ProcedureFilter
+			};
+			int ordersCount = (await IndexGetMyOrdersAsync(userId, inputModelCopy)).Count();
+
+			return ordersCount;
+		}
+	}
 }

@@ -11,216 +11,237 @@ using static AnimalStudio.Common.ErrorMessages.Order;
 
 namespace AnimalStudio.Web.Controllers
 {
-    public class OrderController : BaseController
-    {
-        private readonly IOrderService orderService;
-        private readonly IProcedureService procedureService;
-        private readonly IAnimalService animalService;
+	public class OrderController : BaseController
+	{
+		private readonly IOrderService orderService;
+		private readonly IProcedureService procedureService;
+		private readonly IAnimalService animalService;
 
-        public OrderController(IOrderService orderService, IProcedureService procedureService, IAnimalService animalService, IManagerService managerService)
-            : base(managerService)
-        {
-            this.orderService = orderService;
-            this.procedureService = procedureService;
-            this.animalService = animalService;
-        }
+		public OrderController(IOrderService _orderService, IProcedureService _procedureService, IAnimalService _animalService, IManagerService managerService)
+			: base(managerService)
+		{
+			orderService = _orderService;
+			procedureService = _procedureService;
+			animalService = _animalService;
+		}
 
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Index(OrderSearchFilterViewModel inputModel)
-        {
-            string userId = GetCurrentUserId()!;
-            IEnumerable<OrderIndexViewModel> orders = await orderService.IndexGetMyOrdersAsync(userId, inputModel);
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> Index(OrderSearchFilterViewModel inputModel)  // MY ORDERS
+		{
+			string userId = GetCurrentUserId()!;
+			IEnumerable<OrderIndexViewModel> allMyOrders = await orderService.IndexGetMyOrdersAsync(userId, inputModel);
 
-            OrderSearchFilterViewModel viewModel = new OrderSearchFilterViewModel();
-            viewModel.AllProcedures = await orderService.GetAllProceduresAsync();
-            viewModel.Orders = orders;
+			int allOrdersCount = await orderService.GetMyOrdersCountByFilterAsync(userId, inputModel);
 
-            return View(viewModel);
-        }
+			OrderSearchFilterViewModel viewModel = new OrderSearchFilterViewModel
+			{
+				AllProcedures = await orderService.GetAllProceduresAsync(),
+				Orders = allMyOrders,
+				SearchQuery = inputModel.SearchQuery,
+				AnimalTypeFilter = inputModel.AnimalTypeFilter,
+				ProcedureFilter = inputModel.ProcedureFilter,
+				CurrentPage = inputModel.CurrentPage,
+				EntitiesPerPage = inputModel.EntitiesPerPage,
+				TotalPages = (int)Math.Ceiling((double)allOrdersCount / inputModel.EntitiesPerPage!.Value)
+			};
 
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> AddOrder()
-        {
-            string userId = GetCurrentUserId()!;
-            var animals = await animalService.GetAllAnimalsByUserId(userId);
-            var procedures = await procedureService.IndexGetAllProceduresAsync();
+			return View(viewModel);
+		}
 
-            AddOrderFormViewModel model = new AddOrderFormViewModel()
-            {
-                Procedures = procedures,
-                Animals = animals,
-                UserId = userId,
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> AddOrder()
+		{
+			string userId = GetCurrentUserId()!;
+			var animals = await animalService.GetAllAnimalsByUserId(userId);
+			var procedures = await procedureService.IndexGetAllProceduresAsync();
 
-            };
+			AddOrderFormViewModel model = new AddOrderFormViewModel()
+			{
+				Procedures = procedures,
+				Animals = animals,
+				UserId = userId,
 
-            return View(model);
-        }
+			};
 
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> AddOrder(AddOrderFormViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
-                model.Procedures = await procedureService.IndexGetAllProceduresAsync();
+			return View(model);
+		}
 
-                return View(model);
-            }
+		[HttpPost]
+		[Authorize]
+		public async Task<IActionResult> AddOrder(AddOrderFormViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
+				model.Procedures = await procedureService.IndexGetAllProceduresAsync();
 
-            bool isCreatedOnDateValid = DateTime.TryParseExact(model.ReservationDate, ReservationDateFormat, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime createdOn);
+				return View(model);
+			}
 
-            if (!isCreatedOnDateValid)
-            {
-                ModelState.AddModelError(nameof(model.ReservationDate), CreatedOnRequiredMessage);
-                model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
-                model.Procedures = await procedureService.IndexGetAllProceduresAsync();
-                return View(model);
-            }
+			bool isCreatedOnDateValid = DateTime.TryParseExact(model.ReservationDate, ReservationDateFormat, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime createdOn);
 
-            if (createdOn < DateTime.Today)
-            {
-                ModelState.AddModelError(nameof(model.ReservationDate), CreatedOnBeforeMessage);
-                model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
-                model.Procedures = await procedureService.IndexGetAllProceduresAsync();
-                return View(model);
-            }
+			if (!isCreatedOnDateValid)
+			{
+				ModelState.AddModelError(nameof(model.ReservationDate), CreatedOnRequiredMessage);
+				model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
+				model.Procedures = await procedureService.IndexGetAllProceduresAsync();
+				return View(model);
+			}
 
-            bool result = await orderService.AddOrderAsync(model);
+			if (createdOn < DateTime.Today)
+			{
+				ModelState.AddModelError(nameof(model.ReservationDate), CreatedOnBeforeMessage);
+				model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
+				model.Procedures = await procedureService.IndexGetAllProceduresAsync();
+				return View(model);
+			}
 
-            if (result == false)
-            {
-                TempData[nameof(DuplicatedOrder)] = DuplicatedOrder;
-                return RedirectToAction("Index", "Procedure");
-            }
+			bool result = await orderService.AddOrderAsync(model);
 
-            return RedirectToAction(nameof(Index));
-        }
+			if (result == false)
+			{
+				TempData[nameof(DuplicatedOrder)] = DuplicatedOrder;
+				return RedirectToAction("Index", "Procedure");
+			}
 
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> BuyOrder(int id)
-        {
-            string userId = GetCurrentUserId()!;
-            var animals = await animalService.GetAllAnimalsByUserId(userId);
+			return RedirectToAction(nameof(Index));
+		}
 
-            AddOrderFormViewModel order = new AddOrderFormViewModel()
-            {
-                ProcedureId = id,
-                Animals = animals,
-                UserId = userId
-            };
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> BuyOrder(int id)
+		{
+			string userId = GetCurrentUserId()!;
+			var animals = await animalService.GetAllAnimalsByUserId(userId);
 
-            return View(order);
-        }
+			AddOrderFormViewModel order = new AddOrderFormViewModel()
+			{
+				ProcedureId = id,
+				Animals = animals,
+				UserId = userId
+			};
 
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> BuyOrder(AddOrderFormViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return RedirectToAction(nameof(Index));
-            }
+			return View(order);
+		}
 
-            bool isCreatedOnDateValid = DateTime.TryParseExact(model.ReservationDate, ReservationDateFormat, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime createdOn);
+		[HttpPost]
+		[Authorize]
+		public async Task<IActionResult> BuyOrder(AddOrderFormViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return RedirectToAction(nameof(Index));
+			}
 
-            if (!isCreatedOnDateValid)
-            {
-                ModelState.AddModelError(nameof(model.ReservationDate), CreatedOnRequiredMessage);
-                model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
-                return View(model);
-            }
+			bool isCreatedOnDateValid = DateTime.TryParseExact(model.ReservationDate, ReservationDateFormat, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime createdOn);
 
-            if (createdOn < DateTime.Today)
-            {
-                ModelState.AddModelError(nameof(model.ReservationDate), CreatedOnBeforeMessage);
-                model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
-                return View(model);
-            }
+			if (!isCreatedOnDateValid)
+			{
+				ModelState.AddModelError(nameof(model.ReservationDate), CreatedOnRequiredMessage);
+				model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
+				return View(model);
+			}
 
-            bool result = await orderService.AddOrderAsync(model);
+			if (createdOn < DateTime.Today)
+			{
+				ModelState.AddModelError(nameof(model.ReservationDate), CreatedOnBeforeMessage);
+				model.Animals = await animalService.GetAllAnimalsByUserId(model.UserId);
+				return View(model);
+			}
 
-            if (result == false)
-            {
-                TempData[nameof(DuplicatedOrder)] = DuplicatedOrder;
-                return RedirectToAction("Index", "Procedure");
-            }
+			bool result = await orderService.AddOrderAsync(model);
 
-            return RedirectToAction(nameof(Index));
-        }
+			if (result == false)
+			{
+				TempData[nameof(DuplicatedOrder)] = DuplicatedOrder;
+				return RedirectToAction("Index", "Procedure");
+			}
 
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> DeleteOrder(string? id)
-        {
-            Guid orderGuid = Guid.Empty;
-            if (!this.IsGuidValid(id, ref orderGuid))
-            {
-                return this.RedirectToAction(nameof(Manage));
-            }
+			return RedirectToAction(nameof(Index));
+		}
 
-            DeleteOrderViewModel? orderToDeleteViewModel = await orderService.GetOrderForDeleteByIdAsync(orderGuid);
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> DeleteOrder(string? id)
+		{
+			Guid orderGuid = Guid.Empty;
+			if (!this.IsGuidValid(id, ref orderGuid))
+			{
+				return this.RedirectToAction(nameof(Manage));
+			}
 
-            if (orderToDeleteViewModel == null)
-            {
-                return RedirectToAction(nameof(Manage));
-            }
+			DeleteOrderViewModel? orderToDeleteViewModel = await orderService.GetOrderForDeleteByIdAsync(orderGuid);
 
-            return View(orderToDeleteViewModel);
-        }
+			if (orderToDeleteViewModel == null)
+			{
+				return RedirectToAction(nameof(Manage));
+			}
 
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> SoftDeleteConfirmed(DeleteOrderViewModel model)
-        {
-            Guid orderGuid = Guid.Empty;
-            if (!this.IsGuidValid(model.Id, ref orderGuid))
-            {
-                return this.RedirectToAction(nameof(Manage));
-            }
+			return View(orderToDeleteViewModel);
+		}
 
-            bool isDeleted = await orderService
-                .SoftDeleteOrderAsync(orderGuid);
+		[HttpPost]
+		[Authorize]
+		public async Task<IActionResult> SoftDeleteConfirmed(DeleteOrderViewModel model)
+		{
+			Guid orderGuid = Guid.Empty;
+			if (!this.IsGuidValid(model.Id, ref orderGuid))
+			{
+				return this.RedirectToAction(nameof(Manage));
+			}
 
-            if (!isDeleted)
-            {
-                TempData[nameof(DeleteOrderError)] = DeleteOrderError;
-                return this.RedirectToAction(nameof(DeleteOrder), new { id = model.Id });
-            }
-            return this.RedirectToAction(nameof(Manage));
-        }
+			bool isDeleted = await orderService
+				.SoftDeleteOrderAsync(orderGuid);
 
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Manage(OrderSearchFilterViewModel inputModel)
-        {
-            bool isManager = await this.IsUserManagerAsync();
-            if (!isManager)
-            {
-                return RedirectToAction(nameof(Index));
-            }
+			if (!isDeleted)
+			{
+				TempData[nameof(DeleteOrderError)] = DeleteOrderError;
+				return this.RedirectToAction(nameof(DeleteOrder), new { id = model.Id });
+			}
+			return this.RedirectToAction(nameof(Manage));
+		}
 
-            IEnumerable<OrderIndexViewModel> orders = await orderService.IndexGetAllOrdersAsync(inputModel);
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> Manage(OrderSearchFilterViewModel inputModel)
+		{
+			bool isManager = await this.IsUserManagerAsync();
+			if (!isManager)
+			{
+				return RedirectToAction(nameof(Index));
+			}
 
-            OrderSearchFilterViewModel viewModel = new OrderSearchFilterViewModel();
-            viewModel.AllProcedures = await orderService.GetAllProceduresAsync();
-            viewModel.AllAnimalTypes = await orderService.GetAllAnimalTypesAsync();
-            viewModel.Orders = orders;
+			IEnumerable<OrderIndexViewModel> allOrders = await orderService.IndexGetAllOrdersAsync(inputModel);
 
-            return View(viewModel);
-        }
+			int allOrdersCount = await orderService.GetOrdersCountByFilterAsync(inputModel);
 
-        private string? GetCurrentUserId()
-        {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
 
-        private string? GetCurrentUserName()
-        {
-            return User.Identity!.Name;
-        }
-    }
+			OrderSearchFilterViewModel viewModel = new OrderSearchFilterViewModel
+			{
+				AllProcedures = await orderService.GetAllProceduresAsync(),
+				AllAnimalTypes = await orderService.GetAllAnimalTypesAsync(),
+				Orders = allOrders,
+				SearchQuery = inputModel.SearchQuery,
+				AnimalTypeFilter = inputModel.AnimalTypeFilter,
+				ProcedureFilter = inputModel.ProcedureFilter,
+				CurrentPage = inputModel.CurrentPage,
+				EntitiesPerPage = inputModel.EntitiesPerPage,
+				TotalPages = (int)Math.Ceiling((double)allOrdersCount / inputModel.EntitiesPerPage!.Value)
+			};
+
+			return View(viewModel);
+		}
+
+		private string? GetCurrentUserId()
+		{
+			return User.FindFirstValue(ClaimTypes.NameIdentifier);
+		}
+
+		private string? GetCurrentUserName()
+		{
+			return User.Identity!.Name;
+		}
+	}
 }
