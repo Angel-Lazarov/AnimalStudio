@@ -29,11 +29,13 @@ namespace AnimalStudio.Web.Controllers
 
 		[HttpGet]
 		[Authorize]
-		public async Task<IActionResult> MyIndex()
+		public async Task<IActionResult> MyIndex(string? searchQuery = null)
 		{
 			string currentUserId = GetCurrentUserId()!;
 
-			IEnumerable<AnimalDetailsViewModel> animals = await animalService.IndexGetMyAnimalsAsync(currentUserId);
+			IEnumerable<AnimalDetailsViewModel> animals = await animalService.IndexGetMyAnimalsAsync(currentUserId, searchQuery);
+
+			ViewData["SearchQuery"] = searchQuery;
 
 			return View(animals);
 		}

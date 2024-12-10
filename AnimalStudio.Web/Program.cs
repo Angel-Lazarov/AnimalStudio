@@ -50,6 +50,8 @@ namespace AnimalStudio.Web
 			app.UseAuthentication();
 			app.UseAuthorization();
 
+			app.UseStatusCodePagesWithRedirects("/Home/Error/{0}");
+
 			app.CreateRolesAsync();
 			app.CreateAdminUserAsync();
 

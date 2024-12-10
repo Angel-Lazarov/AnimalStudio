@@ -36,23 +36,31 @@ namespace AnimalStudio.Services.Data
 			return index;
 		}
 
-		public async Task<IEnumerable<AnimalDetailsViewModel>> IndexGetMyAnimalsAsync(string userId)
+		public async Task<IEnumerable<AnimalDetailsViewModel>> IndexGetMyAnimalsAsync(string userId, string? searchQuery = null)
 		{
-			IEnumerable<AnimalDetailsViewModel> index = await animalRepository.GetAllAttached()
+			IQueryable<Animal> myAnimals = animalRepository.GetAllAttached()
 				.Include(a => a.AnimalType)
-				.Where(a => a.OwnerId == userId && a.IsDeleted == false)
-				.OrderBy(a => a.Name)
-				.Select(animal => new AnimalDetailsViewModel()
-				{
-					Id = animal.Id.ToString(),
-					Name = animal.Name,
-					Age = animal.Age,
-					AnimalType = animal.AnimalType.AnimalTypeName,
-					Owner = animal.Owner.UserName!
-				})
-				.ToArrayAsync();
+				.Where(a => a.OwnerId == userId && a.IsDeleted == false);
 
-			return index;
+			if (!string.IsNullOrWhiteSpace(searchQuery))
+			{
+				searchQuery = searchQuery.ToLower().Trim();
+				myAnimals = myAnimals
+					.Where(a => a.AnimalType.AnimalTypeName.ToLower().Contains(searchQuery));
+			}
+
+			IEnumerable<AnimalDetailsViewModel> selectedAnimals = await myAnimals
+			.Select(animal => new AnimalDetailsViewModel()
+			{
+				Id = animal.Id.ToString(),
+				Name = animal.Name,
+				Age = animal.Age,
+				AnimalType = animal.AnimalType.AnimalTypeName,
+				Owner = animal.Owner.UserName!
+			})
+				.ToListAsync();
+
+			return selectedAnimals;
 		}
 
 		public async Task<bool> AddAnimalAsync(AddAnimalFormModel model)

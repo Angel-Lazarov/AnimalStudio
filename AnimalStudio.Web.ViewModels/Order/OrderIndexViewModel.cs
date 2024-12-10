@@ -6,6 +6,8 @@
 
 		public string AnimalName { get; set; } = null!;
 
+		public string AnimalType { get; set; } = null!;
+
 		public string ProcedureName { get; set; } = null!;
 
 		public string UserId { get; set; } = null!;

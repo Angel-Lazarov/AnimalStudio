@@ -6,7 +6,7 @@ namespace AnimalStudio.Services.Data.Interfaces
 	{
 		Task<IEnumerable<AnimalIndexViewModel>> IndexGetAllAnimalsAsync();
 
-		Task<IEnumerable<AnimalDetailsViewModel>> IndexGetMyAnimalsAsync(string id);
+		Task<IEnumerable<AnimalDetailsViewModel>> IndexGetMyAnimalsAsync(string id, string? searchQuery = null);
 
 		Task<bool> AddAnimalAsync(AddAnimalFormModel model);
 

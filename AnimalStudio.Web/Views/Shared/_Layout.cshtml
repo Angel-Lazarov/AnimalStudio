@@ -1,5 +1,4 @@
-﻿@using static AnimalStudio.Common.ApplicationConstants
-@using AnimalStudio.Services.Data.Interfaces
+﻿@using AnimalStudio.Services.Data.Interfaces
 @using AnimalStudio.Web.Infrastructure.Extensions
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject IManagerService managerService
@@ -39,7 +38,14 @@
 						<li class="nav-item">
 							@if (User?.Identity?.IsAuthenticated ?? false)
 							{
-								<a class="nav-link text-dark" asp-controller="Procedure" asp-action="Index">Home</a>
+								if (User.IsInRole(AdminRole))
+								{
+									<a class="nav-link text-dark" asp-area="Admin" asp-controller="Home" asp-action="Index">Home</a>
+								}
+								else
+								{
+									<a class="nav-link text-dark" asp-controller="Procedure" asp-action="Index">Home</a>
+								}
 							}
 							else
 							{

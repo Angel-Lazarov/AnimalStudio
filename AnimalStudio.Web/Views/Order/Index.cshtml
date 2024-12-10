@@ -1,6 +1,6 @@
 ﻿@using AnimalStudio.Web.ViewModels.Order
 @using static AnimalStudio.Common.ErrorMessages.Animal
-@model IEnumerable<OrderIndexViewModel>
+@model OrderSearchFilterViewModel
 
 @{
 	ViewData["Title"] = "My Orders";
@@ -17,22 +17,51 @@
 </div>
 <hr />
 
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<th>Animal Name</th>
-			<th>Procedure Name</th>
-			<th>Reservation Date</th>
-			<th>Price</th>
-			<th>Action</th>
-		</tr>
+
+<form method="get" asp-action="Index" class="mb-4">
+	<div class="row">
+		<div class="col">
+			<input asp-for="SearchQuery" class="form-control" placeholder="Search by animal name..." />
+		</div>
+		
+		<div class="col">
+			<select asp-for="ProcedureFilter" class="form-control">
+				@if (Model.AllProcedures != null)
+				{
+					<option value="">Filter by procedure...</option>
+					foreach (string procedure in Model.AllProcedures)
+					{
+						<option value="@procedure">@procedure</option>
+					}
+				}
+			</select>
+		</div>
+		<div class="col">
+			<button type="submit" class="btn btn-primary">Filter</button>
+		</div>
+	</div>
+</form>
+
+<table class="table table-hover table-bordered">
+	<thead class="table-dark">
+	<tr>
+		<th scope="col">Animal Name</th>
+		<th scope="col">Animal Type</th>
+		<th scope="col">Procedure Name</th>
+		<th scope="col">Reservation Date</th>
+		<th scope="col">Price</th>
+		<th scope="col">Action</th>
+	</tr>
 
 	</thead>
 	<tbody>
-		@foreach (var order in Model)
+	@if (Model.Orders != null)
+	{
+		@foreach (var order in Model.Orders)
 		{
 			<tr>
 				<td>@order.AnimalName</td>
+				<td>@order.AnimalType</td>
 				<td>@order.ProcedureName</td>
 				<td>@order.ReservationDate</td>
 				<td>@order.Price.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("bg-BG"))</td>
@@ -43,9 +72,10 @@
 				</td>
 			</tr>
 		}
+	}
 	</tbody>
 </table>
-@if (!Model.Any())
+@if (Model.Orders != null && !Model.Orders.Any())
 {
 	<p class="text-center text-muted">No procedures ordered!</p>
 }
