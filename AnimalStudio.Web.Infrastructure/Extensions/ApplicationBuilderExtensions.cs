@@ -1,4 +1,7 @@
-﻿using AnimalStudio.Data;
+﻿using AnimalStudio.Common;
+using AnimalStudio.Data;
+using AnimalStudio.Data.Models;
+using AnimalStudio.Data.Repository.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -6,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using static AnimalStudio.Common.ApplicationConstants.AdminConstants;
 using static AnimalStudio.Common.ApplicationConstants.RolesConstants;
 using static AnimalStudio.Common.ExceptionMessages.AdminExceptionMessages;
+using static AnimalStudio.Common.ExceptionMessages.ManagerExceptionMessages;
 using static AnimalStudio.Common.ExceptionMessages.RoleExceptionMessages;
 
 namespace AnimalStudio.Web.Infrastructure.Extensions
@@ -23,7 +27,7 @@ namespace AnimalStudio.Web.Infrastructure.Extensions
 			IList<string> roles = new List<string>()
 			{
 				AdminRole,
-				Manager,
+				ApplicationConstants.RolesConstants.Manager,
 				User
 			};
 
@@ -49,6 +53,9 @@ namespace AnimalStudio.Web.Infrastructure.Extensions
 			UserManager<IdentityUser> userManager = serviceScope
 				.ServiceProvider
 				.GetRequiredService<UserManager<IdentityUser>>();
+
+			IRepository<Manager, Guid> managerRepository = serviceScope
+				.ServiceProvider.GetRequiredService<IRepository<Manager, Guid>>();
 
 			if (userManager == null)
 			{
@@ -95,6 +102,24 @@ namespace AnimalStudio.Web.Infrastructure.Extensions
 						if (!adminResult.Succeeded)
 						{
 							throw new InvalidOperationException(AdminUserNotAddedToRoleExceptionMessage);
+						}
+
+						if (await userManager.IsInRoleAsync(adminUser, ApplicationConstants.RolesConstants.Manager))
+						{
+							return app;
+						}
+						IdentityResult managerResult = await userManager.AddToRoleAsync(adminUser, ApplicationConstants.RolesConstants.Manager);
+
+						Manager manager = new Manager()
+						{
+							UserId = adminUser.Id,
+							NickName = adminUser.UserName!
+						};
+						await managerRepository.AddAsync(manager);
+
+						if (!managerResult.Succeeded)
+						{
+							throw new InvalidOperationException(AdminUserNotAddedToManagerRoleExceptionMessage);
 						}
 					}
 				}

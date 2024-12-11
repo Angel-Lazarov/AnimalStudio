@@ -79,7 +79,6 @@
 
 						@if (this.User?.Identity?.IsAuthenticated ?? false)
 						{
-							@* @if (await this.managerService.IsUserManagerAsync(User.FindFirstValue(ClaimTypes.NameIdentifier))) *@
 							@if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
 							{
 								<li class="nav-item dropdown">
