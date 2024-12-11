@@ -2,6 +2,7 @@ using AnimalStudio.Data;
 using AnimalStudio.Data.Models;
 using AnimalStudio.Services.Data.Interfaces;
 using AnimalStudio.Web.Infrastructure.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AnimalStudio.Web
@@ -13,8 +14,8 @@ namespace AnimalStudio.Web
 			var builder = WebApplication.CreateBuilder(args);
 
 			// Add services to the container.
-			//var connectionString = builder.Configuration.GetConnectionString("WorkConnection") ?? throw new InvalidOperationException("Connection string 'defaultConnection' not found.");
-			var connectionString = builder.Configuration.GetConnectionString("HomeConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+			var connectionString = builder.Configuration.GetConnectionString("WorkConnection") ?? throw new InvalidOperationException("Connection string 'defaultConnection' not found.");
+			//var connectionString = builder.Configuration.GetConnectionString("HomeConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 			builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
@@ -22,7 +23,10 @@ namespace AnimalStudio.Web
 
 			builder.Services.AddApplicationIdentity(builder.Configuration);
 
-			builder.Services.AddControllersWithViews();
+			builder.Services.AddControllersWithViews(cfg => 
+			{ 
+				cfg.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+			});
 
 
 			builder.Services.RegisterRepositories(typeof(Procedure).Assembly);
