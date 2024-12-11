@@ -52,15 +52,17 @@
 	</tbody>
 </table>
 
-<div class="row">
-	<div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
-		@if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
-		{
-			<a asp-controller="Worker" asp-action="Manage" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Back</a>
-		}
-		else
-		{
-			<a asp-controller="Worker" asp-action="Index" class="btn btn-warning d-flex justify-content-center align-items-center flex-fill mx-1">Back</a>
-		}
-	</div>
+<div class="text-center mt-5">
+	@if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
+	{
+		<a asp-controller="Worker" asp-action="Manage" class="btn btn-secondary btn-dark-text mb-2 w-100 py-3 fw-bold rounded">
+			<i class="bi bi-arrow-left-circle"></i> Back
+		</a>
+	}
+	else
+	{
+		<a asp-controller="Worker" asp-action="Index" class="btn btn-secondary btn-dark-text mb-2 w-100 py-3 fw-bold rounded">
+			<i class="bi bi-arrow-left-circle"></i> Back
+		</a>
+	}
 </div>
