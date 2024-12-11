@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AnimalStudio.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDbAndSeedData : Migration
+    public partial class InitialDataBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -146,7 +146,8 @@ namespace AnimalStudio.Data.Migrations
                     AnimalId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "Identifier of the animal in the order"),
                     ProcedureId = table.Column<int>(type: "int", nullable: false, comment: "Identifier of the procedure in the order"),
                     IsFinished = table.Column<bool>(type: "bit", nullable: false),
-                    ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "Date of order creation.")
+                    ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "Date of order creation."),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false, comment: "Order Price")
                 },
                 constraints: table =>
                 {
@@ -225,10 +226,18 @@ namespace AnimalStudio.Data.Migrations
                 values: new object[,]
                 {
                     { 1, 1 },
-                    { 3, 1 },
-                    { 4, 2 },
-                    { 2, 3 },
-                    { 2, 4 }
+                    { 2, 1 },
+                    { 2, 2 },
+                    { 1, 3 },
+                    { 3, 3 },
+                    { 4, 4 },
+                    { 5, 5 },
+                    { 6, 6 },
+                    { 7, 7 },
+                    { 8, 8 },
+                    { 9, 9 },
+                    { 10, 10 },
+                    { 10, 11 }
                 });
 
             migrationBuilder.CreateIndex(

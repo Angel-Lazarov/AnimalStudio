@@ -58,7 +58,7 @@ namespace AnimalStudio.Data.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Animals", null, t =>
+                    b.ToTable("Animals", t =>
                         {
                             t.HasComment("An animal entity");
                         });
@@ -93,7 +93,7 @@ namespace AnimalStudio.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AnimalTypes", null, t =>
+                    b.ToTable("AnimalTypes", t =>
                         {
                             t.HasComment("An AnimalType entity");
                         });
@@ -186,7 +186,7 @@ namespace AnimalStudio.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Managers", (string)null);
+                    b.ToTable("Managers");
                 });
 
             modelBuilder.Entity("AnimalStudio.Data.Models.Order", b =>
@@ -228,7 +228,7 @@ namespace AnimalStudio.Data.Migrations
 
                     b.HasIndex("ProcedureId");
 
-                    b.ToTable("Orders", null, t =>
+                    b.ToTable("Orders", t =>
                         {
                             t.HasComment("Order entity");
                         });
@@ -264,7 +264,7 @@ namespace AnimalStudio.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Procedures", null, t =>
+                    b.ToTable("Procedures", t =>
                         {
                             t.HasComment("Procedure entity.");
                         });
@@ -381,7 +381,7 @@ namespace AnimalStudio.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Workers", null, t =>
+                    b.ToTable("Workers", t =>
                         {
                             t.HasComment("Worker entity.");
                         });
@@ -494,7 +494,7 @@ namespace AnimalStudio.Data.Migrations
 
                     b.HasIndex("ProcedureId");
 
-                    b.ToTable("WorkersProcedures", (string)null);
+                    b.ToTable("WorkersProcedures");
 
                     b.HasData(
                         new
@@ -506,25 +506,73 @@ namespace AnimalStudio.Data.Migrations
                         new
                         {
                             WorkerId = 1,
-                            ProcedureId = 3,
+                            ProcedureId = 2,
                             IsDeleted = false
                         },
                         new
                         {
                             WorkerId = 2,
-                            ProcedureId = 4,
+                            ProcedureId = 2,
                             IsDeleted = false
                         },
                         new
                         {
                             WorkerId = 3,
-                            ProcedureId = 2,
+                            ProcedureId = 3,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 3,
+                            ProcedureId = 1,
                             IsDeleted = false
                         },
                         new
                         {
                             WorkerId = 4,
-                            ProcedureId = 2,
+                            ProcedureId = 4,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 5,
+                            ProcedureId = 5,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 6,
+                            ProcedureId = 6,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 7,
+                            ProcedureId = 7,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 8,
+                            ProcedureId = 8,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 9,
+                            ProcedureId = 9,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 10,
+                            ProcedureId = 10,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 11,
+                            ProcedureId = 10,
                             IsDeleted = false
                         });
                 });

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AnimalStudio.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241207124843_AddedPriceToOrderEntity")]
-    partial class AddedPriceToOrderEntity
+    [Migration("20241211191234_InitialDataBase")]
+    partial class InitialDataBase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -509,25 +509,73 @@ namespace AnimalStudio.Data.Migrations
                         new
                         {
                             WorkerId = 1,
-                            ProcedureId = 3,
+                            ProcedureId = 2,
                             IsDeleted = false
                         },
                         new
                         {
                             WorkerId = 2,
-                            ProcedureId = 4,
+                            ProcedureId = 2,
                             IsDeleted = false
                         },
                         new
                         {
                             WorkerId = 3,
-                            ProcedureId = 2,
+                            ProcedureId = 3,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 3,
+                            ProcedureId = 1,
                             IsDeleted = false
                         },
                         new
                         {
                             WorkerId = 4,
-                            ProcedureId = 2,
+                            ProcedureId = 4,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 5,
+                            ProcedureId = 5,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 6,
+                            ProcedureId = 6,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 7,
+                            ProcedureId = 7,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 8,
+                            ProcedureId = 8,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 9,
+                            ProcedureId = 9,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 10,
+                            ProcedureId = 10,
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            WorkerId = 11,
+                            ProcedureId = 10,
                             IsDeleted = false
                         });
                 });
