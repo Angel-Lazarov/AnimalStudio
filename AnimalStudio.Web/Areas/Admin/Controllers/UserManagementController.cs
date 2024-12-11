@@ -53,6 +53,7 @@ namespace AnimalStudio.Web.Areas.Admin.Controllers
 			}
 
 			bool removeResult = await userService.RemoveUserRoleAsync(userId, role);
+
 			if (!removeResult)
 			{
 				return RedirectToAction(nameof(Index));
